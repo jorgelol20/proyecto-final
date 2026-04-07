@@ -1,0 +1,36 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+
+
+class Modificadores extends Model
+{
+    /** @use HasFactory<\Database\Factories\UserFactory> */
+    use HasFactory;
+   
+    public $timestamps = true;
+    protected $table = 'usuarios';
+    protected $fillable = ['nombre','descripcion','imagen','efectos'];
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'efectos' => 'array',
+        ];
+    }
+
+    //Partidas en las que es usado el modificador
+    public function es_jugado()
+    {
+        return $this->belongsToMany(Partidas::class, "partidas_modificadores", 'partida_id', 'modificador_id');
+    }
+
+}
