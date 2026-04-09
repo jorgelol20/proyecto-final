@@ -3,14 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Personajes extends Model
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory;
    
-    public $timestamps = true;
-    protected $table = 'usuarios';
+    public $timestamps = false;
+    protected $table = 'personajes';
     protected $fillable = ['nombre','descripcion','imagen'];
 
     /**
@@ -25,11 +25,16 @@ class Personajes extends Model
         ];
     }
 
-    //Partidas en las que es usado el modificador
+    // Partidas en las que es usado el personaje
     public function es_jugado()
     {
         return $this->belongsToMany(Partidas::class);
     }
 
-}
+    // Relación: un personaje pertenece a una habilidad
+    public function habilidad()
+    {
+        return $this->belongsTo(Habilidad::class);
+    }
 
+}

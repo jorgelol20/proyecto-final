@@ -1,0 +1,38 @@
+services:
+  caddy:
+    image: caddy:2-alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./src:/var/www
+    depends_on:
+      - php
+
+  php:
+    build: ./php
+    working_dir: /var/www
+    volumes:
+      - ./src:/var/www
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: reforesta
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+    volumes:
+      - db_data:/var/lib/mysql
+
+  composer:
+    image: composer:2
+    working_dir: /app
+    volumes:
+      - ./src:/app
+    entrypoint: ["composer"]
+
+volumes:
+  db_data:

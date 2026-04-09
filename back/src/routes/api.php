@@ -1,5 +1,15 @@
 <?php
 
+use App\Http\Controllers\Api\AuthController;
+use Illuminate\Support\Facades\Route;
+
+Route::post('/login', [AuthController::class, 'login']);
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::get('/me', [AuthController::class, 'me']);
+});
+
 use App\Models\Usuarios;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -12,19 +22,15 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::post('/login', function (Request $request){
-    $user = Usuarios::where('email',$request->input('email')->first());
-    return $user;
-});
 
 //Controlador Usuarios.
 Route::apiResource('/usuarios',UsuarioApiController::class)->names('api.usuarios');
 
 //Controlador Partidas.
-Route::apiResource('/eventos',PartidasApiController::class)->names('api.eventos');
+Route::apiResource('/partidas', PartidasApiController::class)->names('api.partidas');
 
 //Controlador Modificadores.
-Route::apiResource('/eventos',ModificadoresApiController::class)->names('api.eventos');
+Route::apiResource('/modificadores', ModificadoresApiController::class)->names('api.modificadores');
 
 //Controlador Personajes.
-Route::apiResource('/eventos',PersonajesApiController::class)->names('api.eventos');
+Route::apiResource('/personajes', PersonajesApiController::class)->names('api.personajes');

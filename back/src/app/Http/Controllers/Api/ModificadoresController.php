@@ -3,48 +3,63 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Usuarios;
+use App\Models\Modificadores;
 use Illuminate\Http\Request;
 
 class ModificadoresController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        
+        return response()->json(Modificadores::all());
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $data = $request->validate([
+            'nombre' => 'required|string|max:100',
+            'descripcion' => 'nullable|string|max:300',
+            'imagen' => 'nullable|image|max:2048',
+            'efectos' => 'required|array'
+        ]);
+
+        if ($request->hasFile('imagen')) {
+            $path = $request->file('imagen')->store('modificadores', 'public');
+            $data['imagen'] = $path;
+        }
+
+        $modificador = Modificadores::create($data);
+        return response()->json($modificador, 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function show($id)
     {
-        //
+        return response()->json(Modificadores::findOrFail($id));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
-        //
+        $modificador = Modificadores::findOrFail($id);
+
+        $data = $request->validate([
+            'nombre' => 'sometimes|string|max:100',
+            'descripcion' => 'sometimes|string|max:300',
+            'imagen' => 'nullable|image|max:2048',
+            'efectos' => 'sometimes|array'
+        ]);
+
+        if ($request->hasFile('imagen')) {
+            $path = $request->file('imagen')->store('modificadores', 'public');
+            $data['imagen'] = $path;
+        }
+
+        $modificador->update($data);
+
+        return response()->json($modificador);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function destroy($id)
     {
-        //
+        Modificadores::findOrFail($id)->delete();
+        return response()->json(['message' => 'Modificador eliminado']);
     }
 }

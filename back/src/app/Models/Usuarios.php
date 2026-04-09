@@ -46,7 +46,12 @@ class Usuarios extends Authenticatable
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany<Partidas, Usuarios, \Illuminate\Database\Eloquent\Relations\Pivot>
      */
     public function comentarios(){
-        return $this->belongsToMany(Partidas::class, "comentarios_usuario_partida", 'partida_id', 'usuario_id')->withPivot('comentario','created_at', 'updated_at');
+        return $this->belongsToMany(
+            Partidas::class,
+            "comentarios_usuario_partida",
+            'usuario_id',
+            'partida_id'
+        )->withPivot('comentario','created_at', 'updated_at');
     }
 
     /**
@@ -54,6 +59,6 @@ class Usuarios extends Authenticatable
      * @return \Illuminate\Database\Eloquent\Relations\HasMany<Partidas, Usuarios>
      */
     public function tiene_jugadas(){
-        return $this->hasMany(Partidas::class, 'anfitrion_id');
+        return $this->hasMany(Partidas::class, 'usuario_id');
     }
 }

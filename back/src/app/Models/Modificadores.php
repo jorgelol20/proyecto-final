@@ -11,8 +11,8 @@ class Modificadores extends Model
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory;
    
-    public $timestamps = true;
-    protected $table = 'usuarios';
+    public $timestamps = false;
+    protected $table = 'modificadores';
     protected $fillable = ['nombre','descripcion','imagen','efectos'];
 
     /**
@@ -30,7 +30,12 @@ class Modificadores extends Model
     //Partidas en las que es usado el modificador
     public function es_jugado()
     {
-        return $this->belongsToMany(Partidas::class, "partidas_modificadores", 'partida_id', 'modificador_id');
+        return $this->belongsToMany(
+            Partidas::class,
+            "partidas_modificadores",
+            'modificador_id',
+            'partida_id'
+        );
     }
 
 }

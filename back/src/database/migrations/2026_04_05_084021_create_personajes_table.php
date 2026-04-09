@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('nombre',30)->unique();
             $table->string('descripcion', 300)->nullable();
             $table->string('imagen', 400)->nullable();
+            $table->foreignId('habilidad_id')->constrained('habilidades')->onDelete('cascade');
         });
     }
 

@@ -4,49 +4,68 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Usuarios;
+use App\Http\Requests\Usuarios\StoreUsuarioRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class UsuariosController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        $usuarios = Usuarios::select('id','nick','es_admin','email','avatar');
-        $usuarios = $usuarios->load(['comentarios', 'tiene_jugadas']);
-        return response()->json($usuarios,202);
+        return response()->json(Usuarios::all());
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(StoreUsuarioRequest $request)
     {
-        //
+        $data = $request->validated();
+
+        $data['password'] = Hash::make($data['password']);
+
+        if ($request->hasFile('avatar')) {
+            $path = $request->file('avatar')->store('usuarios', 'public');
+            $data['avatar'] = $path;
+        }
+
+        $usuario = Usuarios::create($data);
+
+        return response()->json($usuario, 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function show($id)
     {
-        //
+        return response()->json(Usuarios::findOrFail($id));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
-        //
+        $usuario = Usuarios::findOrFail($id);
+
+        $data = $request->validate([
+            'nick' => 'sometimes|required|string|max:255',
+            'email' => 'sometimes|required|email|unique:usuarios,email,' . $usuario->id,
+            'password' => 'sometimes|required|string|min:6',
+            'es_admin' => 'sometimes|boolean',
+            'avatar' => 'nullable|image|max:2048'
+        ]);
+
+        if (isset($data['password'])) {
+            $data['password'] = Hash::make($data['password']);
+        }
+
+        if ($request->hasFile('avatar')) {
+            $path = $request->file('avatar')->store('usuarios', 'public');
+            $data['avatar'] = $path;
+        }
+
+        $usuario->update($data);
+
+        return response()->json($usuario);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function destroy($id)
     {
-        //
+        Usuarios::findOrFail($id)->delete();
+
+        return response()->json(['message' => 'Usuario eliminado']);
     }
 }

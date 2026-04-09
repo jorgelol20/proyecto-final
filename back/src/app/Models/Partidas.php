@@ -26,10 +26,10 @@ class Partidas extends Model
         return $this->belongsTo(Usuarios::class);
     }
 
-    //Relación del personaje usado en la partida
+    // Relación del personaje usado en la partida
     public function personaje()
     {
-        return $this->hasOne(Personajes::class);
+        return $this->belongsTo(Personajes::class);
     }
 
     //Comentarios
