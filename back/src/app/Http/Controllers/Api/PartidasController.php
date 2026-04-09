@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Partidas;
+use App\Http\Requests\Partidas\StorePartidaRequest;
+use App\Http\Requests\Partidas\UpdatePartidaRequest;
 use Illuminate\Http\Request;
 
 class PartidasController extends Controller
@@ -13,9 +15,9 @@ class PartidasController extends Controller
         return response()->json(Partidas::all());
     }
 
-    public function store(Request $request)
+    public function store(StorePartidaRequest $request)
     {
-        $partida = Partidas::create($request->all());
+        $partida = Partidas::create($request->validated());
         return response()->json($partida, 201);
     }
 
@@ -24,10 +26,10 @@ class PartidasController extends Controller
         return response()->json(Partidas::findOrFail($id));
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdatePartidaRequest $request, $id)
     {
         $partida = Partidas::findOrFail($id);
-        $partida->update($request->all());
+        $partida->update($request->validated());
 
         return response()->json($partida);
     }

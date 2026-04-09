@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Usuarios;
 use App\Http\Requests\Usuarios\StoreUsuarioRequest;
+use App\Http\Requests\Usuarios\UpdateUsuarioRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -36,17 +37,11 @@ class UsuariosController extends Controller
         return response()->json(Usuarios::findOrFail($id));
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateUsuarioRequest $request, $id)
     {
         $usuario = Usuarios::findOrFail($id);
 
-        $data = $request->validate([
-            'nick' => 'sometimes|required|string|max:255',
-            'email' => 'sometimes|required|email|unique:usuarios,email,' . $usuario->id,
-            'password' => 'sometimes|required|string|min:6',
-            'es_admin' => 'sometimes|boolean',
-            'avatar' => 'nullable|image|max:2048'
-        ]);
+        $data = $request->validated();
 
         if (isset($data['password'])) {
             $data['password'] = Hash::make($data['password']);

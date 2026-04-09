@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Habilidad;
+use App\Http\Requests\Habilidades\StoreHabilidadRequest;
+use App\Http\Requests\Habilidades\UpdateHabilidadRequest;
 use Illuminate\Http\Request;
 
 class HabilidadController extends Controller
@@ -13,9 +15,9 @@ class HabilidadController extends Controller
         return response()->json(Habilidad::all());
     }
 
-    public function store(Request $request)
+    public function store(StoreHabilidadRequest $request)
     {
-        $habilidad = Habilidad::create($request->all());
+        $habilidad = Habilidad::create($request->validated());
         return response()->json($habilidad, 201);
     }
 
@@ -24,10 +26,10 @@ class HabilidadController extends Controller
         return response()->json(Habilidad::findOrFail($id));
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateHabilidadRequest $request, $id)
     {
         $habilidad = Habilidad::findOrFail($id);
-        $habilidad->update($request->all());
+        $habilidad->update($request->validated());
 
         return response()->json($habilidad);
     }

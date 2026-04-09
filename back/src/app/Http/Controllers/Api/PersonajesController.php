@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Personajes;
+use App\Http\Requests\Personajes\StorePersonajeRequest;
+use App\Http\Requests\Personajes\UpdatePersonajeRequest;
 use Illuminate\Http\Request;
 
 class PersonajesController extends Controller
@@ -13,14 +15,9 @@ class PersonajesController extends Controller
         return response()->json(Personajes::all());
     }
 
-    public function store(Request $request)
+    public function store(StorePersonajeRequest $request)
     {
-        $data = $request->validate([
-            'nombre' => 'required|string|max:30',
-            'descripcion' => 'nullable|string|max:300',
-            'imagen' => 'nullable|image|max:2048',
-            'habilidad_id' => 'required|exists:habilidades,id'
-        ]);
+        $data = $request->validated();
 
         if ($request->hasFile('imagen')) {
             $path = $request->file('imagen')->store('personajes', 'public');
@@ -37,16 +34,11 @@ class PersonajesController extends Controller
         return response()->json(Personajes::findOrFail($id));
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdatePersonajeRequest $request, $id)
     {
         $personaje = Personajes::findOrFail($id);
 
-        $data = $request->validate([
-            'nombre' => 'sometimes|string|max:30',
-            'descripcion' => 'sometimes|string|max:300',
-            'imagen' => 'nullable|image|max:2048',
-            'habilidad_id' => 'sometimes|exists:habilidades,id'
-        ]);
+        $data = $request->validated();
 
         if ($request->hasFile('imagen')) {
             $path = $request->file('imagen')->store('personajes', 'public');

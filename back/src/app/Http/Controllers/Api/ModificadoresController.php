@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Modificadores;
+use App\Http\Requests\Modificadores\StoreModificadorRequest;
+use App\Http\Requests\Modificadores\UpdateModificadorRequest;
 use Illuminate\Http\Request;
 
 class ModificadoresController extends Controller
@@ -13,14 +15,9 @@ class ModificadoresController extends Controller
         return response()->json(Modificadores::all());
     }
 
-    public function store(Request $request)
+    public function store(StoreModificadorRequest $request)
     {
-        $data = $request->validate([
-            'nombre' => 'required|string|max:100',
-            'descripcion' => 'nullable|string|max:300',
-            'imagen' => 'nullable|image|max:2048',
-            'efectos' => 'required|array'
-        ]);
+        $data = $request->validated();
 
         if ($request->hasFile('imagen')) {
             $path = $request->file('imagen')->store('modificadores', 'public');
@@ -36,16 +33,11 @@ class ModificadoresController extends Controller
         return response()->json(Modificadores::findOrFail($id));
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateModificadorRequest $request, $id)
     {
         $modificador = Modificadores::findOrFail($id);
 
-        $data = $request->validate([
-            'nombre' => 'sometimes|string|max:100',
-            'descripcion' => 'sometimes|string|max:300',
-            'imagen' => 'nullable|image|max:2048',
-            'efectos' => 'sometimes|array'
-        ]);
+        $data = $request->validated();
 
         if ($request->hasFile('imagen')) {
             $path = $request->file('imagen')->store('modificadores', 'public');
