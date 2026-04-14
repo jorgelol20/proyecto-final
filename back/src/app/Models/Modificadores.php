@@ -13,7 +13,7 @@ class Modificadores extends Model
    
     public $timestamps = false;
     protected $table = 'modificadores';
-    protected $fillable = ['nombre','descripcion','imagen','efectos'];
+    protected $fillable = ['nombre','descripcion','imagen','efectos','activo'];
 
     /**
      * Get the attributes that should be cast.
@@ -24,6 +24,7 @@ class Modificadores extends Model
     {
         return [
             'efectos' => 'array',
+            'activo' => 'boolean'
         ];
     }
 

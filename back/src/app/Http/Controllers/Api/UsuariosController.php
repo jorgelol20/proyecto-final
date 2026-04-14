@@ -6,7 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Usuarios;
 use App\Http\Requests\Usuarios\StoreUsuarioRequest;
 use App\Http\Requests\Usuarios\UpdateUsuarioRequest;
-use Illuminate\Http\Request;
+use GuzzleHttp\Psr7\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
 
 class UsuariosController extends Controller
@@ -15,21 +16,31 @@ class UsuariosController extends Controller
     {
         return response()->json(Usuarios::all());
     }
-
+    
     public function store(StoreUsuarioRequest $request)
     {
-        $data = $request->validated();
-
-        $data['password'] = Hash::make($data['password']);
-
+        $archivoPath = null;
+        // En tu Controlador
         if ($request->hasFile('avatar')) {
-            $path = $request->file('avatar')->store('usuarios', 'public');
-            $data['avatar'] = $path;
+            $archivoPath = $request->file('avatar')->store('usuarios');
+            //$archivoPath = Storage::url($archivoPath);
         }
+        return response()->json(['url'=>$archivoPath, 'avatar'=>$request->file('avatar')->getRealPath()]);
 
-        $usuario = Usuarios::create($data);
+        $usuario = Usuarios::create([
+            'nick'     => $request->nick,
+            'email'    => $request->email,
+            'password' => Hash::make($request->password),
+            'avatar'   => $archivoPath, 
+        ]);
 
-        return response()->json($usuario, 201);
+        $token = $usuario->createToken('auth_token')->plainTextToken;
+
+        return response()->json([
+            "datos" => $usuario,
+            "access_token" => $token,
+            "token_type" => "Bearer"
+        ], 201);
     }
 
     public function show($id)

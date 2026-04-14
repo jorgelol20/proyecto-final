@@ -11,12 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('cartas', function (Blueprint $table) {
+        Schema::create('personajes', function (Blueprint $table) {
             $table->id();
-            $table->string('palo', 50);
-            $table->integer('valor');
+            $table->string('nombre',30)->unique();
+            $table->string('descripcion', 300)->nullable();
             $table->string('imagen', 400)->nullable();
-            $table->boolean('activa')->default(false);
+            $table->string('activo')->default(false);
+            $table->foreignId('habilidad_id')->constrained('habilidades')->onDelete('cascade');
         });
     }
 
@@ -25,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('cartas');
+        Schema::dropIfExists('personajes');
     }
 };

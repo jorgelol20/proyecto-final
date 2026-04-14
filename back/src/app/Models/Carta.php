@@ -16,6 +16,13 @@ class Carta extends Model
     protected $fillable = [
         'palo',
         'valor',
-        'imagen'
+        'imagen',
+        'activa'
     ];
+    protected function casts(): array
+    {
+        return [
+            'activa' => 'boolean'
+        ];
+    }
 }

@@ -18,7 +18,7 @@ return new class extends Migration
             $table->boolean('es_admin')->default(false);
             $table->string('remember_token',100)->nullable();
             $table->string('email',50)->unique();
-            $table->string('avatar',300)->nullable();
+            $table->string('avatar')->nullable();
         });
     }
 

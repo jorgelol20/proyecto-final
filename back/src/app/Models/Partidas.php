@@ -10,7 +10,7 @@ class Partidas extends Model
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory;
    
-    public $timestamps = false;
+    public $timestamps = true;
     protected $table = 'partidas';
     protected $fillable = ['usuario_id','personaje_id','tiempo','victoria', 'rondas'];
 

@@ -11,7 +11,7 @@ class Personajes extends Model
    
     public $timestamps = false;
     protected $table = 'personajes';
-    protected $fillable = ['nombre','descripcion','imagen'];
+    protected $fillable = ['nombre','descripcion','imagen', 'activo', 'habilidad'];
 
     /**
      * Get the attributes that should be cast.
@@ -22,6 +22,7 @@ class Personajes extends Model
     {
         return [
             'efectos' => 'array',
+            'activo' => 'boolean'
         ];
     }
 

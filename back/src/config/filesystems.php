@@ -46,6 +46,14 @@ return [
             'throw' => false,
             'report' => false,
         ],
+        'usuarios' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/usuarios'),
+            'url' => rtrim(env('APP_URL', 'http://localhost'), '/').'/storage/public/usuarios',
+            'visibility' => 'public',
+            'throw' => false,
+            'report' => false,
+        ],
 
         's3' => [
             'driver' => 's3',
@@ -75,6 +83,7 @@ return [
 
     'links' => [
         public_path('storage') => storage_path('app/public'),
+
     ],
 
 ];
