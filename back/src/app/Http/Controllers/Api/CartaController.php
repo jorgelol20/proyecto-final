@@ -20,7 +20,7 @@ class CartaController extends Controller
         $data = $request->validated();
 
         if ($request->hasFile('imagen')) {
-            $path = $request->file('imagen')->store('cartas', 'public');
+            $path = $request->file('imagen')->store('cartas');
             $data['imagen'] = $path;
         }
 
@@ -41,7 +41,7 @@ class CartaController extends Controller
         $data = $request->validated();
 
         if ($request->hasFile('imagen')) {
-            $path = $request->file('imagen')->store('cartas', 'public');
+            $path = $request->file('imagen')->store('cartas');
             $data['imagen'] = $path;
         }
 

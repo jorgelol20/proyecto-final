@@ -1,0 +1,70 @@
+nav {
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    /*image-rendering: pixelated; Chrome/Edge/Safari */
+    /* image-rendering: crisp-edges; Firefox */
+    /* Esto crea las "rayas" del grano */
+    border: 2px solid #3e27233f;
+    padding: 10px 20px;
+    border-radius: 4px;
+    height: 2em;
+    max-height: 2em;
+    min-height: 2em;
+    color: white;
+}
+
+.navbar-avatar {
+    width: 1.5em;
+    height: 1.5em;
+    border-radius: 100%;
+    border-color: var(--main-color);
+    border-width: 2px;
+    border-style: solid;
+}
+
+
+.menu_link {
+    margin-left: 1em;
+    margin-right: 5px;
+    text-decoration: none;
+    color: #f5e1da;
+    img{
+        width: 1.5em;
+        height: 1.5em;
+        border-radius: 100%;
+        border-width: 2px;
+        border-style: solid;
+    }
+}
+
+.menu_link--active {
+    color: var(--main-orange);
+    border-color: var(--main-orange);
+    img{
+        border-color: var(--main-color);
+        border-width: 2px;
+        border-style: solid;
+    }   
+}
+
+.menu_link:hover {
+    filter: brightness(1.2) contrast(1.1);
+    transform: scale(1.05);
+    transition: all 0.1s ease;
+}
+
+.navbar-items{
+    background-color: #5a4e4e6c;
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    margin: 10px 20px;
+    padding: 5px;
+    border-bottom: 1px solid #5a4e4ec0;
+    border-right: 1px solid #5a4e4ecc ;
+    min-width: 20em;
+    width: 20em;
+    max-height: 1em;
+    height: 1em;
+}

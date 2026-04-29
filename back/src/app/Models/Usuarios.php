@@ -13,9 +13,9 @@ class Usuarios extends Authenticatable
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasApiTokens, HasFactory, Notifiable;
    
-    public $timestamps = false;
+    public $timestamps = true;
     protected $table = 'usuarios';
-    protected $fillable = ['nick','es_admin','password','email','avatar'];
+    protected $fillable = ['nick','es_admin','password','email','avatar','color'];
 
      /**
      * The attributes that should be hidden for serialization.
@@ -38,7 +38,8 @@ class Usuarios extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'es_admin' => 'boolean',
-            'avatar' => 'string'
+            'avatar' => 'string',
+            'color' => 'string',
         ];
     }
 

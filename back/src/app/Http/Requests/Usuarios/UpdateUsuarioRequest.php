@@ -14,11 +14,33 @@ class UpdateUsuarioRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nick' => 'sometimes|required|string|max:255',
-            'email' => 'sometimes|required|email|unique:usuarios,email,' . $this->route('id'),
-            'password' => 'sometimes|required|string|min:6',
+            'password' => [
+                'sometimes',
+                'string',
+                'min:8',
+                // Al menos una mayúscula, una minúscula, un número y un caracter especial
+                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[-_@$!%*?&]).+$/',
+            ],
             'es_admin' => 'sometimes|boolean',
-            'avatar' => 'nullable|image|max:2048'
+            'avatar' => 'sometimes|image|mimes:jpg,jpeg,png|max:2048',
+            'color' => [
+                'sometimes',
+                'string',
+                'regex:/^#?([a-fA-F0-9]{3}){1,2}$/'
+            ]
+        ];
+    }
+    public function messages()
+    {
+        return [
+            'password.regex' => 'La contraseña debe tener al menos una mayúscula, una minúscula, un número y un carácter especial.',
+            'password.required' => 'La contraseña es obligatoria.',
+            'password.min' => 'La contraseña debe tener al menos 8 caractéres.',
+            'password.string' => 'La contraseña no puede estar vacía.',
+            'avatar.image' => 'Solo se admiten los formatos JPG, JPEG, PNG y WEBP',
+            'avatar.mimes' => 'Solo se admiten los formatos JPG, JPEG, PNG y WEBP',
+            'avatar.max' => 'Tamaño máximo de la imagen: 2MB',
+            'color.regex' => 'El formato del color debe ser hexadecimal',
         ];
     }
 }

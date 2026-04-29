@@ -18,7 +18,8 @@ class StorePartidaRequest extends FormRequest
             'personaje_id' => 'required|exists:personajes,id',
             'tiempo' => 'required|integer',
             'victoria' => 'required|boolean',
-            'rondas' => 'required|integer'
+            'rondas' => 'required|integer',
+
         ];
     }
 }

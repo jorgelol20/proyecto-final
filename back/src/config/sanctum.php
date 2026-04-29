@@ -1,10 +1,10 @@
 <?php
 
 use Laravel\Sanctum\Sanctum;
-const MINUTOS = 0;
-const HORAS = 0;
-const DIAS = 7;
-$tiempo_expiracion = (DIAS * 24 * 60) + (HORAS * 60) + MINUTOS;
+$MINUTOS = 0;
+$HORAS = 0;
+$DIAS = 7;
+$tiempo_expiracion = ($DIAS * 24 * 60) + ($HORAS * 60) + $MINUTOS;
 
 return [
 

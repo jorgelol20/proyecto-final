@@ -15,12 +15,13 @@ class Habilidad extends Model
 
     protected $fillable = [
         'nombre',
-        'descripcion'
+        'descripcion',
+        'icono',
     ];
 
     // Relación: una habilidad tiene muchos personajes
     public function personajes()
     {
-        return $this->hasMany(Personajes::class);
+        return $this->hasMany(Personajes::class, 'habilidad_id', 'id');
     }
 }

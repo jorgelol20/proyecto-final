@@ -1,0 +1,96 @@
+.character-container {
+    display: flex;
+    background-color: var(--second-color-light);
+    padding: 1.5em;
+    width: 100%;
+    max-width: 35em;
+    height: auto;
+    border: 4px solid var(--main-color);
+    box-shadow: 4px 4px 0px var(--main-black);
+    gap: 1.5em;
+}
+
+/* Regla para pantallas pequeñas */
+@media (max-width: 600px) {
+    .character-container {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+}
+
+.character-image {
+    width: 7em;
+    height: 7em;
+    border: 5px groove var(--main-gold);
+    background-color: var(--main-black);
+    flex-shrink: 0;
+}
+
+.character-info {
+    flex: 0 0 30%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5em;
+
+    h1 {
+        margin: 0;
+        font-size: 1.5em;
+        color: var(--main-yellow);
+        text-shadow: 1px 1px 2px var(--main-black);
+    }
+
+    button {
+        width: 85%;
+    }
+}
+
+.character-abilitie {
+    display: flex;
+    gap: 1em;
+    margin-bottom: 1em;
+    /* Esto asegura que ambos elementos hijos tengan la misma altura */
+    align-items: stretch; 
+}
+
+.character-abilitie img {
+    /* Mantenemos el tamaño fijo */
+    min-width: 5em;
+    width: 5em;
+    height: 5em;
+    border: 0.5em groove var(--main-gold);
+    background-color: var(--background-profile-color);
+    /* Asegura que no se deforme */
+    object-fit: cover; 
+}
+
+.abilitie-text {
+    /* Forzamos la misma altura que la imagen */
+    height: 5em; 
+    /* Usamos flexbox para centrar el texto verticalmente dentro de esta altura fija */
+    display: flex;
+    align-items: center;
+    
+    border: 3px solid var(--main-color);
+    border-radius: 5px;
+    padding: 0.8em;
+    background-color: var(--main-white);
+    color: var(--main-black);
+    font-size: 0.9em;
+    line-height: 1.2; /* Ligeramente más pequeño para que quepa bien */
+    flex-grow: 1; /* Hace que el cuadro ocupe el resto del espacio disponible */
+}
+
+.character-description {
+    border: 3px solid var(--main-color);
+    border-radius: 5px;
+    padding: 0.8em;
+    background-color: var(--main-white);
+    color: var(--main-black);
+    font-size: 0.9em;
+    line-height: 1.4;
+    word-wrap: break-word;
+    width: 93%;
+}

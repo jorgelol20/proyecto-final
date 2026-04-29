@@ -21,6 +21,8 @@ RUN apk add --no-cache \
 # Composer (copiado desde la imagen oficial)
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
+COPY uploads.ini /usr/local/etc/php/conf.d/uploads.ini
+
 WORKDIR /var/www
 
 # (Opcional) Mejoras de permisos si luego haces storage/cache

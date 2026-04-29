@@ -1,0 +1,166 @@
+:root {
+    --main-green: #1E5128;
+    --main-red: #84142D;
+    --main-orange: #F77F00;
+    --main-color: #4C3E3E;
+    --second-color: #5A4E4E;
+    --second-color-light: #685a5a;
+    --second-color-dark: #363030;
+    --main-black: #0C0C0C;
+    --main-yellow: #FCC61D;
+    --main-white: #FFF;
+    --main-gold: #D4AF37;
+    --second-gold: #030303;
+    --background-image-color: #f0f0f0;
+    --background-profile-color: #8A6A6A;
+}
+
+@font-face {
+    font-family: 'Romulus';
+    src: url('/font/Alagard.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+
+
+body {
+    font-family: 'Romulus';
+    font-size: 1.3em;
+    text-shadow: 5px 0px 5px white white white;
+    font-weight: bold;
+    background-color: var(--second-color);
+    background-size: 50px 50px;
+
+    /* La magia de los gradientes */
+    background-image:
+        linear-gradient(335deg, var(--second-color-dark) 23px, transparent 23px),
+        linear-gradient(155deg, var(--second-color-dark) 23px, transparent 23px),
+        linear-gradient(335deg, var(--second-color-dark) 23px, transparent 23px),
+        linear-gradient(155deg, var(--second-color-dark) 23px, transparent 23px);
+
+    /* Posicionamiento para crear el efecto de "traba" (escalonado) */
+    background-position:
+        0px 2px,
+        4px 35px,
+        29px 31px,
+        34px 6px;
+    text-rendering: optimizeSpeed;
+}
+
+input {
+    font-family: 'Romulus';
+    font-size: 1.3em;
+    text-shadow: 1px 1px 2px black;
+}
+
+button {
+    font-family: 'Romulus';
+    font-size: 1.3em;
+    text-shadow: 1px 1px 2px black;
+    text-rendering: optimizeSpeed;
+}
+
+img {
+    background-color: var(--background-image-color);
+    image-rendering: pixelated;
+    /* Chrome/Edge/Safari */
+    image-rendering: crisp-edges;
+}
+
+input {
+    margin-bottom: 0.5em;
+    padding: 0.5em;
+    border-radius: 5px;
+    border-color: var(--main-color);
+    background-color: var(--main-color);
+    width: 80%;
+    color: white;
+}
+
+.color-input {
+    min-height: 2em;
+}
+
+.password-field {
+    display: flex;
+    align-items: center;
+    justify-content: left;
+
+    .seePassword {
+        width: fit-content;
+        background: none;
+        border: none;
+        display: flex;
+
+        img {
+            width: 1em;
+            background: none;
+            margin-bottom: 50%;
+        }
+
+        img:hover {
+            filter: brightness(1.2) contrast(1.1);
+            background-color: #ffffff25;
+            border-radius: 100%;
+        }
+    }
+}
+
+.form-error {
+    color: var(--main-red);
+    text-rendering: optimizeSpeed;
+}
+
+button {
+    border-radius: 10px;
+    border-color: var(--main-color);
+    background-color: var(--second-color-light);
+    /* Elimina espacios inusuales alrededor */
+    width: 10em;
+    /* Se ajusta al contenedor 'a' */
+    height: 2em;
+    box-sizing: border-box;
+    color: var(--main-gold);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    z-index: 10;
+}
+button:hover {
+    /* cursor: url('/images/suit_heart.webp') 16 16, auto; */
+    cursor: url('/images/cursor/Cursor_1.webp') 3 7, auto;
+    background-color: var(--second-color);
+    color: var(--main-white);
+}
+
+button:disabled {
+    background-color: var(--second-color-dark);
+    color: var(--main-color);
+}
+
+button:hover:disabled {
+    background-color: var(--second-color-dark);
+    color: var(--main-color);
+    cursor: url('/images/cursor/Cursor_5.webp') 3 7, auto;
+}
+
+html {
+    cursor: url('/images/cursor/Cursor_1.webp') 3 7, auto;
+    height: 100%;
+}
+main{
+    cursor: url('/images/cursor/Cursor_1.webp') 3 7, auto;
+}
+
+
+
+button:active {
+    cursor: url('/images/cursor/Cursor_2.webp') 3 7, auto;
+}
+a:hover {
+    cursor: url('/images/cursor/Cursor_1.webp') 3 7, auto;
+}
+
+a:active {
+    cursor: url('/images/cursor/Cursor_2.webp') 3 7, auto;
+}

@@ -1,48 +1,81 @@
-import { useState } from 'react';
-import { useUsuario } from '../../hooks/useUsuario.js';
+import { Fragment, useContext, useEffect, useState } from 'react';
+import { useUser } from '../../hooks/useUser.js';
+import VisibilityOn from '/images/visibility_on.svg'
+import VisibilityOff from '/images/visibility_off.svg'
+import Banner from '../structure/Banner.jsx';
+import './LoginPage.css'
+import { useNavigate } from 'react-router-dom';
+import { settingsContext } from '../../context/SettingsProvider.jsx';
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    
-    const { login, isLogin, isError, error } = useUsuario();
+    const [viewPassword, setViewPassword] = useState(false)
+    const navigate = useNavigate()
+    const { startButtonSound } = useContext(settingsContext)
+
+    const { user, login, isLoading, isLogin, loginError } = useUser();
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Llamamos a la función del hook
         login({ email, password });
     };
 
-    return (
-        <form onSubmit={handleSubmit}>
-            <h2>Iniciar Sesión</h2>
-            
-            <input 
-                type="email" 
-                value={email} 
-                onChange={(e) => setEmail(e.target.value)} 
-                placeholder="Email"
-                required 
-            />
-            <br />
-            <input 
-                type="password" 
-                value={password} 
-                onChange={(e) => setPassword(e.target.value)} 
-                placeholder="Contraseña"
-                required 
-            />
-            <br />
-            <button type="submit" disabled={isLogin}>
-                {isLogin ? 'Entrando...' : 'Login'}
-            </button>
+    useEffect(() => {
+        if (!isLoading) {
+            if (user) {
+                navigate("/")
+            }
+        }
+    }, [isLoading])
 
-            {isError && (
-                <p style={{ color: 'red' }}>
-                    {error.response?.data?.message || 'Credenciales incorrectas'}
-                </p>
-            )}
-        </form>
+    const loginWithGoogle = () => {
+        window.location.href = 'http://localhost/api/auth/google/redirect';
+    };
+
+    const loginWithX = () => {
+        window.location.href = 'http://localhost/api/auth/x/redirect';
+    };
+
+    return (
+        <Fragment>
+
+            <div className="form">
+                <form className="login-form" onSubmit={handleSubmit}>
+                    <h2>Iniciar Sesión</h2>
+                    {loginError ? <><br /><label className='form-error' htmlFor="newPassword"> {loginError.response?.errors?.email[0] ?? 'Credenciales no válidas'} </label><br /></> : <></>}
+                    <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="Email"
+                        required
+                    />
+                    <br />
+                    <div className='password-field'>
+                        <input
+                            type={viewPassword ? "text" : "password"}
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            placeholder="Contraseña"
+                            required
+                        /><button type="button" className='seePassword' onClick={() => { setViewPassword(!viewPassword) }}><img src={viewPassword ? VisibilityOn : VisibilityOff} /></button>
+                    </div>
+                    <br />
+                    <div>
+                        <button type="submit" onClick={(event) => { startButtonSound(event) }} disabled={isLogin}>
+                            {isLogin ? 'Entrando...' : 'Login'}
+                        </button>
+                        <p>¿No tienes cuenta? <a onClick={() => { navigate('/signup') }}>¡Registrate!</a></p>
+                        <div className='social-login'>
+                            <button type='button' className='google-login' onClick={loginWithGoogle}>Google <img className='google-icon' src="/images/google-icon.svg" /></button>
+                            <button type='button' className='google-login' onClick={loginWithX}>X <img className='google-icon' src="/images/x-icon.svg" /></button>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </Fragment>
     );
 };
 export default Login;

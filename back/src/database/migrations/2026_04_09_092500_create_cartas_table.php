@@ -17,6 +17,7 @@ return new class extends Migration
             $table->integer('valor');
             $table->string('imagen', 400)->nullable();
             $table->boolean('activa')->default(false);
+            
         });
     }
 

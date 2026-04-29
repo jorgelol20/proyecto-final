@@ -5,6 +5,12 @@ namespace Database\Seeders;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Database\Seeders\Cartas;
+use Database\Seeders\Personajes;
+use Database\Seeders\Habilidades;
+use Database\Seeders\Modificadores;
+use Database\Seeders\Usuarios;
+use Database\Seeders\Partidas;
 
 class DatabaseSeeder extends Seeder
 {
@@ -15,11 +21,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
         User::factory()->create([
             'name' => 'Test User',
-            'email' => 'test@example.com',
+           'email' => 'test@example.com',
         ]);
+        $this->call(Cartas::class);
+        $this->call(Habilidades::class);
+        $this->call(Personajes::class);
+        $this->call(Usuarios::class);
+        $this->call(Partidas::class);
+        $this->call(Modificadores::class);
     }
 }

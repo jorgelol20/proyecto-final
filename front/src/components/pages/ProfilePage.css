@@ -1,0 +1,91 @@
+.user-background {
+    position: relative;
+    width: 100%;
+    height: 30em;
+    padding: 0em 5em;
+    background-color: var(--second-color);
+    border-radius: 20px;
+    border-color: var(--main-color);
+    border-width: 0.25cqw;
+    border-left-style: groove;
+    border-bottom-style: groove;
+    border-right-style: groove;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+
+    .userInfo {
+        display: flex;
+        flex-direction: row;
+        position: relative;
+        height: 100%;
+        width: 100%;
+        top: -5em;
+
+        .user-profile {
+            background-color: var(--background-profile-color);
+            padding: 1em;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin-right: 1em;
+            border-radius: 15px;
+            border-color: var(--main-black);
+            border-width: 5px;
+            border-style: solid;
+            max-height: max-content;
+            p{
+                color: white;
+                font-size: 1.2em;
+            }
+            .user-avatar {
+                width: 15em;
+                height: 15em;
+                border-radius: 50%;
+                border-width: 10px;
+                border-style: groove;
+            }
+            .user-buttons{
+                display: flex;   
+            }
+        }
+
+        .user-history {
+            position: relative;
+            background-color: var(--background-profile-color);
+            width: 80%;
+            padding: 0px 1em;
+            margin-right: 20%;
+            border-radius: 15px;
+            border-color: var(--main-black);
+            border-width: 5px;
+            border-style: solid;
+            
+
+            .admin {
+                color: var(--main-yellow);
+                height: 5%;
+            }
+
+            .user {
+                color: var(--main-black);
+                height: 5%;
+            }
+
+            .match-history{
+                position: relative;
+                display: flex;
+                flex-direction: column;
+                border-radius: 5px;
+                border-color: var(--main-black);
+                border-width: 5px;
+                border-style: solid;
+                height: 20em;
+                padding-left: 1em;
+                padding-top: 3em;
+                overflow-y:scroll;
+            }
+            
+        }
+    }
+}

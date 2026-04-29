@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\CartaController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UsuariosController as UsuarioApiController;
@@ -9,7 +10,7 @@ use App\Http\Controllers\Api\ModificadoresController as ModificadoresApiControll
 use App\Http\Controllers\Api\PersonajesController as PersonajesApiController;
 
 #Registro y logeo
-Route::post('/signup',[UsuarioApiController::class, 'store']);
+Route::post('/signup', [UsuarioApiController::class, 'store']);
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::get('/user', function (Request $request) {
@@ -22,7 +23,7 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 //Controlador Usuarios.
-Route::apiResource('/usuarios',UsuarioApiController::class)->names('api.usuarios');
+Route::apiResource('/usuarios', UsuarioApiController::class)->names('api.usuarios');
 
 
 //Controlador Partidas.
@@ -33,3 +34,17 @@ Route::apiResource('/modificadores', ModificadoresApiController::class)->names('
 
 //Controlador Personajes.
 Route::apiResource('/personajes', PersonajesApiController::class)->names('api.personajes');
+
+//Controlador Cartas.
+Route::apiResource('/cartas', CartaController::class)->names('api.cartas');
+
+
+//Inicio de sesión con Google
+Route::get('/auth/google/redirect', [AuthController::class, 'redirectToGoogle']);
+Route::get('/auth/google/callback', [AuthController::class, 'handleGoogleCallback']);
+
+//Inicio de sesión con X
+Route::middleware(['web'])->group(function () {
+    Route::get('/auth/x/redirect', [AuthController::class, 'redirectToX']);
+    Route::get('/auth/x/callback', [AuthController::class, 'handleXCallback']);
+});

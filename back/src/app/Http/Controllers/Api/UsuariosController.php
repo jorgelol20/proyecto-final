@@ -8,62 +8,77 @@ use App\Http\Requests\Usuarios\StoreUsuarioRequest;
 use App\Http\Requests\Usuarios\UpdateUsuarioRequest;
 use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Hash;
 
 class UsuariosController extends Controller
 {
     public function index()
     {
-        return response()->json(Usuarios::all());
+        $usuarios = Usuarios::select('id', 'nick', 'email', 'avatar','color','created_at')->get();   
+        $usuarios = $usuarios->load(['comentarios', 'tiene_jugadas']);
+        return response()->json(['usuario' => $usuarios]);
     }
-    
+
     public function store(StoreUsuarioRequest $request)
     {
         $archivoPath = null;
-        // En tu Controlador
+
         if ($request->hasFile('avatar')) {
             $archivoPath = $request->file('avatar')->store('usuarios');
-            //$archivoPath = Storage::url($archivoPath);
         }
-        return response()->json(['url'=>$archivoPath, 'avatar'=>$request->file('avatar')->getRealPath()]);
-
+        if (!str_contains($archivoPath, 'googleusercontent.com')) {
+            $archivoPath = Storage::url($archivoPath);
+        }
         $usuario = Usuarios::create([
-            'nick'     => $request->nick,
-            'email'    => $request->email,
+            'nick' => $request->nick,
+            'email' => $request->email,
             'password' => Hash::make($request->password),
-            'avatar'   => $archivoPath, 
+            'avatar' => $archivoPath,
+            'color' => $request->color
         ]);
 
         $token = $usuario->createToken('auth_token')->plainTextToken;
 
         return response()->json([
-            "datos" => $usuario,
+            "usuario" => $usuario,
             "access_token" => $token,
-            "token_type" => "Bearer"
         ], 201);
     }
 
-    public function show($id)
+    public function show(string $nick)
     {
-        return response()->json(Usuarios::findOrFail($id));
+        $usuario = Usuarios::select('id', 'nick', 'email', 'es_admin', 'avatar','color','created_at')->where('nick', '=', $nick)->get();
+        $usuario = $usuario->load(['comentarios', 'tiene_jugadas']);
+        return response()->json(['usuario' => $usuario]);
     }
 
-    public function update(UpdateUsuarioRequest $request, $id)
+    public function update(UpdateUsuarioRequest $request, $nick)
     {
-        $usuario = Usuarios::findOrFail($id);
-
+        $usuario = Usuarios::where('nick', $nick)->firstOrFail();
+        
         $data = $request->validated();
-
+    
+        
         if (isset($data['password'])) {
             $data['password'] = Hash::make($data['password']);
         }
 
-        if ($request->hasFile('avatar')) {
-            $path = $request->file('avatar')->store('usuarios', 'public');
-            $data['avatar'] = $path;
+        $archivoPath = false;
+        if(isset($data["avatar"])){
+            if ($request->hasFile('avatar')) {
+                $archivoPath = $request->file('avatar')->store('usuarios');
+            }
+            if (!str_contains($archivoPath, 'googleusercontent.com')) {
+                $archivoPath = Storage::url($archivoPath);
+            }
         }
 
-        $usuario->update($data);
+        $usuario->update(
+            ['password' => $request->password != "" ? $data['password'] : $usuario->password,
+            'avatar' => $archivoPath ?: $usuario->avatar,
+            'color' => $data['color']]
+        );
 
         return response()->json($usuario);
     }
@@ -72,6 +87,6 @@ class UsuariosController extends Controller
     {
         Usuarios::findOrFail($id)->delete();
 
-        return response()->json(['message' => 'Usuario eliminado']);
+        return response()->json(['message' => 'Usuario eliminado'], 201);
     }
 }

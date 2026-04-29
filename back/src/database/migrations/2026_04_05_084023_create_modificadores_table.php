@@ -16,14 +16,15 @@ return new class extends Migration
             $table->string('nombre', 100)->unique();
             $table->string('descripcion', 300)->nullable();
             $table->string('imagen',400)->nullable();
+            $table->integer('nivel')->default(1);
             $table->boolean('activo')->default(true);
             $table->json('efectos');
             /**
              * Estructura JSON:
              * {
              * "effects": [
-             *      {"type": "pentakill_target_number", "value": 3},
-             *      {"type": "pentakill_dmg", "value": 3},
+             *      {"name": "pentakill_target_number", "value": 3},
+             *      {"name": "pentakill_dmg", "value": 3},
              * ]
              * }
              */

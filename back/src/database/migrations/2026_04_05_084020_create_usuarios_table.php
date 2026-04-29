@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('remember_token',100)->nullable();
             $table->string('email',50)->unique();
             $table->string('avatar')->nullable();
+            $table->string('color',7)->default('#FFFFFF');
+            $table->timestamps();
         });
     }
 

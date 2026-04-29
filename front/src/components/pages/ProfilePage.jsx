@@ -1,61 +1,102 @@
-import React, { useEffect } from 'react';
-import { useUsuario } from '../../hooks/useUsuario.js';
-import { useNavigate } from 'react-router-dom';
+import React, { Fragment, useContext, useEffect, useState } from 'react';
+import { useUser } from '../../hooks/useUser.js';
+import { useNavigate, useParams } from 'react-router-dom';
+
+import {  settingsContext } from '../../context/SettingsProvider.jsx';
+
+import Placeholder from '/images/placeholder.webp'
+import './ProfilePage.css'
+import Banner from '../structure/Banner.jsx';
+import Loading from '../Loading.jsx';
+import Match from '../Match.jsx';
 
 const ProfilePage = () => {
     const navigate = useNavigate();
-    
-    const { user, isLoading, isError, error } = useUsuario();
-    useEffect(()=>{
-        //Si el token ya no es válido, reenviamos a la página de login.
+    const { startButtonSound } = useContext( settingsContext)
+
+    const { user, getUsuario, logout, isLoading, isError, error } = useUser();
+    const { nick } = useParams();
+    const [canEdit, setEdit] = useState(false);
+    const [userInfo, setUserInfo] = useState({});
+    const [isGettingUser, setIsGettingUser] = useState(true)
+
+    useEffect(() => {
+        if (user == undefined && !isLoading) {
+            navigate('/login');
+        }
         if (isError) {
             if (error.response?.status === 401) {
                 localStorage.removeItem('auth_token');
                 navigate('/login');
-            }else{
+            } else {
                 return <p>Error al conectar con el servidor</p>
             }
         }
-    },[])
-    //Carga de la página
-    if (isLoading) {
+    }, [isLoading])
+
+
+    const checking = async () => {
+        //Comprueba si es el dueño de este perfil.
+        user.nick == nick ? setEdit(true) : setEdit(false)
+
+        //Comprobamos si el nick de los parámetros es distintos de `undefined`.
+        if (nick !== undefined && nick !== user.nick) {
+            let temp = await getUsuario(nick)
+            setUserInfo(temp[0])
+            setIsGettingUser(false)
+
+        }
+        //Si es undefined, le mandamos a su perfil 
+        else if (user) {
+            setUserInfo(user)
+            setIsGettingUser(false)
+        }
+    }
+    useEffect(() => {
+        if (!isLoading) {
+            checking()
+        }
+    }, [isLoading]);
+
+    if (isLoading | isGettingUser) {
         return (
             <div className="flex justify-center items-center h-screen">
-                <p>Cargando perfil...</p>
+                <Loading />
             </div>
         );
     }
-    // Carga de los datos del usuario
-        return (
-            <div className="profile-container" style={{ padding: '20px', maxWidth: '600px', margin: '0 auto' }}>
-                <h2>Mi Perfil</h2>
-                <hr />
-                <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginTop: '20px' }}>
-                    {/* Imagen de perfil */}
-                    <div className="avatar-wrapper">
-                        <img 
-                            src={user.avatar ??""} 
-                            alt="Avatar" 
-                            style={{ width: '150px', height: '150px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #ddd' }}
-                        />
-                    </div>
 
-                    {/* Datos del usuario */}
-                    <div className="user-info">
-                        <p><strong>Nick:</strong> {user.nick}</p>
-                        <p><strong>Email:</strong> {user.email}</p>
-                        <p><strong>Rol:</strong> {user.es_admin ? 'Administrador' : 'Usuario estándar'}</p>
-                        <p><strong>Miembro desde:</strong> {new Date(user.created_at).toLocaleDateString()}</p>
+    return (
+        <Fragment>
+            <div style={{display:"flex", justifyContent: 'center'}}>
+                <div className='user-background'>
+                    <div className='userInfo'>
+                        <div className='user-profile'>
+                            <img className='user-avatar' style={{ borderColor: userInfo.color }} src={userInfo.avatar !== "" && userInfo.avatar ? userInfo.avatar : Placeholder} alt={`Avatar de ${userInfo.nick}`} />
+                            <p>Desde: {new Date(userInfo.created_at).toLocaleDateString('es-ES')}</p>
+                            <div className='user-buttons'>
+                                {user.nick === userInfo.nick ?
+                                    <>
+                                        <button onClick={(event) => { startButtonSound(event); navigate(`/perfil/${userInfo.nick}/editar`) }}>Editar perfil</button>
+                                        <button onClick={(event) => { startButtonSound(event); logout() }}>Cerrar sesión</button>
+                                    </>
+                                    : <></>}
+                            </div>
+                        </div>
+                        <div className='user-history'>
+                            <h1 className={userInfo.es_admin ? 'admin' : 'user'}>{userInfo.nick}</h1>
+                            <section className='match-history'>
+                                {userInfo.tiene_jugadas ? userInfo.tiene_jugadas?.map((match, index) => {
+                                    return <><Match key={index} match={match} /></>
+                                })
+                                    : <h1>Sin partidas jugadas</h1>}
+                            </section>
+                        </div>
                     </div>
                 </div>
-
-                <button 
-                    onClick={() => navigate('/edit-profile')}
-                    style={{ marginTop: '20px', padding: '10px 20px', cursor: 'pointer' }}
-                >
-                    Editar Perfil
-                </button>
             </div>
+
+        </Fragment>
     );
 };
 

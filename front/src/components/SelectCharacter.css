@@ -1,0 +1,23 @@
+.container {
+    display: flex;
+    justify-content: center;
+    margin-top: -2em;
+    padding: 1em;
+}
+
+.character-selection {
+    width: 95%;
+    max-width: 1200px; 
+    max-height: 85vh;
+    max-height: 880px;
+    padding: 1em;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1em;
+    background-color: var(--second-color);
+    overflow-y: auto;
+    border: 5px solid var(--main-color);
+    border-radius: 5px;
+    margin-top: -5em;
+}

@@ -8,10 +8,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Personajes extends Model
 {
     use HasFactory;
-   
+
     public $timestamps = false;
     protected $table = 'personajes';
-    protected $fillable = ['nombre','descripcion','imagen', 'activo', 'habilidad'];
+    protected $fillable = ['nombre', 'descripcion', 'imagen', 'activo', 'habilidad_id'];
 
     /**
      * Get the attributes that should be cast.
@@ -21,7 +21,6 @@ class Personajes extends Model
     protected function casts(): array
     {
         return [
-            'efectos' => 'array',
             'activo' => 'boolean'
         ];
     }
@@ -33,9 +32,9 @@ class Personajes extends Model
     }
 
     // Relación: un personaje pertenece a una habilidad
-    public function habilidad()
+    public function habilidadPersonaje()
     {
-        return $this->belongsTo(Habilidad::class);
+        return $this->belongsTo(Habilidad::class, 'habilidad_id', 'id');
     }
 
 }

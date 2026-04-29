@@ -11,8 +11,9 @@ use Illuminate\Http\Request;
 class PersonajesController extends Controller
 {
     public function index()
-    {
-        return response()->json(Personajes::all());
+    {   
+        $personajes = Personajes::with('habilidadPersonaje')->select('id', 'nombre', 'descripcion', 'imagen', 'activo', 'habilidad_id')->get();
+        return response()->json($personajes);
     }
 
     public function store(StorePersonajeRequest $request)
@@ -20,7 +21,7 @@ class PersonajesController extends Controller
         $data = $request->validated();
 
         if ($request->hasFile('imagen')) {
-            $path = $request->file('imagen')->store('personajes', 'public');
+            $path = $request->file('imagen')->store('personajes');
             $data['imagen'] = $path;
         }
 
@@ -41,7 +42,7 @@ class PersonajesController extends Controller
         $data = $request->validated();
 
         if ($request->hasFile('imagen')) {
-            $path = $request->file('imagen')->store('personajes', 'public');
+            $path = $request->file('imagen')->store('personajes');
             $data['imagen'] = $path;
         }
 

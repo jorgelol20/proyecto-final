@@ -20,7 +20,7 @@ class ModificadoresController extends Controller
         $data = $request->validated();
 
         if ($request->hasFile('imagen')) {
-            $path = $request->file('imagen')->store('modificadores', 'public');
+            $path = $request->file('imagen')->store('modificadores');
             $data['imagen'] = $path;
         }
 
@@ -40,7 +40,7 @@ class ModificadoresController extends Controller
         $data = $request->validated();
 
         if ($request->hasFile('imagen')) {
-            $path = $request->file('imagen')->store('modificadores', 'public');
+            $path = $request->file('imagen')->store('modificadores');
             $data['imagen'] = $path;
         }
 
