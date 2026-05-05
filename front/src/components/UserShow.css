@@ -1,0 +1,16 @@
+.show{
+    display: flex;
+    margin-bottom: 5px;
+    background-color: var(--second-color);
+    width: 150%;
+    max-width: 250px;
+    min-width: 250px;
+    h1{
+        font-size: 0.7em;
+    }
+    .show-avatar{
+        width: 35px;
+        height: 35px;
+        margin-right: 5px;
+    }
+}

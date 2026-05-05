@@ -22,12 +22,15 @@ import DamageAnimation from '/images/animations/DamageAnimation.webp'
 import { set } from "lodash";
 import SelectCharacter from "../SelectCharacter.jsx";
 import { useNavigate } from "react-router-dom";
+import SelectModifier from "../SelectModifier.jsx";
+import Modifier from "../Modifier.jsx";
+import Loading from "../Loading.jsx";
 
 
 
 const GamePage = () => {
     const navigate = useNavigate();
-    const { matchDeck, character, modifiers, setNewDeck, setNewCharacter, startNewGame, addCardToMatchDeck, gameLoading, availableCharacters } = useContext(matchContext);
+    const { matchDeck, character, activeModifiers: modifiers, setNewDeck, setNewCharacter, startNewGame, addCardToMatchDeck, gameLoading, availableCharacters, getWeapon } = useContext(matchContext);
     const { user, isLoading } = useUser();
 
 
@@ -49,12 +52,12 @@ const GamePage = () => {
     const timeRef = useRef(0);
     const intervalRef = useRef(null);
     useEffect(() => {
-        if (gameOn && timeRef?.current && formatedTimeRef?.current) {
+        if (gameOn && timeRef?.current != null && formatedTimeRef) {
             intervalRef.current = setInterval(() => {
                 timeRef.current += 1;
                 const mins = Math.floor(timeRef.current / 60);
                 const secs = timeRef.current % 60;
-                if(formatedTimeRef.current != null){
+                if (formatedTimeRef.current != null) {
                     formatedTimeRef.current.textContent = `Tiempo: ${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
                 }
             }, 1000)
@@ -63,7 +66,7 @@ const GamePage = () => {
             intervalRef.current = null;
             formatedTimeRef.current = null;
         }
-    }, []);
+    }, [gameOn, timeRef, formatedTimeRef]);
 
     const stopTimer = () => {
         if (intervalRef.current) {
@@ -155,8 +158,6 @@ const GamePage = () => {
     const [slainMonsters, setSlainMonsters] = useState([]);
 
 
-
-
     /**
      * ==========================================
      *  CARGA INICIAL Y DESACOPLE DEL COMPONENTE
@@ -199,12 +200,10 @@ const GamePage = () => {
 
     // Cuando el mazo base de la partida esté listo, se carga en el mazo de juego.
     useEffect(() => {
-        if (matchDeck && matchDeck.length > 0 && dungeon.length == 0) {
+        if (matchDeck && matchDeck.length > 0 && dungeon.length == 0 && room.length == 0) {
             startNewRound();
         }
     }, [matchDeck, dungeon]);
-
-
 
 
     /**
@@ -294,6 +293,43 @@ const GamePage = () => {
         }
     }, [character])
 
+
+    /**
+     * ===================================
+     *           MODIFICADORES
+     * ===================================
+     */
+    const [selectModifier, setSelectModifier] = useState(false)
+    const [modifiersLoading, setModifiersLoading] = useState(true)
+    
+    useEffect(() => {
+        if(modifiers.length > 0){
+            handleModifierEvent()
+        }
+    }, [modifiers])
+
+    const setModifierWeapon = async (power) => {
+        const newWeapon = await getWeapon(power)
+        setWeapon(newWeapon)
+        
+    }
+
+    const handleModifierEvent = async () => {
+        const modifier = modifiers[modifiers.length - 1]
+        const modifierEffects = modifier.efectos
+        modifierEffects.map((effect) => {
+            switch (effect.name) {
+                case "chest_rewards":
+                    const weapon = lodash.shuffle(effect.value)[0]
+                    setModifierWeapon(weapon)
+                    break
+                default:
+                    break
+            }
+        })
+        setModifiersLoading(false)
+    }
+
     /**
      * ===================================
      *         RELLENAR    MANO
@@ -317,6 +353,7 @@ const GamePage = () => {
         setDungeon([...shuffled])
     }
     const startNewRound = () => {
+        setSelectModifier(true)
         setRounds(rounds + 1)
         shuffleDeck(matchDeck);
     }
@@ -511,6 +548,22 @@ const GamePage = () => {
             </Fragment>
         )
     }
+    if (selectModifier) {
+        return (
+            <Fragment>
+                <div>
+                    <SelectModifier setSelectModifier={setSelectModifier} />
+                </div>
+            </Fragment>
+        )
+    }
+    if(modifiersLoading){
+        return (
+            <Fragment>
+                <Loading/>
+            </Fragment>
+        )
+    }
     return (
         <Fragment>
             <div className="game">
@@ -529,6 +582,11 @@ const GamePage = () => {
                             <img className={availableAbilitie ? "character-abilitie available" : "character-abilitie"} src={character?.habilidad_personaje?.icono} style={null} />
                         </div>
                         <div className="game-modifiers">
+                            {
+                                modifiers.map((modifierInfo) => (
+                                    <Modifier modifierInfo={modifierInfo} />
+                                ))
+                            }
                         </div>
                         <div className="game-buttons">
                             <button disabled={!canScape.current || !gameOn} onClick={() => {

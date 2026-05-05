@@ -21,9 +21,9 @@ class ModificadoresFactory extends Factory
             'nombre' => $this->faker->unique()->word(),
             'descripcion' => $this->faker->sentence(),
             'imagen' => null,
-            'nivel' => 1,
+            'nivel' => 0,
             'activo' => true,
-            'efectos' => json_encode(['effects' => []]),
+            'efectos' => json_encode([]),
         ];
     }
 }

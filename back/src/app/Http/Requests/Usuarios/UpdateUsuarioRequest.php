@@ -22,7 +22,7 @@ class UpdateUsuarioRequest extends FormRequest
                 'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[-_@$!%*?&]).+$/',
             ],
             'es_admin' => 'sometimes|boolean',
-            'avatar' => 'sometimes|image|mimes:jpg,jpeg,png|max:2048',
+            'avatar' => 'sometimes|image|mimes:jpg,jpeg,png,webp|max:2048',
             'color' => [
                 'sometimes',
                 'string',

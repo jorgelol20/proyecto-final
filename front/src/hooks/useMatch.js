@@ -2,16 +2,16 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../api/api.js';
 
 /**
- * Hook para gestionar las partidas.
+ * Hook para gestionar las matches.
  * Al ser un endpoint público, no requiere token.
  */
 export const useMatch = () => {
     const queryClient = useQueryClient();
 
     /**
-     * Obtiene el listado completo de partidas.
+     * Obtiene el listado completo de matches.
      */
-    const { data: partidas, isLoading, error } = useQuery({
+    const { data: matches, isLoading, error } = useQuery({
         queryKey: ['matches'],
         queryFn: async () => {
             const { data } = await api.get('/partidas');
@@ -31,8 +31,8 @@ export const useMatch = () => {
             return data;
         },
         onSuccess: () => {
-            // Invalidamos 'partidas' para que el listado se refresque automáticamente
-            queryClient.invalidateQueries({ queryKey: ['partidas'] });
+            // Invalidamos 'matches' para que el listado se refresque automáticamente
+            queryClient.invalidateQueries({ queryKey: ['matches'] });
         }
     });
 
@@ -40,7 +40,7 @@ export const useMatch = () => {
      * Solicita información de una partida específica por su ID.
      * @param {number|string} id 
      */
-    const getPartidaById = async (id) => {
+    const getMatchById = async (id) => {
         try {
             const { data } = await api.get(`/partidas/${id}`);
             return data;
@@ -51,12 +51,12 @@ export const useMatch = () => {
     };
 
     return {
-        partidas,
+        matches,
         isLoading,
         error,
         saveMatch: saveMatch.mutate,
         isSaving: saveMatch.isPending,
         saveError: saveMatch.error,
-        getPartidaById
+        getMatchById
     };
 };

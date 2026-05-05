@@ -19,21 +19,21 @@ class Modificadores extends Seeder
                 'descripcion' => 'Abre rápidamente el cofre y obtén un arma mediocre para el inicio de la siguiente ronda.',
                 'imagen' => "/storage/modificadores/CofreBronce.webp",
                 'nivel' => 1,
-                'efectos' => json_encode(['effects' => [['name' => 'chest_rewards', 'value' => [2, 3, 4]]]])
+                'efectos' => json_encode(['name' => 'chest_rewards', 'value' => [2, 3, 4]])
             ],
             [
                 'nombre' => 'Cofre de Plata',
                 'descripcion' => 'Abre rápidamente el cofre y obtén un arma normal para el inicio de la siguiente ronda.',
                 'imagen' => "/storage/modificadores/CofrePlata.webp",
                 'nivel' => 2,
-                'efectos' => json_encode(['effects' => [['name' => 'chest_rewards', 'value' => [5, 6, 7]]]])
+                'efectos' => json_encode(['name' => 'chest_rewards', 'value' => [5, 6, 7]])
             ],
             [
                 'nombre' => 'Cofre de Oro',
                 'descripcion' => 'Abre rápidamente el cofre y obtén un arma buena para el inicio de la siguiente ronda.',
                 'imagen' => "/storage/modificadores/CofreOro.webp",
                 'nivel' => 3,
-                'efectos' => json_encode(['effects' => [['name' => 'chest_rewards', 'value' => [8, 9, 10]]]])
+                'efectos' => json_encode(['name' => 'chest_rewards', 'value' => [8, 9, 10]])
             ],
         ];
 
@@ -42,6 +42,7 @@ class Modificadores extends Seeder
                 'nombre' => $data['nombre'],
                 'descripcion' => $data['descripcion'],
                 'imagen' => env('APP_URL') . $data['imagen'],
+                'nivel' => $data['nivel'],
                 'efectos' => $data['efectos'],
             ]);
         }

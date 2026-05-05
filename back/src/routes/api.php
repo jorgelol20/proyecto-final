@@ -24,6 +24,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
 //Controlador Usuarios.
 Route::apiResource('/usuarios', UsuarioApiController::class)->names('api.usuarios');
+Route::get('/usuarios/search/{search}', [UsuarioApiController::class, 'search'])->name('api.usuarios.search');
 
 
 //Controlador Partidas.

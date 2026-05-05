@@ -1,12 +1,28 @@
-import React, { Fragment, useContext } from "react";
-
+import React, { Fragment, useContext, useEffect, useState } from "react";
+import './SelectModifier.css'
 import { matchContext } from "../context/MatchProvider";
+import Modifier from "./Modifier.jsx";
 
-const SelectModifier = () => {
-    const {getRandomsModifier} = useContext(matchContext)
+const SelectModifier = ({setSelectModifier}) => {
+    const { getRandomsModifier } = useContext(matchContext)
+    const [modifiersList, setModifiersList] = useState([])
+    useEffect(() => {
+        setModifiersList(getRandomsModifier())
+    }, [getRandomsModifier])
+    if (undefined in modifiersList) {
+        return (<></>)
+    }
     return (
+
         <Fragment>
-            {console.log(getRandomsModifier())}
+            <div className="select-modifier">
+                <div className="modifiers-list">
+                    {modifiersList.map((modifierInfo) => (
+                        modifierInfo == null ? <></> : <>
+                            <Modifier modifierInfo={modifierInfo} setSelectModifier={setSelectModifier} /></>
+                    ))}
+                </div>
+            </div>
         </Fragment>
     )
 }

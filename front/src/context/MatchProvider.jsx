@@ -13,7 +13,7 @@ import { useMatch } from "../hooks/useMatch.js";
 const matchContext = createContext();
 
 const MatchProvider = (props) => {
-    const { cards, isLoading: isLoadingCard, error: cardError } = useCard();
+    const { cards, isLoading: isLoadingCard, error: cardError, getCard } = useCard();
     const { getCharacterById, characters, isLoading: isLoadingCharacter } = useCharacters();
     const { modifiers, getModificadorById, isLoading: isLoadingModifier, error: modifierError } = useModifier();
     const [gameLoading, setGameLoading] = useState(true);
@@ -29,16 +29,22 @@ const MatchProvider = (props) => {
     const [activeGame, setActiveGame] = useState(false)
 
     const load = () => {
+        // Convertimos los datos para que 'efectos' sea un objeto manejable
+        const modifiersList = modifiers.map(item => ({
+            ...item,
+            efectos: typeof item.efectos === 'string' ? JSON.parse(item.efectos).effects : item.efectos
+        }));
         const tempCards = cards.filter((card) => {
             if (!(card.palo == 'Diamante' && card.valor > 10) && !(card.palo == 'Corazon' && card.valor > 10)) {
                 card.x = 200
                 card.y = 0
                 return card
-            } 
+            }
         });
         setBaseDeck(tempCards);
         setAvailableCharacters(characters);
-        setAvailableModifiers(modifiers)
+        console.log(modifiersList)
+        setAvailableModifiers(modifiersList)
         setGameLoading(false)
     }
     const startNewGame = () => {
@@ -74,6 +80,10 @@ const MatchProvider = (props) => {
         setMatchDeck([...matchDeck, card])
     }
 
+    const addModifierToMatch = (modifier) => {
+        setActiveModifiers([...activeModifiers, modifier])
+    }
+
     const setNewCharacter = (newCharacter) => {
         setCharacter(newCharacter);
     }
@@ -84,6 +94,11 @@ const MatchProvider = (props) => {
         return [shuffledModifiers[0], shuffledModifiers[1], shuffledModifiers[2]];
     }
 
+    const getWeapon = (power)=>{
+        console.log(baseDeck)
+        const card = baseDeck.filter((card)=>card.palo == "Diamante" && card.valor == power)
+        return card[0]
+    }
 
     useEffect(() => {
         if (!isLoadingCard && !isLoadingCharacter && !isLoadingModifier) {
@@ -104,7 +119,9 @@ const MatchProvider = (props) => {
         startNewGame,
         setNewCharacter,
         getRandomsModifier,
-        endGame
+        endGame,
+        addModifierToMatch,
+        getWeapon
     };
 
 

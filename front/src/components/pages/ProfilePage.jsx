@@ -1,6 +1,6 @@
 import React, { Fragment, useContext, useEffect, useState } from 'react';
 import { useUser } from '../../hooks/useUser.js';
-import { useNavigate, useParams } from 'react-router-dom';
+import { NavLink, useNavigate, useParams } from 'react-router-dom';
 
 import {  settingsContext } from '../../context/SettingsProvider.jsx';
 
@@ -32,7 +32,7 @@ const ProfilePage = () => {
                 return <p>Error al conectar con el servidor</p>
             }
         }
-    }, [isLoading])
+    }, [isLoading,nick])
 
 
     const checking = async () => {
@@ -56,7 +56,7 @@ const ProfilePage = () => {
         if (!isLoading) {
             checking()
         }
-    }, [isLoading]);
+    }, [isLoading,nick]);
 
     if (isLoading | isGettingUser) {
         return (
@@ -87,7 +87,7 @@ const ProfilePage = () => {
                             <h1 className={userInfo.es_admin ? 'admin' : 'user'}>{userInfo.nick}</h1>
                             <section className='match-history'>
                                 {userInfo.tiene_jugadas ? userInfo.tiene_jugadas?.map((match, index) => {
-                                    return <><Match key={index} match={match} /></>
+                                    return <div onClick={()=>{navigate(`/partida/${match.id}`)}}><Match key={index} match={match}/></div>
                                 })
                                     : <h1>Sin partidas jugadas</h1>}
                             </section>
@@ -95,7 +95,6 @@ const ProfilePage = () => {
                     </div>
                 </div>
             </div>
-
         </Fragment>
     );
 };

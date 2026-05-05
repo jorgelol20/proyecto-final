@@ -99,6 +99,11 @@
     border-radius: 4%;
     height: 20%;
     margin-bottom: 5%;
+    overflow-y: scroll;
+    display: flex;
+    justify-content: start;
+    align-items: start;
+    flex-wrap: wrap;
 }
 
 .game-buttons {

@@ -58,3 +58,21 @@ article{
         filter: brightness(1.1);
     }
 }
+.last-matches{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--main-color);
+    margin-top: 2em;
+    width: 50%;
+    h1{
+        color: var(--main-gold);
+        margin-bottom: 0%;
+    }
+    .match-history{
+        width: 90%;
+        overflow-y: scroll;
+        padding-top: 5%;
+    }
+}

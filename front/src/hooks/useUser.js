@@ -79,7 +79,18 @@ export const useUser = () => {
             throw error;
         }
     };
-
+    
+    const searchUsuario = async (search) => {
+        try {
+            const response = await api.get(`/usuarios/search/${search}`)
+            console.log(response.data.usuarios)
+            return response.data.usuarios
+        } catch (error) {
+            console.error("Error al obtener usuario:", error.response?.data?.message);
+            throw error;
+        }
+    }
+    
     /**
      * Manda una solicitud de registro.
      * Si es exitosa, deja al usuario logeado y lo reenvia a su perfil.
@@ -133,5 +144,6 @@ export const useUser = () => {
         signupError: signup.error,
         logout, 
         getUsuario,
+        searchUsuario
     };
 };

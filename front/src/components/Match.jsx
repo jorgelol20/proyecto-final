@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { useCharacters } from "../hooks/useCharacter";
 import './Match.css'
-const Match = ({match}) => {
+const Match = ({match,showUser}) => {
     const [character, setCharacter] = useState(false)
     const {getCharacterById, isLoading} = useCharacters()
     const loadCharacter = async () => {
@@ -21,6 +21,13 @@ const Match = ({match}) => {
                     <p>Jugada el {new Date(match.created_at).toLocaleDateString('es-ES')}</p>
                     <h2 className={match.victoria?'win':'lose'}>{match.victoria?'Victoria':'Derrota'}</h2>
                 </div>
+                {showUser?
+                <div className="player-info">
+                    <img className='user-avatar' style={{ borderColor: match.jugador.color }} src={match.jugador.avatar !== "" && match.jugador.avatar ? match.jugador.avatar : Placeholder} alt={`Avatar de ${match.jugador.nick}`} />
+                    <p>{match.jugador.nick}</p>
+                </div>
+                :<></>}
+                
             </article>
         </Fragment>
     )

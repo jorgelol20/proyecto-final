@@ -68,3 +68,20 @@ nav {
     max-height: 1em;
     height: 1em;
 }
+.search{
+    display: flex;
+    flex-direction: column;
+}
+.search-input{
+    height: 10px;
+    max-height: 10px;
+    font-size: 15px;
+    margin: 15px;
+    border: 1px solid black;
+    padding: 3%;
+}
+.searc-list{
+    position: absolute;
+    margin-top: 2%;
+    margin-left: 1%;
+}

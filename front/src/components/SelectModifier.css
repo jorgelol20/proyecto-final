@@ -1,0 +1,15 @@
+.modifiers-list{
+    display: flex;
+    justify-content:center;
+    flex-direction: row;
+    position: absolute;
+    background-color: var(--main-color);
+    z-index: 100;
+    margin-top: 10%;
+    width: 80%;
+}
+.select-modifier{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

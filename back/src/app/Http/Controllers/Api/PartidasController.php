@@ -12,7 +12,9 @@ class PartidasController extends Controller
 {
     public function index()
     {
-        return response()->json(Partidas::all());
+        $partidas = Partidas::select('id','created_at', 'usuario_id','personaje_id','tiempo','victoria', 'rondas')->limit(10)->get();
+        $partidas = $partidas->load(['comentarios','modificadores','jugador', 'personaje']);
+        return response()->json($partidas);
     }
 
     public function store(StorePartidaRequest $request)
@@ -22,8 +24,10 @@ class PartidasController extends Controller
     }
 
     public function show($id)
-    {
-        return response()->json(Partidas::findOrFail($id));
+    {   
+        $partida = Partidas::findOrFail($id);
+        $partida = $partida->load(['comentarios','modificadores','jugador', 'personaje']);
+        return response()->json($partida);
     }
 
     public function update(UpdatePartidaRequest $request, $id)

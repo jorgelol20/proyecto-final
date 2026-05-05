@@ -23,7 +23,7 @@ class Partidas extends Model
     //Relación del jugador al que pertenece la partida
     public function jugador()
     {
-        return $this->belongsTo(Usuarios::class);
+        return $this->belongsTo(Usuarios::class,'usuario_id', 'id');
     }
 
     // Relación del personaje usado en la partida

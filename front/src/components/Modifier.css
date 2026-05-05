@@ -1,0 +1,115 @@
+#nivel-1 {
+        border-color: var(--main-bronze);
+        color: var(--main-bronze);
+    }
+
+    #nivel-2 {
+        border-color: var(--main-silver);
+        color: var(--main-silver);
+    }
+
+    #nivel-3 {
+        border-color: var(--main-gold);
+        color: var(--main-gold);
+    }
+
+    #nivel-0 {
+        border-color: var(--main-red);
+        color: var(--main-red);
+    }
+
+.modifier-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2%;
+    margin: 2%;
+    border: 4px groove var(--second-color-dark);
+    background-color: var(--second-color-light);
+    border-radius: 5%;
+
+    h3 {
+        font-size: 1.5em;
+        text-shadow: 1px 0px 0px black;
+    }
+
+    img {
+        width: 30%;
+        background-color: var(--main-color);
+        border: 0.5em groove var(--main-gold);
+        border-radius: 5px;
+    }
+
+
+    p {
+        padding-left: 5%;
+        padding-right: 5%;
+        color: var(--main-white);
+        text-align: center;
+        text-shadow: 1px 0px 0px black;
+    }
+}
+
+.modifier-info:hover {
+    scale: 1.1;
+    filter: brightness(1.1);
+}
+
+.modifier-info-mini{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2%;
+    margin: 2%;
+    border-radius: 5px;
+    max-width: 35px;
+
+
+    img {
+        width: 100%;
+        background-color: var(--main-color);
+        border: 5px groove var(--main-gold);
+        border-radius: 1%;
+    }
+
+    
+
+    p {
+        padding-left: 5%;
+        padding-right: 5%;
+        color: var(--main-white);
+        text-align: center;
+        text-shadow: 1px 0px 0px black;
+    }
+    .modifier-text{
+        position:fixed;
+        width: 15%;
+        padding: 1%;
+        x: 1000 ;
+        border-radius: 5px;
+        border: 4px groove var(--second-color-dark);
+        background-color: var(--main-color);
+        z-index: 1000;
+        padding-bottom: 0;
+        h3{
+            margin: 0;
+            padding: 0;
+            margin-bottom: 5%;
+            text-decoration: underline;
+        }
+        p{
+            font-size: 0.7em;
+            text-align: left;
+        }
+
+    }
+}
+.player-info{
+    img{
+        width: 2em;
+        margin-bottom: 0px;
+    }
+}
