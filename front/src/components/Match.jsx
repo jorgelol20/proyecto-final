@@ -1,5 +1,6 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { useCharacters } from "../hooks/useCharacter";
+import Placeholder from '/images/placeholder.webp'
 import './Match.css'
 const Match = ({match,showUser}) => {
     const [character, setCharacter] = useState(false)

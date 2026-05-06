@@ -25,7 +25,7 @@ export const useUser = () => {
 
         // Si no existe token, ejecuta la función queryFn.
         enabled: !!token,
-        
+
         // Número de intentos para realizar la solicitud.
         retry: 1,
 
@@ -46,7 +46,7 @@ export const useUser = () => {
         onSuccess: (data) => {
             // Actualizar el tekon en Axios tras login.
             api.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
-            
+
             //Actualiza la información del usuario para que se aplique en la página.
             localStorage.setItem('auth_token', data.token);
             queryClient.setQueryData(['authUser'], data.usuario);
@@ -79,7 +79,7 @@ export const useUser = () => {
             throw error;
         }
     };
-    
+
     const searchUsuario = async (search) => {
         try {
             const response = await api.get(`/usuarios/search/${search}`)
@@ -90,7 +90,7 @@ export const useUser = () => {
             throw error;
         }
     }
-    
+
     /**
      * Manda una solicitud de registro.
      * Si es exitosa, deja al usuario logeado y lo reenvia a su perfil.
@@ -129,6 +129,54 @@ export const useUser = () => {
         }
     });
 
+    /**
+     * 
+     */
+    const comment = useMutation({
+        mutationFn: async (form) => {
+            console.log(form)
+            const { data } = await api.post(`/usuarios/comentario/`, form, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
+            return data;
+        },
+        onSuccess: (data) => {
+            queryClient.invalidateQueries({ queryKey: ['authUser'] });
+            queryClient.setQueryData(['authUser'], data.usuario);
+        }
+    });
+
+    /**
+     * 
+     */
+    const deleteComment = useMutation({
+        mutationFn: async (comentarioId) => {
+            // Pasamos el ID directamente en la ruta
+            const { data } = await api.delete(`/usuarios/comentario/${comentarioId}`);
+            return data;
+        },
+        onSuccess: () => {
+            requestMatch(); // Refrescar lista
+        }
+    });
+
+    /**
+     * 
+     */
+    const updateComment = useMutation({
+        mutationFn: async (form) => {
+            console.log(form)
+            const { data } = await api.put(`/usuarios/comentario/`, form, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
+            return data;
+        },
+        onSuccess: (data) => {
+            queryClient.invalidateQueries({ queryKey: ['authUser'] });
+            queryClient.setQueryData(['authUser'], data.usuario);
+        }
+    });
+
     return {
         user,
         isLoading,
@@ -142,8 +190,14 @@ export const useUser = () => {
         signup: signup.mutate,
         isSingingup: signup.isPending,
         signupError: signup.error,
-        logout, 
+        logout,
         getUsuario,
-        searchUsuario
+        searchUsuario,
+        comment: comment.mutate,
+        commentError: comment.error,
+        isCommenting: comment.isPending,
+        deleteComment: deleteComment.mutate,
+        deleteCommentError: deleteComment.error,
+        isDeletingComment: deleteComment.isPending,
     };
 };

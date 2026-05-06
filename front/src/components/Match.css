@@ -21,6 +21,27 @@
         width: 5em;
         height: 5em;
     }
+
+    .player-info {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        right: 10%;
+        top: 25%;
+
+        img {
+            border-radius: 50%;
+            border-width: 5px;
+            border-style: groove;
+            margin-bottom: 0;
+        }
+
+        p {
+            margin-top: 0;
+        }
+    }
 }
 
 .match-info {
@@ -42,23 +63,4 @@
     }
 
     .character-image {}
-}
-
-.player-info {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    position: absolute;
-    right: 10%;
-    top: 25%;
-    img {
-        border-radius: 50%;
-        border-width: 5px;
-        border-style: groove;
-        margin-bottom: 0;
-    }
-    p{
-        margin-top: 0;
-    }
 }

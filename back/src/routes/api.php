@@ -25,6 +25,9 @@ Route::middleware('auth:sanctum')->group(function () {
 //Controlador Usuarios.
 Route::apiResource('/usuarios', UsuarioApiController::class)->names('api.usuarios');
 Route::get('/usuarios/search/{search}', [UsuarioApiController::class, 'search'])->name('api.usuarios.search');
+Route::post('/usuarios/comentario/', [UsuarioApiController::class, 'storeComentario'])->name('api.usuarios.comentario');
+Route::delete('/usuarios/comentario/{id}', [UsuarioApiController::class, 'destroyComentario'])->name('api.usuarios.comentario.eliminar');
+Route::put('/usuarios/comentario/{id}', [UsuarioApiController::class, 'updateComentario'])->name('api.usuarios.comentario.actualizar');
 
 
 //Controlador Partidas.

@@ -32,7 +32,7 @@ const MatchProvider = (props) => {
         // Convertimos los datos para que 'efectos' sea un objeto manejable
         const modifiersList = modifiers.map(item => ({
             ...item,
-            efectos: typeof item.efectos === 'string' ? JSON.parse(item.efectos).effects : item.efectos
+            efectos: typeof item.efectos === 'string' ? Array(JSON.parse(item.efectos)) : item.efectos
         }));
         const tempCards = cards.filter((card) => {
             if (!(card.palo == 'Diamante' && card.valor > 10) && !(card.palo == 'Corazon' && card.valor > 10)) {
@@ -43,7 +43,6 @@ const MatchProvider = (props) => {
         });
         setBaseDeck(tempCards);
         setAvailableCharacters(characters);
-        console.log(modifiersList)
         setAvailableModifiers(modifiersList)
         setGameLoading(false)
     }
@@ -95,7 +94,6 @@ const MatchProvider = (props) => {
     }
 
     const getWeapon = (power)=>{
-        console.log(baseDeck)
         const card = baseDeck.filter((card)=>card.palo == "Diamante" && card.valor == power)
         return card[0]
     }

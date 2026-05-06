@@ -46,7 +46,7 @@ const MainPage = () => {
                     <h1>Últimas partidas</h1>
                     <div className="match-history">
                         {matches?.toReversed().map((match, index) => {
-                            return <div onClick={() => { navigate(`/partida/${match.id}`) }}><Match key={index} match={match} showUser={true} /></div>
+                            return <div onClick={() => { navigate(`/partida/${match.id}`) }}><Match key={index%index} match={match} showUser={true} /></div>
                         })}
                     </div>
                 </div>

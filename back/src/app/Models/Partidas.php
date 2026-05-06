@@ -34,7 +34,7 @@ class Partidas extends Model
 
     //Comentarios
     public function comentarios(){
-        return $this->belongsToMany(Usuarios::class, "comentarios_usuario_partida", 'partida_id', 'usuario_id')->withPivot('comentario','created_at', 'updated_at');
+        return $this->belongsToMany(Usuarios::class, "comentarios_usuario_partida", 'partida_id', 'usuario_id')->withPivot('id','comentario','created_at', 'updated_at');
     }
 
     public function modificadores(){

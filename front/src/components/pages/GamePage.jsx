@@ -301,9 +301,9 @@ const GamePage = () => {
      */
     const [selectModifier, setSelectModifier] = useState(false)
     const [modifiersLoading, setModifiersLoading] = useState(true)
-    
+
     useEffect(() => {
-        if(modifiers.length > 0){
+        if (modifiers.length > 0) {
             handleModifierEvent()
         }
     }, [modifiers])
@@ -311,7 +311,7 @@ const GamePage = () => {
     const setModifierWeapon = async (power) => {
         const newWeapon = await getWeapon(power)
         setWeapon(newWeapon)
-        
+
     }
 
     const handleModifierEvent = async () => {
@@ -328,6 +328,7 @@ const GamePage = () => {
             }
         })
         setModifiersLoading(false)
+
     }
 
     /**
@@ -557,10 +558,10 @@ const GamePage = () => {
             </Fragment>
         )
     }
-    if(modifiersLoading){
+    if (modifiersLoading) {
         return (
             <Fragment>
-                <Loading/>
+                <Loading />
             </Fragment>
         )
     }

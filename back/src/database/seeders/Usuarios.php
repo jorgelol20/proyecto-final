@@ -21,5 +21,12 @@ class Usuarios extends Seeder
             'es_admin' => true,
             'avatar' => null,
         ]);
+         ModelUsuarios::factory()->create([
+            'nick' => 'jorge',
+            'email' => 'jorgejorgemonovar@gmail.com',
+            'password' => Hash::make('HZnQ_1705'),
+            'es_admin' => true,
+            'avatar' => null,
+        ]);
     }
 }

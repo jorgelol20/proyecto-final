@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Partidas;
 use App\Models\Usuarios;
 use App\Http\Requests\Usuarios\StoreUsuarioRequest;
 use App\Http\Requests\Usuarios\UpdateUsuarioRequest;
-use GuzzleHttp\Psr7\Request;
+use DB;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Hash;
@@ -56,7 +58,7 @@ class UsuariosController extends Controller
     public function search(string $search)
     {
         $usuarios = Usuarios::select('id', 'nick', 'email', 'es_admin', 'avatar', 'color', 'created_at')->where('nick', 'LIKE', '%' . $search . '%')->limit(3)->get();
-        return response()->json(['usuarios'=>$usuarios],201);
+        return response()->json(['usuarios' => $usuarios], 201);
     }
 
     public function update(UpdateUsuarioRequest $request, $nick)
@@ -96,5 +98,46 @@ class UsuariosController extends Controller
         Usuarios::findOrFail($id)->delete();
 
         return response()->json(['message' => 'Usuario eliminado'], 201);
+    }
+
+    public function storeComentario(Request $request)
+    {
+        $partida = Partidas::findOrFail($request->partida_id);
+
+        // El ID del usuario que comenta (normalmente el usuario autenticado)
+        $usuarioId = $request->usuario_id;
+
+        $partida->comentarios()->attach($usuarioId, [
+            'comentario' => $request->comentario,
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+
+        return response()->json(['message' => 'Comentario añadido con éxito']);
+    }
+    public function updateComentario(Request $request)
+    {
+        $partida = Partidas::findOrFail($request->partida_id);
+        $usuarioId = $request->usuario_id;
+
+        // updateExistingPivot busca por la FK del usuario y actualiza los campos extra
+        $partida->comentarios()->updateExistingPivot($usuarioId, [
+            'comentario' => $request->comentario,
+            'updated_at' => now()
+        ]);
+
+        return response()->json(['message' => 'Comentario actualizado con éxito']);
+    }
+    public function destroyComentario($id)
+    {
+        $existe = DB::table('comentarios_usuario_partida')->where('id', $id)->first();
+        if (!$existe) {
+            return response()->json(['message' => 'El comentario no existe'], 404);
+        }
+        DB::table('comentarios_usuario_partida')->where('id', $id)->delete();
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Comentario eliminado correctamente'
+        ]);
     }
 }

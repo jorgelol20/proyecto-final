@@ -29,7 +29,8 @@ class DatabaseSeeder extends Seeder
         $this->call(Habilidades::class);
         $this->call(Personajes::class);
         $this->call(Usuarios::class);
+         $this->call(Modificadores::class);
         $this->call(Partidas::class);
-        $this->call(Modificadores::class);
+       
     }
 }

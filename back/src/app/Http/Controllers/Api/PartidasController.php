@@ -25,8 +25,7 @@ class PartidasController extends Controller
 
     public function show($id)
     {   
-        $partida = Partidas::findOrFail($id);
-        $partida = $partida->load(['comentarios','modificadores','jugador', 'personaje']);
+        $partida = Partidas::with(['comentarios', 'modificadores', 'jugador', 'personaje'])->findOrFail($id);
         return response()->json($partida);
     }
 
