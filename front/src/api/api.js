@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const api = axios.create({
     //URL del servidor de Laravel
-    baseURL: 'https://scoundrels-quest.com/api',
+    baseURL: 'https://api.scoundrels-quest.com/api',
 });
 
 /**
