@@ -23,7 +23,11 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 COPY uploads.ini /usr/local/etc/php/conf.d/uploads.ini
 
+# Entrypoint para corregir permisos de Laravel en runtime (bind mounts)
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
 WORKDIR /var/www
 
-# (Opcional) Mejoras de permisos si luego haces storage/cache
-# RUN chown -R www-data:www-data /var/www
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
+CMD ["php-fpm"]

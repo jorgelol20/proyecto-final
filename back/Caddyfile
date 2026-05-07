@@ -1,18 +1,13 @@
-scoundrels-quest.com {
+scoundrels-quest.com, http://localhost, :5173 {
     root * /srv/frontend
     file_server
     try_files {path} /index.html
 }
-api.scoundrels-quest.com {
+
+api.scoundrels-quest.com, http://api.localhost {
   root * /var/www/public
   encode gzip zstd
 
   php_fastcgi php:9000
   file_server
-
-  # Opcional: seguridad básica
-  # header {
-  #   X-Content-Type-Options nosniff
-  #   X-Frame-Options DENY
-  # }
 }
