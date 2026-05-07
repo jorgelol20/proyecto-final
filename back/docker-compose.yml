@@ -1,7 +1,6 @@
 services:
   caddy:
     image: caddy:2-alpine
-    restart: unless-stopped
     ports:
       - "5173:5173"
       - "80:80"
@@ -9,9 +8,6 @@ services:
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
       - ./src:/var/www
-      - ./../front/dist:/srv/frontend:ro
-      - caddy_data:/data
-      - caddy_config:/config
     depends_on:
       php:
         condition: service_started
@@ -24,7 +20,6 @@ services:
 
   php:
     build: ./php
-    restart: unless-stopped
     working_dir: /var/www
     volumes:
       - ./src:/var/www
@@ -35,16 +30,13 @@ services:
       back_default:
         aliases:
           - php
-
   db:
     image: mysql:8.0
-    restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: scoundrel
       MYSQL_USER: master
       MYSQL_PASSWORD: ofpuppets
-    command: --default-authentication-plugin=mysql_native_password
     volumes:
       - db_data:/var/lib/mysql
     networks:
@@ -57,5 +49,3 @@ networks:
 
 volumes:
   db_data:
-  caddy_data:
-  caddy_config:

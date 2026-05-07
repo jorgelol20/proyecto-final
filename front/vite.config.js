@@ -6,6 +6,12 @@ export default defineConfig({
   plugins: [react()],
   server: {
     host: '0.0.0.0', // Esto permite que el servidor escuche en todas las interfaces de red
-    port: 443       // Asegúrate de que el puerto esté abierto en tu firewall
+    port: 443,       // Asegúrate de que el puerto esté abierto en tu firewall
+    allowedHosts: [
+      'scoundrels-quest.com',
+      '.scoundrels-quest.com',
+      'localhost',
+      '127.0.0.1',
+    ]
   }
 })

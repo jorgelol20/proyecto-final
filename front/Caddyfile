@@ -1,0 +1,12 @@
+scoundrels-quest.com {
+	reverse_proxy react-app:443 {
+		header_up Host {host}
+		header_up X-Real-Ip {remote_host}
+	}
+	
+	handle_path /api/* {
+		root * /var/www/public
+		php_fastcgi php:9000
+		file_server
+	}
+}

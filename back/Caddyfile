@@ -6,6 +6,8 @@ scoundrels-quest.com, http://localhost, :5173 {
 
 api.scoundrels-quest.com, http://api.localhost {
   root * /var/www/public
+  file_server
+ 
   encode gzip zstd
 
   php_fastcgi php:9000
