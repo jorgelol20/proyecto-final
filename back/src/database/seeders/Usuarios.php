@@ -16,7 +16,7 @@ class Usuarios extends Seeder
     {
         ModelUsuarios::factory()->create([
             'nick' => 'admin',
-            'email' => 'admin@scoundrel.com',
+            'email' => 'admin@scoundrels-quest.com',
             'password' => Hash::make('HZnQ_1705'),
             'es_admin' => true,
             'avatar' => null,

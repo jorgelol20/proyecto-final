@@ -3,18 +3,15 @@ import { useUser } from '../../hooks/useUser.js';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { settingsContext } from "../../context/SettingsProvider.jsx";
-
-
-
 import Placeholder from '/images/placeholder.webp'
 import VisibilityOn from '/images/visibility_on.svg'
 import VisibilityOff from '/images/visibility_off.svg'
 import Folder from '/images/folder.svg'
-
-
 import './ProfileEditPage.css'
 import Loading from "../Loading.jsx";
 import Banner from "../structure/Banner.jsx";
+
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const SignupPage = () => {
     const navigate = useNavigate();
@@ -72,11 +69,11 @@ const SignupPage = () => {
     }, [isLoading])
 
     const loginWithGoogle = () => {
-        window.location.href = 'https://api.scoundrels-quest.com/api/auth/google/redirect';
+        window.location.href = BACKEND_URL+'/auth/google/redirect';
     };
 
     const loginWithX = () => {
-        window.location.href = 'https://api.scoundrels-quest.com/api/auth/x/redirect';
+        window.location.href = BACKEND_URL+'/auth/x/redirect';
     };
 
     if (isLoading) return (<> <Loading /></>);

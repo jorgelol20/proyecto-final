@@ -1,8 +1,8 @@
 import axios from 'axios';
-
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 const api = axios.create({
     //URL del servidor de Laravel
-    baseURL: 'https://api.scoundrels-quest.com/api',
+    baseURL : BACKEND_URL,
 });
 
 /**

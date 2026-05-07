@@ -75,7 +75,7 @@ class AuthController extends Controller
         $token = $user->createToken('auth_token')->plainTextToken;
 
         // Redirige al frontend pasando el token por URL
-        return redirect("https://scoundrels-quest.com/auth/callback?token={$token}");
+        return redirect(env('FRONTEND_URL')?env('FRONTEND_URL'):'http://localhost:5174'."/auth/callback?token={$token}");
     }
 
     //Inicio de sesión con Twitter
@@ -99,6 +99,6 @@ class AuthController extends Controller
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
-        return redirect("https://scoundrels-quest.com/auth/callback?token={$token}");
+        return redirect(env('FRONTEND_URL')?env('FRONTEND_URL'):'http://localhost:5174'."/auth/callback?token={$token}");
     }
 }

@@ -20,7 +20,6 @@ services:
       web-network:
         aliases:
           - caddy
-
   php:
     build: ./php
     working_dir: /var/www
@@ -53,5 +52,5 @@ networks:
 
 volumes:
   db_data:
-  caddy_config: 
+  caddy_config:
   caddy_data:

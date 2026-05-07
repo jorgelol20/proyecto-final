@@ -1,6 +1,7 @@
 FROM php:8.3-fpm-alpine
 
-# Dependencias del sistema (zip, intl, etc.) + herramientas
+# 1. Instalación de dependencias del sistema y extensiones de PHP
+# Agrupamos en un solo RUN para reducir el número de capas y el tamaño final
 RUN apk add --no-cache \
     bash \
     git \
@@ -9,6 +10,7 @@ RUN apk add --no-cache \
     oniguruma-dev \
     libzip-dev \
     mysql-client \
+    sed \
   && docker-php-ext-configure intl \
   && docker-php-ext-install -j$(nproc) \
     pdo \
@@ -18,16 +20,26 @@ RUN apk add --no-cache \
     zip \
   && rm -rf /var/cache/apk/*
 
-# Composer (copiado desde la imagen oficial)
+# 2. Composer (Copiado desde la imagen oficial)
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-COPY uploads.ini /usr/local/etc/php/conf.d/uploads.ini
-
-# Entrypoint para corregir permisos de Laravel en runtime (bind mounts)
-COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
-
+# 3. Configuración de PHP y scripts
 WORKDIR /var/www
 
+# Copiamos la configuración de PHP
+COPY uploads.ini /usr/local/etc/php/conf.d/uploads.ini
+
+# Copiamos el entrypoint
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+
+# --- CRUCIAL: Limpieza de finales de línea y permisos ---
+# El 'sed' elimina los caracteres \r de Windows que causan tu error
+RUN sed -i 's/\r$//' /usr/local/bin/docker-entrypoint.sh \
+    && chmod +x /usr/local/bin/docker-entrypoint.sh
+
+# 4. Copiar el resto de la aplicación (opcional si usas volúmenes, pero recomendado para prod)
+# COPY . .
+
+# 5. Ejecución
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 CMD ["php-fpm"]
