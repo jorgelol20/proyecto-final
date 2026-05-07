@@ -72,11 +72,11 @@ const SignupPage = () => {
     }, [isLoading])
 
     const loginWithGoogle = () => {
-        window.location.href = 'http://localhost:80/api/auth/google/redirect';
+        window.location.href = 'https://api.scoundrels-quest.com/api/auth/google/redirect';
     };
 
     const loginWithX = () => {
-        window.location.href = 'http://localhost/api/auth/x/redirect';
+        window.location.href = 'https://api.scoundrels-quest.com/api/auth/x/redirect';
     };
 
     if (isLoading) return (<> <Loading /></>);
