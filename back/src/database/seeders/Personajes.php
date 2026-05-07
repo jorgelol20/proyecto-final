@@ -45,7 +45,7 @@ class Personajes extends Seeder
                 ->create([
                     'nombre' => $data['nombre'],
                     'descripcion' => $data['descripcion'],
-                    'imagen' => env('APP_URL') . "/storage/personajes/{$data['nombre']}.webp",
+                    'imagen' => env('APP_URL') ? env('APP_URL'):"https://api.scoundrels-quest.com"."/storage/personajes/{$data['nombre']}.webp",
                     'activo' => true,
                     'habilidad_id' => $data['habilidad_id'],
                 ]);

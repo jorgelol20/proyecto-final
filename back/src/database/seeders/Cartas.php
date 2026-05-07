@@ -35,7 +35,7 @@ class Cartas extends Seeder
                 ModelCarta::factory()->create([
                     'palo' => $palo,
                     'valor' => $num,
-                    'imagen' => $palo == 'Diamante' || $palo == 'Corazon' ? env('APP_URL')."/storage/cartas/{$nombre}{$palo}.webp" : env('APP_URL')."/storage/cartas/{$nombre}{$palo}.png",
+                    'imagen' => $palo == 'Diamante' || $palo == 'Corazon' ? env('APP_URL') ? env('APP_URL') : 'https://api.scoundrels-quest.com'."/storage/cartas/{$nombre}{$palo}.webp" : env('APP_URL')."/storage/cartas/{$nombre}{$palo}.png",
                     'activa' => true
                 ]);
             }

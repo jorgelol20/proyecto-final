@@ -41,7 +41,7 @@ class Modificadores extends Seeder
             ModelModificadores::factory()->create([
                 'nombre' => $data['nombre'],
                 'descripcion' => $data['descripcion'],
-                'imagen' => env('APP_URL') . $data['imagen'],
+                'imagen' => env('APP_URL') ? env('APP_URL') : 'https://api.scoundrels-quest.com'. $data['imagen'],
                 'nivel' => $data['nivel'],
                 'efectos' => $data['efectos'],
             ]);

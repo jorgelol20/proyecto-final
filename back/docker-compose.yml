@@ -8,13 +8,16 @@ services:
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
       - ./src:/var/www
+      - ./../front/dist:/srv/frontend:ro
+      - caddy_data:/data
+      - caddy_config:/config
     depends_on:
       php:
         condition: service_started
       db:
         condition: service_started
     networks:
-      back_default:
+      web-network:
         aliases:
           - caddy
 
@@ -27,7 +30,7 @@ services:
       db:
         condition: service_started
     networks:
-      back_default:
+      web-network:
         aliases:
           - php
   db:
@@ -40,12 +43,15 @@ services:
     volumes:
       - db_data:/var/lib/mysql
     networks:
-      - back_default
+      - web-network
 
 networks:
-  back_default:
-    name: back_default
+  web-network:
+    name: web-network
     driver: bridge
+    external: true
 
 volumes:
   db_data:
+  caddy_config: 
+  caddy_data:

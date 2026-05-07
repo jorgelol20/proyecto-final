@@ -19,7 +19,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => [env('FRONTEND_URL', 'https://tu-dominio.com')],
+    'allowed_origins' => [env('FRONTEND_URL', 'https://scoundrels-quest.com')],
 
     'allowed_origins_patterns' => [],
 
