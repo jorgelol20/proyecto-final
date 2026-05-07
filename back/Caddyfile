@@ -1,4 +1,9 @@
-:80 {
+scoundrels-quest.com {
+    root * /srv/frontend
+    file_server
+    try_files {path} /index.html
+}
+api.scoundrels-quest.com {
   root * /var/www/public
   encode gzip zstd
 
