@@ -10,8 +10,8 @@
     justify-content: center;
     align-items: center;
     button{
-        margin-bottom: 1em;
-        margin-top: 1em;
+        margin-bottom: 1cqh;
+        margin-top: 1cqh;
     }
 }
 .menu{
@@ -22,15 +22,15 @@
 }
 article{
     position: relative;
-    top: -2em;
+    top: -5cqh;
     display: flex;
     justify-content: center;
 }
 .banner-menu{
     background: none;
-    margin-bottom: -3em;
-    margin-top: -10em;
-    width: 45em;
+    margin-bottom: -2.5cqw;
+    margin-top: -15cqh;
+    width: 45cqw;
     z-index: 10;
 }
 .advise{
@@ -39,8 +39,8 @@ article{
     justify-content: center;
     align-items: center;
     text-align: center  ;
-    border: 5px var(--main-red) groove;
-    margin: 5%;
+    border: 1cqw var(--main-red) groove;
+    margin: 1cqw;
     margin-top: 1%;
     background-color: var(--second-color-light);
     h1{
@@ -50,8 +50,8 @@ article{
     }
     p{
         color: var(--main-white);
-        padding-left: 5%;
-        padding-right: 5%;
+        padding-left: 1cqw;
+        padding-right: 1caw;
     }
     strong{
         color: var(--main-orange);
@@ -66,6 +66,8 @@ article{
     background-color: var(--main-color);
     margin-top: 2em;
     width: 50%;
+    text-align: center;
+    height: 40cqh;
     h1{
         color: var(--main-gold);
         margin-bottom: 0%;

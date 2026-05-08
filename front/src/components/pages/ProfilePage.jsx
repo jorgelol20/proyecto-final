@@ -1,24 +1,28 @@
-import React, { Fragment, useContext, useEffect, useState } from 'react';
+import React, { Fragment, useContext, useEffect, useRef, useState } from 'react';
 import { useUser } from '../../hooks/useUser.js';
 import { NavLink, useNavigate, useParams } from 'react-router-dom';
 
-import {  settingsContext } from '../../context/SettingsProvider.jsx';
+import { settingsContext } from '../../context/SettingsProvider.jsx';
 
 import Placeholder from '/images/placeholder.webp'
 import './ProfilePage.css'
 import Banner from '../structure/Banner.jsx';
 import Loading from '../Loading.jsx';
 import Match from '../Match.jsx';
+import { filter } from 'lodash';
 
 const ProfilePage = () => {
     const navigate = useNavigate();
-    const { startButtonSound } = useContext( settingsContext)
+    const { startButtonSound } = useContext(settingsContext)
 
     const { user, getUsuario, logout, isLoading, isError, error } = useUser();
     const { nick } = useParams();
     const [canEdit, setEdit] = useState(false);
     const [userInfo, setUserInfo] = useState({});
     const [isGettingUser, setIsGettingUser] = useState(true)
+    const [userMatchs, setUserMatchs] = useState([]);
+
+    const [filter, setFilter] = useState('all');
 
     useEffect(() => {
         if (user == undefined && !isLoading) {
@@ -32,7 +36,7 @@ const ProfilePage = () => {
                 return <p>Error al conectar con el servidor</p>
             }
         }
-    }, [isLoading,nick])
+    }, [isLoading, nick])
 
 
     const checking = async () => {
@@ -40,23 +44,50 @@ const ProfilePage = () => {
         user.nick == nick ? setEdit(true) : setEdit(false)
 
         //Comprobamos si el nick de los parámetros es distintos de `undefined`.
-        if (nick !== undefined && nick !== user.nick) {
+        if (nick !== undefined) {
             let temp = await getUsuario(nick)
             setUserInfo(temp[0])
             setIsGettingUser(false)
 
         }
         //Si es undefined, le mandamos a su perfil 
-        else if (user) {
+        else if (user !== undefined) {
             setUserInfo(user)
             setIsGettingUser(false)
         }
+        else {
+            navigate('/')
+        }
     }
+    const [showMatches, setShowMatches] = useState(true)
+    const handleOrderChange = (e) => {
+        setShowMatches(false)
+        let temp = userMatchs
+        let temp_final = []
+        temp_final = temp.reverse()
+        setUserMatchs(temp_final)
+    }
+    const handleFilterChange = (e) => {
+        setShowMatches(false)
+        console.log(e)
+        setFilter(e)
+    }
+    useEffect(() => {
+        if (!showMatches) {
+            setShowMatches(true)
+        }
+    }, [showMatches])
     useEffect(() => {
         if (!isLoading) {
             checking()
         }
-    }, [isLoading,nick]);
+    }, [isLoading, nick]);
+
+    useEffect(() => {
+        if (userInfo.tiene_jugadas) {
+            setUserMatchs(userInfo.tiene_jugadas.reverse())
+        }
+    }, [userInfo])
 
     if (isLoading | isGettingUser) {
         return (
@@ -68,7 +99,7 @@ const ProfilePage = () => {
 
     return (
         <Fragment>
-            <div style={{display:"flex", justifyContent: 'center'}}>
+            <div style={{ display: "flex", justifyContent: 'center' }}>
                 <div className='user-background'>
                     <div className='userInfo'>
                         <div className='user-profile'>
@@ -86,11 +117,30 @@ const ProfilePage = () => {
                         <div className='user-history'>
                             <h1 className={userInfo.es_admin ? 'admin' : 'user'}>{userInfo.nick}</h1>
                             <section className='match-history'>
-                                {userInfo.tiene_jugadas ? userInfo.tiene_jugadas?.map((match, index) => {
-                                    return <div onClick={()=>{navigate(`/partida/${match.id}`)}}><Match key={index} match={match}/></div>
-                                })
+                                {userMatchs && showMatches ?
+                                    userMatchs.map((match, index) => {
+                                        if (filter === "all") {
+                                            return <div key={index + crypto.randomUUID()} onClick={() => { navigate(`/partida/${match.id}`) }}><Match key={index + crypto.randomUUID()} match={match} /></div>
+                                        } else if (filter === "victory" && match.victoria == 1) {
+                                            return <div key={index + crypto.randomUUID()} onClick={() => { navigate(`/partida/${match.id}`) }}><Match key={index + crypto.randomUUID()} match={match} /></div>
+                                        } else if (filter === "lose" && match.victoria == 0) {
+                                            return <div key={index + crypto.randomUUID()} onClick={() => { navigate(`/partida/${match.id}`) }}><Match key={index + crypto.randomUUID()} match={match} /></div>
+                                        }
+                                    })
                                     : <h1>Sin partidas jugadas</h1>}
                             </section>
+                            <form style={{ display: 'flex', justifyContent: 'start', alignItems: 'center' }}>
+                                <select name="show" id="show" onChange={(e) => { handleFilterChange(e.currentTarget.value) }}>
+                                    <option value="all">Todas</option>
+                                    <option style={{color: 'var(--main-gold)'}} value="victory">Victorias</option>
+                                    <option style={{color: 'var(--main-red)'}} value="lose">Derrotas</option>
+                                </select>
+                                <select defaultValue={0} name="order" id="order" onChange={(e) => { handleOrderChange(e.currentTarget.value) }}>
+                                    <option value="1-0">Más reciente a más antigua</option>
+                                    <option value="0-1">Más antigua a más reciente</option>
+
+                                </select>
+                            </form>
                         </div>
                     </div>
                 </div>

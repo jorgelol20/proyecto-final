@@ -58,8 +58,7 @@ input {
 
 button {
     font-family: 'Romulus';
-    font-size: 1.3em;
-    text-shadow: 1px 1px 2px black;
+    text-shadow: 1.5px 1px 2px black;
     text-rendering: optimizeSpeed;
 }
 
@@ -78,6 +77,26 @@ input {
     background-color: var(--main-color);
     width: 80%;
     color: white;
+}
+
+select{
+    margin-bottom: 0.5em;
+    padding: 0.5em;
+    border-color: var(--main-color);
+    background-color: var(--main-color);
+    color: white;
+    font-family: 'Romulus';
+    margin-right: 1cqw;
+    border-radius: 5px;
+    border-width: 2px;
+    border-color: var(--main-color);
+    border-style: groove;
+}
+select:hover {
+    cursor: url('/images/cursor/Cursor_1.webp') 3 7, auto;
+}
+select:active, option:active {
+    cursor: url('/images/cursor/Cursor_2.webp') 3 7, auto;
 }
 
 .color-input {
@@ -115,18 +134,19 @@ input {
 }
 
 button {
-    border-radius: 10px;
+    border-radius: 15px;
     border-color: var(--main-color);
     background-color: var(--second-color-light);
     /* Elimina espacios inusuales alrededor */
-    width: 10em;
+    width: 10cqw;
     /* Se ajusta al contenedor 'a' */
-    height: 2em;
+    height: 3cqw;
     box-sizing: border-box;
     color: var(--main-gold);
     transition: all 0.3s ease;
     cursor: pointer;
     z-index: 10;
+    font-size: 1.2cqw;
 }
 button:hover {
     /* cursor: url('/images/suit_heart.webp') 16 16, auto; */
@@ -164,5 +184,11 @@ a:hover {
 }
 
 a:active {
+    cursor: url('/images/cursor/Cursor_2.webp') 3 7, auto;
+}
+option:hover{
+    cursor: url('/images/cursor/Cursor_1.webp') 3 7, auto;
+}
+option:active{
     cursor: url('/images/cursor/Cursor_2.webp') 3 7, auto;
 }

@@ -20,6 +20,8 @@ class PartidasController extends Controller
     public function store(StorePartidaRequest $request)
     {
         $partida = Partidas::create($request->validated());
+        $partida->modificadores()->attach($request->modificadores);
+        $partida->load('modificadores');
         return response()->json($partida, 201);
     }
 

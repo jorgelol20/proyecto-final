@@ -19,21 +19,109 @@ class Modificadores extends Seeder
                 'descripcion' => 'Abre rápidamente el cofre y obtén un arma mediocre para el inicio de la siguiente ronda.',
                 'imagen' => "/storage/modificadores/CofreBronce.webp",
                 'nivel' => 1,
-                'efectos' => json_encode(['name' => 'chest_rewards', 'value' => [2, 3, 4]])
+                'efectos' => json_encode([['name' => 'chest_rewards', 'value' => [2, 3, 4]]])
             ],
             [
                 'nombre' => 'Cofre de Plata',
                 'descripcion' => 'Abre rápidamente el cofre y obtén un arma normal para el inicio de la siguiente ronda.',
                 'imagen' => "/storage/modificadores/CofrePlata.webp",
                 'nivel' => 2,
-                'efectos' => json_encode(['name' => 'chest_rewards', 'value' => [5, 6, 7]])
+                'efectos' => json_encode([['name' => 'chest_rewards', 'value' => [5, 6, 7]]])
             ],
             [
                 'nombre' => 'Cofre de Oro',
                 'descripcion' => 'Abre rápidamente el cofre y obtén un arma buena para el inicio de la siguiente ronda.',
                 'imagen' => "/storage/modificadores/CofreOro.webp",
                 'nivel' => 3,
-                'efectos' => json_encode(['name' => 'chest_rewards', 'value' => [8, 9, 10]])
+                'efectos' => json_encode([['name' => 'chest_rewards', 'value' => [8, 9, 10]]])
+            ],
+            [
+                'nombre' => 'Drenaje de Vitalidad',
+                'descripcion' => 'Eres uno con la muerte. Siempre que tu arma tenga más daño que la vida de tu enemigo, drenarás el exceso de daño. (Máximo de 3)',
+                'imagen' => "/storage/modificadores/DrenajeDeVitalidad.webp",
+                'nivel' => 3,
+                'efectos' => json_encode([['name' => 'health_steal', 'value' => True]])
+            ],
+            [
+                'nombre' => '3K',
+                'descripcion' => '¡Estás en racha! Matar a 3 o más enemigos te dará un poco de  daño extra.',
+                'imagen' => "/storage/modificadores/3K.webp",
+                'nivel' => 1,
+                'efectos' => json_encode([
+                    ['name' => 'pentakill_target_number', 'value' => 3],
+                    ['name' => 'pentakill_dmg', 'value' => 3]
+                ])
+            ],
+            [
+                'nombre' => '4K',
+                'descripcion' => '¡Estás en racha! Matar a 3 o más enemigos te dará daño extra.',
+                'imagen' => "/storage/modificadores/4K.webp",
+                'nivel' => 2,
+                'efectos' => json_encode([
+                    ['name' => 'pentakill_target_number', 'value' => 4],
+                    ['name' => 'pentakill_dmg', 'value' => 4]
+                ])
+            ],
+            [
+                'nombre' => '5K',
+                'descripcion' => '¡Estás en racha! Matar a 5 o más enemigos te dará un montón de daño extra.',
+                'imagen' => "/storage/modificadores/5K.webp",
+                'nivel' => 3,
+                'efectos' => json_encode([
+                    ['name' => 'pentakill_target_number', 'value' => 5],
+                    ['name' => 'pentakill_dmg', 'value' => 5]
+                ])
+            ],
+            [
+                'nombre' => 'Volverse Pequeño',
+                'descripcion' => 'Empequeñeces, permitiendote escapar 1 vez más por mano a costa de recibir algo más de daño.',
+                'imagen' => "/storage/modificadores/VolversePequeño.webp",
+                'nivel' => 2,
+                'efectos' => json_encode([
+                    ['name' => 'enemy_extra_dmg', 'value' => 1],
+                    ['name' => 'max_scapes', 'value' => 2]
+                ])
+            ],
+            [
+                'nombre' => 'Bendición I',
+                'descripcion' => 'Un pequeño respiro aquí abajo. Ganas un poco más de vida máxima.',
+                'imagen' => "/storage/modificadores/Bendicion1.webp",
+                'nivel' => 1,
+                'efectos' => json_encode([['name' => 'max_hp', 'value' => 5]])
+            ],
+            [
+                'nombre' => 'Bendición II',
+                'descripcion' => 'Un pequeño respiro aquí abajo. Ganas más de vida máxima.',
+                'imagen' => "/storage/modificadores/Bendicion2.webp",
+                'nivel' => 2,
+                'efectos' => json_encode([['name' => 'max_hp', 'value' => 10]])
+            ],
+            [
+                'nombre' => 'Bendición III',
+                'descripcion' => 'Un pequeño respiro aquí abajo. Ganas mucha más vida máxima.',
+                'imagen' => "/storage/modificadores/Bendicion3.webp",
+                'nivel' => 3,
+                'efectos' => json_encode([['name' => 'max_hp', 'value' => 15]])
+            ],
+            [
+                'nombre' => 'Cazador de Monstruor',
+                'descripcion' => 'Tras años de cacería, te has especializado en cazar a esas bestias perdiendo parte de tus habilidades de pelea contra otras personas. (+3 de daño a los tréboles, -2 de daño a las picas)',
+                'imagen' => "/storage/modificadores/CazadorDeMonstruos.webp",
+                'nivel' => 2,
+                'efectos' => json_encode([
+                    ['name' => 'user_clubs_dmg', 'value' => 3],
+                    ['name' => 'user_spades_dmg', 'value' => -2]
+                ])
+            ],
+            [
+                'nombre' => 'Asesino Especialista',
+                'descripcion' => 'Tus servicios como mercenario son los más solicitados, conviertiendote en un experto contra tus iguales pero sin ser un rival contra las criaturas salvajes. (+3 de daño a las picas, -2 de daño a los tréboles)',
+                'imagen' => "/storage/modificadores/AsesinoEspecialista.webp",
+                'nivel' => 2,
+                'efectos' => json_encode([
+                    ['name' => 'user_clubs_dmg', 'value' => -2],
+                    ['name' => 'user_spades_dmg', 'value' => 3]
+                ])
             ],
         ];
 
@@ -41,7 +129,7 @@ class Modificadores extends Seeder
             ModelModificadores::factory()->create([
                 'nombre' => $data['nombre'],
                 'descripcion' => $data['descripcion'],
-                'imagen' => env('APP_URL') ? env('APP_URL') : 'https://api.scoundrels-quest.com'. $data['imagen'],
+                'imagen' => config('app.backend_url') . $data['imagen'],
                 'nivel' => $data['nivel'],
                 'efectos' => $data['efectos'],
             ]);

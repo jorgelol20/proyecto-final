@@ -97,7 +97,6 @@ const MatchPage = () => {
     }
     return (
         <Fragment>
-            {console.log(match)}
             <div className="match">
                 <div className="match-body">
                     <div className="match-info">

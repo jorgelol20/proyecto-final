@@ -1,6 +1,6 @@
 import React, { act, Fragment, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { Stage, Layer, Text, Group, Rect } from 'react-konva';
-import lodash, { fill, forEach, invert, round } from 'lodash';
+import lodash, { fill, forEach, invert, round, toInteger } from 'lodash';
 
 import { matchContext } from "../../context/MatchProvider.jsx";
 import { useUser } from "../../hooks/useUser.js";
@@ -25,18 +25,72 @@ import { useNavigate } from "react-router-dom";
 import SelectModifier from "../SelectModifier.jsx";
 import Modifier from "../Modifier.jsx";
 import Loading from "../Loading.jsx";
+import { settingsContext } from "../../context/SettingsProvider.jsx";
 
 
 
 const GamePage = () => {
     const navigate = useNavigate();
-    const { matchDeck, character, activeModifiers: modifiers, setNewDeck, setNewCharacter, startNewGame, addCardToMatchDeck, gameLoading, availableCharacters, getWeapon } = useContext(matchContext);
+    const { startButtonSound } = useContext(settingsContext)
+    const { matchDeck, character, activeModifiers: modifiers, setNewDeck, setNewCharacter, startNewGame, addCardToMatchDeck, gameLoading, availableCharacters, getWeapon, endGame } = useContext(matchContext);
     const { user, isLoading } = useUser();
 
 
     //Estados que almacenan si el juego ha empezado y si el juego está en GameOver
     const [gameOn, setGameOn] = useState(false)
     const [gameOver, setGameOver] = useState(false)
+    const [restart, setRestart] = useState(false)
+
+    useEffect(() => {
+        if (restart) {
+            // 1. Sonido y UI básica
+            startButtonSound(event);
+            setGameOver(false);
+            setGameOn(false); // Pausamos brevemente para resetear
+
+            // 2. Limpieza de cartas y mazo
+            setDungeon([]);
+            setRoom([]);
+            setDiscardPile([]);
+            setWeapon(null);
+            setSlainMonsters([]);
+
+            // 3. Reset de estadísticas de partida
+            setRounds(0);
+            setGold(0);
+            setHealth(20); // O tu maxHealth inicial
+            setMaxHealth(20)
+            setAvailableAbilitie(true);
+            actualStreak.current = 0;
+            canScape.current = true;
+
+            // 4. Reset del Timer (¡IMPORTANTE: usar .current!)
+            stopTimer();
+            timeRef.current = 0;
+            if (formatedTimeRef.current) {
+                formatedTimeRef.current.textContent = `Tiempo: 00:00`;
+            }
+            // 5. Reiniciar modificadores
+            pentakillTargetNumber.current = 0;
+            pentakillDmg.current = 0;
+            actualStreak.current = 0;
+            actualScapes.current = 1;
+            healthSteal.current = false;
+            ricochet.current = false
+            enemyDmgMultiplier.current = (1);
+            enemyExtraDmg.current = (0)
+            spadesExtraTakedDmg.current = (0);
+            clubsExtraTakedDmg.current = (0);
+
+            setMaxScapes(1)
+
+            // 6. Reiniciar lógica global
+            setNewDeck();
+            setNewCharacter(null); // Esto forzará a elegir personaje o disparará el useEffect inicial
+            startNewGame();
+            setRestart(false)
+        }
+    }, [restart])
 
     useEffect(() => {
         if (character) {
@@ -46,34 +100,40 @@ const GamePage = () => {
 
     // State de número de ronda
     const [rounds, setRounds] = useState(0);
+    const [maxRounds, setMaxRounds] = useState(10)
 
     //State de tiempo
     const formatedTimeRef = useRef(null)
     const timeRef = useRef(0);
     const intervalRef = useRef(null);
     useEffect(() => {
-        if (gameOn && timeRef?.current != null && formatedTimeRef) {
+        if (gameOn) {
+            // Limpiamos cualquier intervalo previo por seguridad antes de empezar uno nuevo
+            stopTimer();
+
             intervalRef.current = setInterval(() => {
                 timeRef.current += 1;
                 const mins = Math.floor(timeRef.current / 60);
                 const secs = timeRef.current % 60;
-                if (formatedTimeRef.current != null) {
+                if (formatedTimeRef.current) {
                     formatedTimeRef.current.textContent = `Tiempo: ${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
                 }
-            }, 1000)
-        } else {
-            clearInterval(intervalRef)
-            intervalRef.current = null;
-            formatedTimeRef.current = null;
+            }, 1000);
+        } else if (user !== undefined) {
+            stopTimer();
+            endGame(user.id, timeRef.current, !gameOver, rounds)
         }
-    }, [gameOn, timeRef, formatedTimeRef]);
+
+        // Esto es VITAL: Limpiar al desmontar o cambiar gameOn
+        return () => stopTimer();
+    }, [gameOn]); // Quité timeRef y formatedTimeRef de aquí, no deberían ser dependencias
 
     const stopTimer = () => {
-        if (intervalRef.current) {
-            clearInterval(intervalRef.current);
+        if (intervalRef.current) { // Añadido .current
+            clearInterval(intervalRef.current); // Añadido .current
             intervalRef.current = null;
         }
-    }
+    };
 
 
     /**
@@ -97,7 +157,7 @@ const GamePage = () => {
     useEffect(() => {
         if (health === 0) {
             setGameOn(false)
-
+            setGameOver(true)
         }
     }, [health])
 
@@ -183,6 +243,9 @@ const GamePage = () => {
         window.addEventListener('resize', handleResize);
         return () => {
             window.removeEventListener('resize', handleResize)
+            if (gameOn) {
+                endGame(user.id, timeRef.current, false, rounds)
+            }
             stopTimer()
             setDungeon([])
             setRoom([])
@@ -190,6 +253,7 @@ const GamePage = () => {
             setNewDeck();
             setNewCharacter(null)
             setGameOn(false)
+
         };
     }, []);
 
@@ -234,7 +298,10 @@ const GamePage = () => {
             setRoom(newRoom);
             setDungeon(currentDungeon);
         }
-        canScape.current = false;
+        actualScapes.current - 1 > 0 ?
+            actualScapes.current -= 1 :
+            canScape.current = false;
+        canScape.current ? setAvailableAbilitie(true) : setAvailableAbilitie(false)
     }
 
     // Habilidad del elfo
@@ -261,7 +328,6 @@ const GamePage = () => {
             switch (id) {
                 case 1: // Guerrero
                     guarrior()
-                    setAvailableAbilitie(false)
                     break
                 case 2: // Paladín (1 vez por ronda)
                     setHealth(prev => Math.min(maxHealth, prev + 5));
@@ -302,6 +368,29 @@ const GamePage = () => {
     const [selectModifier, setSelectModifier] = useState(false)
     const [modifiersLoading, setModifiersLoading] = useState(true)
 
+    // Daño enemigos
+    const enemyDmgMultiplier = useRef(1);
+    const enemyExtraDmg = useRef(0)
+    const spadesExtraTakedDmg = useRef(0);
+    const clubsExtraTakedDmg = useRef(0);
+
+    // Robo de vida
+    const healthSteal = useRef(false);
+
+    // Pentakill
+    const pentakillTargetNumber = useRef(0);
+    const pentakillDmg = useRef(0);
+    const actualStreak = useRef(0);
+
+    // Escape
+    const [maxScapes, setMaxScapes] = useState(1)
+    const actualScapes = useRef(maxScapes);
+
+    // Ricochet
+    const ricochet = useRef(false)
+
+
+
     useEffect(() => {
         if (modifiers.length > 0) {
             handleModifierEvent()
@@ -314,21 +403,67 @@ const GamePage = () => {
 
     }
 
+    const applyEffect = (effect) => {
+        switch (effect.name) {
+            case "chest_rewards":
+                const weapon = lodash.shuffle(effect.value)[0];
+                setModifierWeapon(weapon);
+                break;
+            case "pentakill_target_number":
+                // Lógica para registrar cuántas muertes se necesitan (ej: 3)
+                pentakillTargetNumber.current = pentakillTargetNumber.current < effect.value ?
+                    effect.value
+                    : pentakillTargetNumber.current
+                break;
+
+            case "pentakill_dmg":
+                // Lógica para aplicar el daño extra
+                pentakillDmg.current = pentakillDmg.current < effect.value ?
+                    effect.value
+                    : pentakillDmg.current
+                break;
+
+            case "health_steal":
+                // Lógica para el drenaje
+                healthSteal.current = true;
+                break;
+            case "user_clubs_dmg":
+                clubsExtraTakedDmg.current = effect.value
+                break;
+            case "user_spades_dmg":
+                spadesExtraTakedDmg.current = effect.value
+                break;
+            case "enemy_dmg_multiplier":
+                enemyDmgMultiplier.current = enemyDmgMultiplier.current * effect.value
+                break;
+            case "enemy_extra_dmg":
+                enemyExtraDmg.current = enemyExtraDmg.current + effect.value
+                break
+            case "max_scapes":
+                setMaxScapes(effect.value)
+                actualScapes.current = effect.value
+                break;
+            case "max_hp":
+                setMaxHealth(maxHealth + effect.value)
+                setHealth(health + effect.value)
+                break;
+            case "ricochet":
+                ricochet.current = true;
+                break;
+            default:
+                return false;
+        }
+        return true;
+    }
+
     const handleModifierEvent = async () => {
         const modifier = modifiers[modifiers.length - 1]
-        const modifierEffects = modifier.efectos
-        modifierEffects.map((effect) => {
-            switch (effect.name) {
-                case "chest_rewards":
-                    const weapon = lodash.shuffle(effect.value)[0]
-                    setModifierWeapon(weapon)
-                    break
-                default:
-                    break
-            }
-        })
+        const modifierEffects = modifier.efectos[0]
+        const effectsList = Array.isArray(modifierEffects) ? modifierEffects : [modifierEffects];
+        effectsList.forEach((effect) => {
+            applyEffect(effect)
+        });
         setModifiersLoading(false)
-
     }
 
     /**
@@ -362,9 +497,9 @@ const GamePage = () => {
     // Función para escapar
     const scape = () => {
         if (canScape.current) {
-            canScape.current = false
+            actualScapes.current - 1 > 0 ? actualScapes.current -= 1 : canScape.current = false;
             // Condición del guerrero
-            if (character?.habilidad_personaje?.id === 1) {
+            if (character?.habilidad_personaje?.id === 1 && canScape.current == false) {
                 setAvailableAbilitie(false)
             }
             setDungeon([...room, ...dungeon])
@@ -386,8 +521,9 @@ const GamePage = () => {
             if (character?.habilidad_personaje?.id === 1) {
                 setAvailableAbilitie(true)
             }
-            healedRef.current = false
-            canScape.current = true
+            healedRef.current = false;
+            actualScapes.curren = maxScapes;
+            canScape.current = true;
         }
     }, [room.length, dungeon.length]);
 
@@ -480,6 +616,7 @@ const GamePage = () => {
             }
             moveCardToDiscard([card])
             validMove = true;
+            actualStreak.current = 0;
         }
         // Lógica de arma
         else if (card.palo === 'Diamante') {
@@ -500,26 +637,41 @@ const GamePage = () => {
                 }, 200);
             }
             validMove = true;
+            actualStreak.current = 0;
         }
         // Lógica de combate
         else if (card.palo === 'Pica' || card.palo === 'Trebol') {
+            const final_enemy_dmg = Math.ceil((card.valor * enemyDmgMultiplier.current)) + enemyExtraDmg.current;
             if (weapon && (slainMonsters.length === 0 || card.valor < (slainMonsters[slainMonsters.length - 1]?.valor || 99))) {
                 // Ataque con arma
-                const damage = Math.max(0, card.valor - weapon.valor);
+                const pentakill = actualStreak.current >= pentakillTargetNumber.current ? pentakillDmg.current : 0
+                const final_user_dmg = weapon.valor + card.palo == 'Pica' ? spadesExtraTakedDmg.current : clubsExtraTakedDmg.current;
+                const final_dmg = final_enemy_dmg - pentakill;
+                const damage = Math.max(0, final_dmg - final_user_dmg);
                 damageAnimation(damage)
                 const earnerGold = gold + 5;
                 coinAnimation(5)
                 setGold(earnerGold);
                 setHealth(prev => Math.max(0, prev - damage));
+                if (healthSteal && card.valor < weapon.valor) {
+                    const heal = Math.min(0, card.valor - weapon.valor) > -3 ? Math.min(0, card.valor - weapon.valor) * -1 : 3;
+                    healAnimation(heal)
+                    setHealth(prev => Math.min(maxHealth, prev + heal));
+                }
                 setSlainMonsters([...slainMonsters, card]);
                 deleteFromRoom(card)
                 validMove = true;
+                actualStreak.current = actualStreak.current + 1;
             } else {
                 // Ataque sin arma
+                const pentakill = actualStreak.current >= pentakillTargetNumber.current ? pentakillDmg.current : 0
+                const final_user_dmg = pentakill + (card.palo == 'Pica' ? spadesExtraTakedDmg.current : clubsExtraTakedDmg.current)
+                const final_dmg = Math.max(0, final_enemy_dmg - final_user_dmg);
                 moveCardToDiscard([card])
-                damageAnimation(card.valor, true)
-                setHealth(prev => Math.max(0, prev - card.valor));
+                damageAnimation(final_dmg, true)
+                setHealth(prev => Math.max(0, prev - final_dmg));
                 validMove = true;
+                actualStreak.current = 0;
             }
         }
         if (validMove) {
@@ -565,16 +717,31 @@ const GamePage = () => {
             </Fragment>
         )
     }
+
     return (
         <Fragment>
             <div className="game">
+                {
+                    gameOver ?
+                        <div className="gameOver-menu">
+                            <button onClick={(event) => {
+                                setRestart(true)
+                            }}>
+                                REINTENTAR
+                            </button>
+                            <button onClick={(event) => { startButtonSound(event); setRestart(true); navigate('/') }}>INICIO</button>
+                            <button onClick={(event) => { startButtonSound(event); setRestart(true); navigate(`/perfil/${user ? user.nick : ''}`) }}>PERFIL</button>
+                        </div> :
+                        <></>
+                }
                 <div className="game-container">
                     {/* INTERFAZ IZQUIERDA */}
                     <div className="game-hud">
                         <div>
-                            <h1 className="player-health"><img src={healthIcon} />{health}{healthAnimation !== null ? <div className="animation-container"><strong className="animation" disabled={healthAnimation}>{healthAnimationValue}</strong><img className="animation" disabled={healthAnimation} src={healthAnimation} /></div> : <></>}</h1>
+                            <h1 className="player-health"><img src={healthIcon} />{health}/{maxHealth}{healthAnimation !== null ? <div className="animation-container"><strong className="animation" disabled={healthAnimation}>{healthAnimationValue}</strong><img className="animation" disabled={healthAnimation} src={healthAnimation} /></div> : <></>}</h1>
                             <h1 className="player-gold"><img src={GoldIcon} />{gold}{goldAnimation !== null ? <div className="animation-container"><strong className="animation" disabled={goldAnimation}>{goldAnimationValue}</strong><img className="animation" disabled={goldAnimation} src={goldAnimation} /></div> : <></>}</h1>
-                            <h1>RONDAS: {rounds}</h1>
+                            {pentakillTargetNumber.current !== 0 ? <h1>Racha <strong>{actualStreak.current}</strong>/<strong>{pentakillTargetNumber.current}</strong></h1> : <></>}
+                            <h1>RONDA {rounds}/{maxRounds}</h1>
                             <h2 ref={formatedTimeRef}>Tiempo: 00:00</h2>
                             <p>{dungeon.length} encuentros restantes</p>
                         </div>

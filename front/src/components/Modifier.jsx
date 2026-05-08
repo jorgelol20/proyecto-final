@@ -1,15 +1,16 @@
 import React, { Fragment, useContext, useState } from "react";
 import { matchContext } from "../context/MatchProvider";
 import './Modifier.css';
-
+import { settingsContext } from "../context/SettingsProvider";
 const Modifier = ({ modifierInfo, setSelectModifier }) => {
     const { addModifierToMatch } = useContext(matchContext)
+    const {startButtonSound} = useContext(settingsContext)
     const [showText, setShowText] = useState(false)
     if (setSelectModifier == null) {
         return (
             <Fragment>
                 <div className="modifier-info-mini">
-                    <img onMouseOver={() => { setShowText(true) }} src={modifierInfo.imagen} alt="" />
+                    <img id={"nivel-"+modifierInfo.nivel} onMouseOver={() => { setShowText(true) }} src={modifierInfo.imagen} alt="" />
                     {
                         showText ?
                             <div className="modifier-text" onMouseLeave={() => { setShowText(false) }}>
@@ -31,7 +32,7 @@ const Modifier = ({ modifierInfo, setSelectModifier }) => {
                 <div>
                     <p>{modifierInfo.descripcion}</p>
                 </div>
-                <button onClick={() => { addModifierToMatch(modifierInfo); setSelectModifier(false) }}>Seleccionar</button>
+                <button onClick={(event) => { startButtonSound(event);;addModifierToMatch(modifierInfo); setSelectModifier(false) }}>Seleccionar</button>
             </div>
         </Fragment>
     )

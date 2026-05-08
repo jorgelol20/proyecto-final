@@ -19,7 +19,7 @@ class StorePartidaRequest extends FormRequest
             'tiempo' => 'required|integer',
             'victoria' => 'required|boolean',
             'rondas' => 'required|integer',
-
+            'modificadores' => 'required|array'
         ];
     }
 }

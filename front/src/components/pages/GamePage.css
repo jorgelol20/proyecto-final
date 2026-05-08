@@ -170,3 +170,24 @@
         opacity: 0;
     }
 }
+
+.gameOver-menu{
+    display: flex;
+    background-color: var(--second-color);
+    flex-direction: column;
+    width: 20%;
+    border-color: var(--main-color);
+    border-width: 5px;
+    border-style: solid;
+    border-radius: 5px;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    z-index: 10;
+    top: 30%;
+    left: 40%;
+    button{
+        margin-bottom: 1cqh;
+        margin-top: 1cqh;
+    }
+}

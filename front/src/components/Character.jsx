@@ -15,7 +15,7 @@ const Character = ({characterInfo}) => {
                     <div className="character-info">
                         <img className="character-image" src={characterInfo.imagen}/>
                         <h1>{characterInfo.nombre}</h1>
-                        <button onClick={()=>{startButtonSound();setNewCharacter(characterInfo)}}>Seleccionar</button>
+                        <button onClick={(event)=>{startButtonSound(event);setNewCharacter(characterInfo)}}>Seleccionar</button>
                     </div>
                     <div>
                         <div className="character-abilitie">

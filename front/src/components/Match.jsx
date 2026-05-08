@@ -16,7 +16,7 @@ const Match = ({match,showUser}) => {
         return (
         <Fragment>
             <article className="match-row">
-                <h1>{match.id}</h1>
+                <h1 className="match-id">{match.id}</h1>
                 <img className="character-image" src={character.imagen} alt={character.nombre} />
                 <div className="match-info">
                     <p>Jugada el {new Date(match.created_at).toLocaleDateString('es-ES')}</p>

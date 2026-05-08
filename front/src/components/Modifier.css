@@ -1,43 +1,28 @@
-#nivel-1 {
-        border-color: var(--main-bronze);
-        color: var(--main-bronze);
-    }
-
-    #nivel-2 {
-        border-color: var(--main-silver);
-        color: var(--main-silver);
-    }
-
-    #nivel-3 {
-        border-color: var(--main-gold);
-        color: var(--main-gold);
-    }
-
-    #nivel-0 {
-        border-color: var(--main-red);
-        color: var(--main-red);
-    }
 
 .modifier-info {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-between;
+    position: relative;
     align-items: center;
-    padding: 2%;
-    margin: 2%;
-    border: 4px groove var(--second-color-dark);
+    padding: 1cqw;
+    margin: 1cqw;
+    border: 0.5cqw groove var(--second-color-dark);
     background-color: var(--second-color-light);
     border-radius: 5%;
+    width: 30cqw;
+    height: 40cqh;
 
     h3 {
-        font-size: 1.5em;
+        font-size: 2cqw;
         text-shadow: 1px 0px 0px black;
     }
 
     img {
-        width: 30%;
+        height: 5cqw;
+        width: 5cqw;
         background-color: var(--main-color);
-        border: 0.5em groove var(--main-gold);
+        border: 1cqw groove var(--main-gold);
         border-radius: 5px;
     }
 
@@ -48,11 +33,12 @@
         color: var(--main-white);
         text-align: center;
         text-shadow: 1px 0px 0px black;
+        font-size: 0.9cqw;
     }
 }
 
 .modifier-info:hover {
-    scale: 1.1;
+    scale: 1.05;
     filter: brightness(1.1);
 }
 
@@ -78,8 +64,8 @@
     
 
     p {
-        padding-left: 5%;
-        padding-right: 5%;
+        padding-left: 1cqw;
+        padding-right: 1cqw;
         color: var(--main-white);
         text-align: center;
         text-shadow: 1px 0px 0px black;
@@ -113,3 +99,23 @@
         margin-bottom: 0px;
     }
 }
+
+#nivel-1 {
+        border-color: var(--main-bronze);
+        color: var(--main-bronze);
+    }
+
+    #nivel-2 {
+        border-color: var(--main-silver);
+        color: var(--main-silver);
+    }
+
+    #nivel-3 {
+        border-color: var(--main-gold);
+        color: var(--main-gold);
+    }
+
+    #nivel-0 {
+        border-color: var(--main-red);
+        color: var(--main-red);
+    }

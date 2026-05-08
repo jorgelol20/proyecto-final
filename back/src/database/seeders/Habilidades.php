@@ -40,7 +40,7 @@ class Habilidades extends Seeder
             ModelHabilidad::factory()->create([
                 'nombre' => $data['nombre'],
                 'descripcion' => $data['descripcion'],
-                'icono' => env('APP_URL') ? env('APP_URL') : 'https://api.scoundrels-quest.com' . $data['icono'],
+                'icono' => config('app.backend_url') . $data['icono'],
             ]);
         }
     }

@@ -26,7 +26,6 @@ const MatchProvider = (props) => {
     const [availableCharacters, setAvailableCharacters] = useState([])
     const [availableModifiers, setAvailableModifiers] = useState([])
     const [activeModifiers, setActiveModifiers] = useState([]);
-    const [activeGame, setActiveGame] = useState(false)
 
     const load = () => {
         // Convertimos los datos para que 'efectos' sea un objeto manejable
@@ -47,6 +46,7 @@ const MatchProvider = (props) => {
         setGameLoading(false)
     }
     const startNewGame = () => {
+        setGameLoading(true)
         const shuffledDeck = lodash.shuffle(baseDeck);
         setMatchDeck(shuffledDeck)
         setCharacter(undefined)
@@ -54,18 +54,21 @@ const MatchProvider = (props) => {
         setGameLoading(false)
     }
     const endGame = async (user_id, tiempo, victoria, rondas) => {
-        const gameModifiers = activeModifiers.map((modifier) => { return modifier.id; })
-        const form = new FormData();
-        form.append('user_id', user_id);
-        form.append('personaje_id', character.id)
-        form.append('tiempo', tiempo)
-        form.append('victoria', victoria)
-        form.append('rondas', rondas)
-        gameModifiers.forEach((id) => {
-            form.append('modificadores[]', id);
-        });
-        await saveMatch(form)
-        setActiveGame(false)
+        if (character) {
+            const gameModifiers = activeModifiers.map((modifier) => modifier.id);
+            const payload = {
+                usuario_id: user_id,
+                personaje_id: character.id,
+                tiempo: tiempo,
+                victoria: victoria,
+                rondas: rondas,
+                modificadores: gameModifiers
+            };
+
+            // 3. Pasamos el objeto a la mutación
+            // Nota: Si tu mutationFn usa { form }, envíalo así:
+            await saveMatch({ form: payload });
+        }
     }
     const shuffleMatchDeck = () => {
         setMatchDeck(lodash.shuffle(matchDeck))
@@ -89,12 +92,13 @@ const MatchProvider = (props) => {
 
     const getRandomsModifier = () => {
         const tempModifiersList = availableModifiers
+        //return [tempModifiersList[3], tempModifiersList[3], tempModifiersList[3]];
         const shuffledModifiers = lodash.shuffle(tempModifiersList)
         return [shuffledModifiers[0], shuffledModifiers[1], shuffledModifiers[2]];
     }
 
-    const getWeapon = (power)=>{
-        const card = baseDeck.filter((card)=>card.palo == "Diamante" && card.valor == power)
+    const getWeapon = (power) => {
+        const card = baseDeck.filter((card) => card.palo == "Diamante" && card.valor == power)
         return card[0]
     }
 
@@ -110,7 +114,6 @@ const MatchProvider = (props) => {
         character,
         activeModifiers,
         availableCharacters,
-        activeGame,
         isLoadingCharacter,
         setNewDeck,
         addCardToMatchDeck,
