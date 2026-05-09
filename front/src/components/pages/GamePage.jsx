@@ -72,6 +72,7 @@ const GamePage = () => {
         setHealth(20);
         setMaxHealth(20)
         setAvailableAbilitie(true);
+        setShopAvailable(false)
         actualStreak.current = 0;
         canScape.current = true;
 
