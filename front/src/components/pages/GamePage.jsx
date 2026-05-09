@@ -529,7 +529,8 @@ const GamePage = () => {
             setRounds(rounds + 1)
             await addEnemys(5)
             shuffleDeck(matchDeck);
-            setDiscardPile([]);
+            setDiscardPile([]);+
+            setAvailableAbilitie(true)
         } else if (rounds === 10) {
             setGameOn(false)
             setGameWin(true)
