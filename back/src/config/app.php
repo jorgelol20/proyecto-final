@@ -27,8 +27,8 @@ return [
     */
 
     'env' => env('APP_ENV', 'production'),
-    'frontend_url' => env('FRONTEND_URL', 'http://localhost:5174'),
-    'backend_url' => env('APP_URL', 'http://api.localhost'),
+    'frontend_url' => env('FRONTEND_URL'),
+    'backend_url' => env('APP_URL'),
 
     /*
     |--------------------------------------------------------------------------

@@ -3,11 +3,11 @@ import './SelectModifier.css'
 import { matchContext } from "../context/MatchProvider";
 import Modifier from "./Modifier.jsx";
 
-const SelectModifier = ({setSelectModifier}) => {
+const SelectModifier = ({setSelectModifier, rounds}) => {
     const { getRandomsModifier } = useContext(matchContext)
     const [modifiersList, setModifiersList] = useState([])
     useEffect(() => {
-        setModifiersList(getRandomsModifier())
+        setModifiersList(getRandomsModifier(3, rounds))
     }, [getRandomsModifier])
     if (undefined in modifiersList) {
         return (<></>)

@@ -18,7 +18,7 @@ class UsuariosController extends Controller
     public function index()
     {
         $usuarios = Usuarios::select('id', 'nick', 'email', 'avatar', 'color', 'created_at')->get();
-        $usuarios = $usuarios->load(['comentarios', 'tiene_jugadas']);
+        $usuarios = $usuarios->load(['comentarios', 'tiene_jugadas.modificadores']);
         return response()->json(['usuario' => $usuarios]);
     }
 
@@ -51,7 +51,7 @@ class UsuariosController extends Controller
     public function show(string $nick)
     {
         $usuario = Usuarios::select('id', 'nick', 'email', 'es_admin', 'avatar', 'color', 'created_at')->where('nick', '=', $nick)->get();
-        $usuario = $usuario->load(['comentarios', 'tiene_jugadas']);
+        $usuario = $usuario->load(['comentarios', 'tiene_jugadas.modificadores']);
         return response()->json(['usuario' => $usuario], 201);
     }
 

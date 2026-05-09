@@ -114,7 +114,7 @@ const ProfileEdit = () => {
                         {passwordsAreSame ? <></> : <label  className='form-error'>Las contraseñas no coinciden</label>}
                         <br />
                         <div className="custom-file-container">
-                            <label for="file-upload" className="file-button">
+                            <label htmlFor="file-upload" className="file-button">
                                 <span className="icon"><img src={Folder}/></span>
                                 <span className="text">Seleccionar Archivo</span>
                             </label>

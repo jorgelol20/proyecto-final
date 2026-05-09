@@ -64,9 +64,6 @@ const MatchProvider = (props) => {
                 rondas: rondas,
                 modificadores: gameModifiers
             };
-
-            // 3. Pasamos el objeto a la mutación
-            // Nota: Si tu mutationFn usa { form }, envíalo así:
             await saveMatch({ form: payload });
         }
     }
@@ -79,7 +76,20 @@ const MatchProvider = (props) => {
     }
 
     const addCardToMatchDeck = (card) => {
-        setMatchDeck([...matchDeck, card])
+        setMatchDeck(prevDeck => [...prevDeck, card]);
+    }
+
+    const addEnemysToMatchDeck = (quantity, round) => {
+        const minPower = Math.max(2, round);
+        const maxPower = Math.min(round + 5, 14);
+        const candidates = cards.filter(({ palo, valor }) =>
+            (palo === "Trebol" || palo === "Pica") &&
+            valor >= minPower &&
+            valor <= maxPower
+        );
+        const shuffled = candidates.sort(() => Math.random() - 0.5);
+        const newEnemys = shuffled.slice(0, quantity);
+        setMatchDeck(prevDeck => [...prevDeck, ...newEnemys]);
     }
 
     const addModifierToMatch = (modifier) => {
@@ -90,16 +100,55 @@ const MatchProvider = (props) => {
         setCharacter(newCharacter);
     }
 
-    const getRandomsModifier = () => {
-        const tempModifiersList = availableModifiers
-        //return [tempModifiersList[3], tempModifiersList[3], tempModifiersList[3]];
-        const shuffledModifiers = lodash.shuffle(tempModifiersList)
-        return [shuffledModifiers[0], shuffledModifiers[1], shuffledModifiers[2]];
-    }
+    const getRandomsModifier = (quantity = 3, round = 1) => {
+        const activeIds = new Set(activeModifiers.map(mod => mod.id));
+
+        // 1. Filtrar los que no están activos y nivel > 0 una sola vez
+        const pool = availableModifiers.filter(mod => !activeIds.has(mod.id) && mod.nivel > 0);
+
+        // 2. Definir probabilidades según la ronda
+        // Ejemplo de escalado: El nivel 2 empieza a aparecer en ronda 2, el nivel 3 en la 5.
+        const getTargetLevel = () => {
+            const roll = Math.random() * 100; // 0 a 100
+
+            if (round === 1) return 1;
+
+            // Probabilidades dinámicas
+            // Por ejemplo, en ronda 10: Nivel 3 (25%), Nivel 2 (45%), Nivel 1 (30%)
+            const probLvl3 = Math.min((round - 4) * 5, 25); // Empieza en ronda 5
+            const probLvl2 = Math.min((round - 1) * 10, 45); // Empieza en ronda 2
+
+            if (roll < probLvl3) return 3;
+            if (roll < probLvl3 + probLvl2) return 2;
+            return 1;
+        };
+
+        const selectedModifiers = [];
+
+        // 3. Seleccionar 'quantity' modificadores
+        for (let i = 0; i < quantity; i++) {
+            const targetLevel = getTargetLevel();
+
+            let candidates = pool.filter(mod =>
+                mod.nivel === targetLevel &&
+                !selectedModifiers.some(s => s.id === mod.id)
+            );
+
+            if (candidates.length === 0) {
+                candidates = pool.filter(mod => !selectedModifiers.some(s => s.id === mod.id));
+            }
+
+            if (candidates.length > 0) {
+                const picked = lodash.sample(candidates);
+                selectedModifiers.push(picked);
+            }
+        }
+        return selectedModifiers;
+    };
 
     const getWeapon = (power) => {
-        const card = baseDeck.filter((card) => card.palo == "Diamante" && card.valor == power)
-        return card[0]
+        const card = cards.find((card) => card.palo == "Diamante" && card.valor == power)
+        return card
     }
 
     useEffect(() => {
@@ -122,7 +171,11 @@ const MatchProvider = (props) => {
         getRandomsModifier,
         endGame,
         addModifierToMatch,
-        getWeapon
+        getWeapon,
+        setCharacter,
+        setActiveModifiers,
+        setGameLoading,
+        addEnemysToMatchDeck,
     };
 
 
