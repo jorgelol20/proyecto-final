@@ -104,8 +104,8 @@ class Modificadores extends Seeder
                 'efectos' => json_encode([['name' => 'max_hp', 'value' => 15]])
             ],
             [
-                'nombre' => 'Cazador de Monstruor',
-                'descripcion' => 'Tras años de cacería, te has especializado en cazar a esas bestias perdiendo parte de tus habilidades de pelea contra otras personas. (+3 de daño a los tréboles, -2 de daño a las picas)',
+                'nombre' => 'Imbuir en plata',
+                'descripcion' => 'Tus armas ahora serán de plata, ocasionando más daño a los monstruos pero siendo menos eficaz contra las criaturas humanoides. (+3 de daño a los tréboles, -2 de daño a las picas)',
                 'imagen' => "/storage/modificadores/CazadorDeMonstruos.webp",
                 'nivel' => 2,
                 'efectos' => json_encode([
@@ -114,8 +114,8 @@ class Modificadores extends Seeder
                 ])
             ],
             [
-                'nombre' => 'Asesino Especialista',
-                'descripcion' => 'Tus servicios como mercenario son los más solicitados, conviertiendote en un experto contra tus iguales pero sin ser un rival contra las criaturas salvajes. (+3 de daño a las picas, -2 de daño a los tréboles)',
+                'nombre' => 'Forjar en acero',
+                'descripcion' => 'Nada mejor que el acero en la batalla, salvo contra esas criaturas del demonio, contra esas cosas no funciona tan bien. (+3 de daño a las picas, -2 de daño a los tréboles)',
                 'imagen' => "/storage/modificadores/AsesinoEspecialista.webp",
                 'nivel' => 2,
                 'efectos' => json_encode([

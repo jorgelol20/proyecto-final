@@ -2,16 +2,17 @@ import React, { Fragment, useContext, useState } from "react";
 import { matchContext } from "../context/MatchProvider";
 import './Modifier.css';
 import { settingsContext } from "../context/SettingsProvider";
-const Modifier = ({ modifierInfo, setSelectModifier }) => {
-    const { addModifierToMatch } = useContext(matchContext)
+const Modifier = ({ modifierInfo, setSelectModifier, bigger }) => {
+    const { addModifierToMatch, acti } = useContext(matchContext)
     const { startButtonSound } = useContext(settingsContext)
     const [showText, setShowText] = useState(false)
     if (setSelectModifier == null) {
         return (
             <Fragment>
                 <div className="modifier-info-mini">
-                    <img id={"nivel-" + modifierInfo.nivel} onMouseOver={() => { setShowText(true) }} src={modifierInfo.imagen} popoverTarget="modifier-info" alt="" />
+                    <img id={"nivel-" + modifierInfo.nivel} className={bigger?"bigger":""} onMouseOver={() => { setShowText(true) }} src={modifierInfo.imagen} popoverTarget="modifier-info" alt="" />
                     <div id="modifier-info" popover="auto" className="modifier-text" onMouseLeave={() => { setShowText(false) }}>
+                        {console.log(bigger)}
                         <img id={"nivel-" + modifierInfo.nivel} src={modifierInfo.imagen} alt="" />
                         <h3 id={"nivel-" + modifierInfo.nivel}>{modifierInfo.nombre}</h3>
                         <p>{modifierInfo.descripcion}</p>

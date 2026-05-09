@@ -53,18 +53,20 @@ const MatchProvider = (props) => {
         setActiveModifiers([])
         setGameLoading(false)
     }
-    const endGame = async (user_id, tiempo, victoria, rondas) => {
-        if (character) {
+    const endGame = async (user_id, tiempo, victoria, rondas, charInfo = null) => {
+        const matchCharacter = charInfo == null?character:charInfo
+        if (matchCharacter) {
             const gameModifiers = activeModifiers.map((modifier) => modifier.id);
             const payload = {
                 usuario_id: user_id,
-                personaje_id: character.id,
+                personaje_id: matchCharacter.id,
                 tiempo: tiempo,
                 victoria: victoria,
                 rondas: rondas,
                 modificadores: gameModifiers
             };
             await saveMatch({ form: payload });
+            return true
         }
     }
     const shuffleMatchDeck = () => {
@@ -150,6 +152,10 @@ const MatchProvider = (props) => {
         const card = cards.find((card) => card.palo == "Diamante" && card.valor == power)
         return card
     }
+    const getHealItem = (power) => {
+        const card = cards.find((card) => card.palo == "Corazon" && card.valor == power)
+        return card
+    }
 
     useEffect(() => {
         if (!isLoadingCard && !isLoadingCharacter && !isLoadingModifier) {
@@ -176,6 +182,7 @@ const MatchProvider = (props) => {
         setActiveModifiers,
         setGameLoading,
         addEnemysToMatchDeck,
+        getHealItem
     };
 
 
