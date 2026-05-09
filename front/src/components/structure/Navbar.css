@@ -8,15 +8,15 @@ nav {
     border: 2px solid #3e27233f;
     padding: 10px 20px;
     border-radius: 4px;
-    height: 2em;
+    height: 2cqh;
     max-height: 2em;
     min-height: 2em;
     color: white;
 }
 
 .navbar-avatar {
-    width: 1.5em;
-    height: 1.5em;
+    width: 3cqw;
+    height: 3cqw;
     border-radius: 100%;
     border-color: var(--main-color);
     border-width: 2px;
@@ -70,18 +70,22 @@ nav {
 }
 .search{
     display: flex;
-    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    width: 60%;
+    margin-top: 2%;
+    height: 2cqh;
 }
 .search-input{
-    height: 10px;
-    max-height: 10px;
-    font-size: 15px;
-    margin: 15px;
+    position: relative;
+    height: 100%;
+    font-size: 0.7cqw;
     border: 1px solid black;
-    padding: 3%;
+    width: 100%;
 }
 .searc-list{
     position: absolute;
-    margin-top: 2%;
-    margin-left: 1%;
+    margin-top: 25%;
+    margin-left: 5.5%;
 }

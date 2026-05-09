@@ -41,3 +41,62 @@
     width: 1em;
     height: 1em;
 }
+
+/* Estilos base para el slider */
+input[type="range"] {
+    -webkit-appearance: none; /* Reset para Chrome/Safari */
+    appearance: none;
+    width: 100%;
+    background: transparent;
+    cursor: pointer;
+}
+
+/* --- TRACK (La línea del slider) --- */
+
+/* Chrome, Safari, Edge y Opera */
+input[type="range"]::-webkit-slider-runnable-track {
+    background: var(--main-white);
+    height: 8px;
+    border: 2px solid #000; /* Borde negro para estilo pixel */
+}
+
+/* Firefox */
+input[type="range"]::-moz-range-track {
+    background: var(--main-white);
+    height: 8px;
+    border: 2px solid #000;
+}
+
+/* --- THUMB (El botoncito que se mueve) --- */
+
+/* Chrome, Safari, Edge y Opera */
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; /* Importante para Chrome */
+    appearance: none;
+    margin-top: -10px; /* Centra el thumb sobre el track */
+    background-color: var(--main-color);
+    height: 24px;
+    width: 12px;
+    border: 2px solid #000;
+    box-shadow: 2px 2px 0px #000; /* Sombra sólida tipo pixel */
+}
+
+/* Firefox */
+input[type="range"]::-moz-range-thumb {
+    border: none; /* Quita borde por defecto de FF */
+    background-color: var(--main-color);
+    height: 24px;
+    width: 12px;
+    border-radius: 0; /* Cuadrado para estética pixel */
+    border: 2px solid #000;
+    box-shadow: 2px 2px 0px #000;
+}
+
+/* Estado Focus para accesibilidad */
+input[type="range"]:focus {
+    outline: none;
+}
+
+input[type="range"]:focus::-webkit-slider-thumb {
+    background-color: var(--main-white); /* Feedback visual al seleccionar */
+}

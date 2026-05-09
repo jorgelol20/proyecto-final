@@ -11,7 +11,8 @@
     background-color: var(--second-color-light);
     border-radius: 5%;
     width: 30cqw;
-    height: 40cqh;
+    height: 40cqw;
+    max-height: 40cqh;
 
     h3 {
         font-size: 2cqw;
@@ -21,7 +22,7 @@
     img {
         height: 5cqw;
         width: 5cqw;
-        background-color: var(--main-color);
+        background-color: var(--second-color-light);
         border: 1cqw groove var(--main-gold);
         border-radius: 5px;
     }
@@ -33,7 +34,7 @@
         color: var(--main-white);
         text-align: center;
         text-shadow: 1px 0px 0px black;
-        font-size: 0.9cqw;
+        font-size: 1.3cqh;
     }
 }
 
@@ -42,7 +43,7 @@
     filter: brightness(1.1);
 }
 
-.modifier-info-mini{
+.modifier-info-mini {
     position: relative;
     display: flex;
     flex-direction: column;
@@ -52,6 +53,8 @@
     margin: 2%;
     border-radius: 5px;
     max-width: 35px;
+    /* Eliminamos isolation para que no cree un nuevo contexto que corte */
+    overflow: visible !important;
 
 
     img {
@@ -61,61 +64,74 @@
         border-radius: 1%;
     }
 
-    
 
-    p {
-        padding-left: 1cqw;
-        padding-right: 1cqw;
-        color: var(--main-white);
-        text-align: center;
-        text-shadow: 1px 0px 0px black;
-    }
-    .modifier-text{
-        position:fixed;
-        width: 15%;
-        padding: 1%;
-        x: 1000 ;
-        border-radius: 5px;
-        border: 4px groove var(--second-color-dark);
+
+
+    .modifier-text[popover] {
+        /* Tus estilos de color y tamaño intactos */
+        width: 15cqw;
+        padding: 0.5cqw;
         background-color: var(--main-color);
+        border: 4px groove var(--second-color-dark);
+        color: white;
+        top: 10%;
+        /* CAMBIOS PARA QUE NO SE CORTE */
+        position: fixed;
+        position:fixed;
+        white-space: normal;
         z-index: 1000;
-        padding-bottom: 0;
-        h3{
+        img{
+            width: 10cqw;
+            height: 10cqw;
+            margin: 1cqw;
+            margin-bottom: 0;
+            border-width: 1cqw;
+        }
+        p {
+            color: var(--main-white);
+            text-shadow: 1px 0px 0px black;
+            font-size: 0.9cqw;
+        }
+
+        h3 {
             margin: 0;
             padding: 0;
-            margin-bottom: 5%;
-            text-decoration: underline;
+            font-size: 2cqw;
         }
-        p{
-            font-size: 0.7em;
-            text-align: left;
-        }
-
     }
 }
-.player-info{
-    img{
+
+.modifier-info-mini:hover [popover] {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+}
+
+.player-info {
+    img {
         width: 2em;
         margin-bottom: 0px;
     }
 }
 
 #nivel-1 {
-        border-color: var(--main-bronze);
-        color: var(--main-bronze);
-    }
+    border-color: var(--main-bronze);
+    color: var(--main-bronze);
+}
 
-    #nivel-2 {
-        border-color: var(--main-silver);
-        color: var(--main-silver);
-    }
+#nivel-2 {
+    border-color: var(--main-silver);
+    color: var(--main-silver);
+}
 
-    #nivel-3 {
-        border-color: var(--main-gold);
-        color: var(--main-gold);
-    }
+#nivel-3 {
+    border-color: var(--main-gold);
+    color: var(--main-gold);
+}
 
-    #nivel-0 {
-        border-color: var(--main-red);
-        color: var(--main-red);
-    }
+#nivel-0 {
+    border-color: var(--main-red);
+    color: var(--main-red);
+}

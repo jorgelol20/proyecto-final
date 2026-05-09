@@ -125,7 +125,7 @@
         width: 2cqw;
         height: 2cqw;
         margin-left: -2cqw;
-        border-width: 0.5em;
+        border-width: 0.5cqw;
         border-style: groove;
         background-color: var(--main-black);
         border-color: var(--main-black);
@@ -140,8 +140,8 @@
 
     .character-avatar {
         width: 5cqw;
-        height: 10cqh;
-        border: 1cqh groove;
+        height: 5cqw;
+        border: 0.5cqh groove;
         border-radius: 50%;
         background-color: var(--main-black);
         margin-bottom: 1cqw;

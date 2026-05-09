@@ -12,7 +12,7 @@ class PartidasController extends Controller
 {
     public function index()
     {
-        $partidas = Partidas::select('id','created_at', 'usuario_id','personaje_id','tiempo','victoria', 'rondas')->limit(10)->get();
+        $partidas = Partidas::select('id','created_at', 'usuario_id','personaje_id','tiempo','victoria', 'rondas')->latest()->limit(10)->get();
         $partidas = $partidas->load(['comentarios','modificadores','jugador', 'personaje']);
         return response()->json($partidas);
     }

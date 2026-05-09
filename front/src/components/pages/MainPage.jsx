@@ -41,11 +41,10 @@ const MainPage = () => {
                 </div>
             </article>
             <article>
-
                 <div className="last-matches">
                     <h1>Últimas partidas</h1>
                     <div className="match-history">
-                        {matches?.toReversed().map((match, index) => {
+                        {matches?.map((match, index) => {
                             return <div key={crypto.randomUUID()} onClick={() => { navigate(`/partida/${match.id}`) }}><Match key={match.id} match={match} showUser={true} /></div>
                         })}
                     </div>
