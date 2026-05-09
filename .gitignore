@@ -1,2 +1,4 @@
 back/src/public/storage
 back/src/public/storage
+back/src/.env
+front/.env
