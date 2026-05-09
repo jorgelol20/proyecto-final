@@ -522,7 +522,7 @@ const GamePage = () => {
         if (rounds !== 10 || continueMatch) {
             setSelectModifier(true)
             if (rounds !== 0) {
-
+                setShopAvailable(true)
             }
             setRounds(rounds + 1)
             await addEnemys(5)
