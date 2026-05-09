@@ -94,6 +94,7 @@ const GamePage = () => {
         spadesExtraTakedDmg.current = (0);
         clubsExtraTakedDmg.current = (0);
         ricochet.current = false;
+        totalCardsUsed.current = 0
         setMaxScapes(1)
 
         // Reiniciar contexto
