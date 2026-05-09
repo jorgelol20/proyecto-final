@@ -101,7 +101,7 @@ const MatchPage = () => {
                 <div className="match-body">
                     <div className="match-info">
                         <div className="match-parameters">
-                            <h1>Num partida: {match.id}</h1>
+                            <h1>ID de la partida: {match.id}</h1>
                             <div style={{ display: "flex", alignItems: "center" }}>
                                 <img className="character-image" src={character.imagen} alt={character.nombre} />
                                 <div className="match-modifiers">

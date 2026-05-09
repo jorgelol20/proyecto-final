@@ -17,16 +17,19 @@ const Match = ({ match, showUser }) => {
         return (
             <Fragment>
                 <article className="match-row">
-                    <h1 className="match-id">{match.id}</h1>
+                    <div style={{display:'flex',flexDirection:'column'}}>
+                        <p style={{fontSize:'0.5cqw'}}>ID partida:</p>
+                        <h1 className="match-id">{match.id}</h1>
+                    </div>
                     <img className="character-image" src={character.imagen} alt={character.nombre} />
                     <div className="match-info">
-                        <div style={{display:'flex', textAlign:'end', justifyContent:'center'}}>
+                        <div style={{ display: 'flex', textAlign: 'end', justifyContent: 'center' }}>
                             <h2 className={match.victoria ? 'win' : 'lose'}>{match.victoria ? 'Victoria' : 'Derrota'}</h2>
                             <p>Jugada el {new Date(match.created_at).toLocaleDateString('es-ES')}</p>
                         </div>
                         <div className="match-modifiers">
                             {match.modificadores.length > 0 ? match.modificadores.map((modifierInfo) => {
-                                return <Modifier modifierInfo={modifierInfo} />
+                                return <Modifier key={crypto.randomUUID()} modifierInfo={modifierInfo} />
                             }) : <h1>Sin modificadores</h1>}
                         </div>
                     </div>

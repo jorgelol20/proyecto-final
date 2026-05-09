@@ -1,7 +1,7 @@
 import React, { Fragment, useContext } from "react";
 import Banner from "../structure/Banner.jsx";
 import './SettingsPage.css'
-import {  settingsContext } from "../../context/SettingsProvider.jsx";
+import { settingsContext } from "../../context/SettingsProvider.jsx";
 
 import MusicOff from '/images/music_off.svg'
 import MusicOn from '/images/music_on.svg'
@@ -22,18 +22,20 @@ const SettingsPage = () => {
         effectsMuted,
         musicMuted,
         startButtonSound,
-        changeShowFPS, 
-        showFPS
-    } = useContext( settingsContext);
+        changeShowFPS,
+        showFPS,
+        changeShowLogs,
+        showLogs
+    } = useContext(settingsContext);
 
     return (
         <Fragment>
-             
+
             <div className="settings">
                 <div className="settings-container">
                     <label htmlFor="music-range">Volumen Música</label>
                     <div className="sound-setting">
-                        <button className="muteButton" onClick={(event)=>{muteMusic(event)}}><img src={musicMuted?MusicOff:MusicOn}/></button>
+                        <button className="muteButton" onClick={(event) => { muteMusic(event) }}><img src={musicMuted ? MusicOff : MusicOn} /></button>
                         <input
                             type="range"
                             id="music-range"
@@ -46,7 +48,7 @@ const SettingsPage = () => {
                     <br />
                     <label htmlFor="effect-range">Volumen Efectos</label>
                     <div className="sound-setting">
-                        <button className="muteButton" onClick={(event)=>{muteEffects(event)}}><img src={effectsMuted?VolumeOff:VolumeOn}/></button>
+                        <button className="muteButton" onClick={(event) => { muteEffects(event) }}><img src={effectsMuted ? VolumeOff : VolumeOn} /></button>
                         <input
                             type="range"
                             id="effect-range"
@@ -56,12 +58,18 @@ const SettingsPage = () => {
                             onChange={(e) => changeEffectsSound(e.target.value)}
                         />
                     </div>
-                    <div>
-                        <label htmlFor="fps-setting">Mostrar FPS</label><br />
-                        <input className="fps-setting" type="checkbox" checked={showFPS?true:false} name="" id="" onChange={(e)=>{changeShowFPS(e); console.log(e.currentTarget.checked)}} />
+                    <div className="checkbox-settings">
+                        <div>
+                            <label htmlFor="fps-setting">Mostrar FPS</label><br />
+                            <input className="fps-setting checkbox-setting" type="checkbox" checked={showFPS ? true : false} name="" id="" onChange={(e) => { changeShowFPS(e)}} />
+                        </div>
+                        <div>
+                            <label htmlFor="logs-setting">Mostrar Logs en partida</label><br />
+                            <input className="logs-setting checkbox-setting" type="checkbox" checked={showLogs ? true : false} name="" id="" onChange={(e) => { changeShowLogs(e)}} />
+                        </div>
                     </div>
                     <div>
-                        <button onClick={(event)=>{startButtonSound(event);navigate('/')}}>Volver</button>
+                        <button onClick={(event) => { startButtonSound(event); navigate('/') }}>Volver</button>
                     </div>
                 </div>
             </div>

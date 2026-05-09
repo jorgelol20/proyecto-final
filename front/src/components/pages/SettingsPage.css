@@ -100,3 +100,37 @@ input[type="range"]:focus {
 input[type="range"]:focus::-webkit-slider-thumb {
     background-color: var(--main-white); /* Feedback visual al seleccionar */
 }
+
+/* Checkbox Estilo Pixel */
+.checkbox-setting {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background-color: var(--main-white);
+    border: 3px solid #000;
+    cursor: pointer;
+    position: relative;
+}
+
+/* El "Check" (la X o marca) */
+.checkbox-setting:checked {
+    background-color: var(--main-color); /* Color cuando está activo */
+}
+
+.checkbox-setting:checked::after {
+    content: '✔';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #000;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/* Efecto Hover para ambos */
+.checkbox-setting:hover, 
+input[type="range"]:hover::-webkit-slider-thumb {
+    filter: brightness(1.2);
+}

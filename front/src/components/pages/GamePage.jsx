@@ -26,13 +26,14 @@ import SelectModifier from "../SelectModifier.jsx";
 import Modifier from "../Modifier.jsx";
 import Loading from "../Loading.jsx";
 import { settingsContext } from "../../context/SettingsProvider.jsx";
+import GameShop from "../GameShop.jsx";
 
 
 
 const GamePage = () => {
     const navigate = useNavigate();
-    const { startButtonSound } = useContext(settingsContext)
-    const { matchDeck, character, activeModifiers: modifiers, setNewDeck, setNewCharacter, startNewGame, addCardToMatchDeck, gameLoading, availableCharacters, getWeapon, endGame, setCharacter, setActiveModifiers, setGameLoading, addEnemysToMatchDeck } = useContext(matchContext);
+    const { startButtonSound, showLogs } = useContext(settingsContext)
+    const { matchDeck, character, activeModifiers: modifiers, setNewDeck, setNewCharacter, startNewGame, addCardToMatchDeck, gameLoading, availableCharacters, getWeapon, endGame, setCharacter, setActiveModifiers, setGameLoading, addEnemysToMatchDeck, addModifierToMatch } = useContext(matchContext);
     const { user, isLoading } = useUser();
 
 
@@ -42,17 +43,21 @@ const GamePage = () => {
     const [gameWin, setGameWin] = useState(false);
     const [restart, setRestart] = useState(false);
 
+
+    const logsRef = useRef([]);
+
     const continueFunction = () => {
         setGameOn(true)
         startNewRound(true)
     }
 
-    const restartFunction = async () => {
+    const restartFunction = () => {
         // Sonido y UI básica
         startButtonSound(event);
         setGameOver(false);
         setGameOn(false);
         setGameWin(false)
+        logsRef.current = [];
 
         // Limpieza de cartas y mazo
         setDungeon([]);
@@ -93,8 +98,8 @@ const GamePage = () => {
         // Reiniciar contexto
         setNewDeck();
         setNewCharacter(null);
-        await setGameLoading(false)
-        await startNewGame();
+        setGameLoading(false)
+        startNewGame();
         setRestart(false)
     }
 
@@ -120,7 +125,6 @@ const GamePage = () => {
     const intervalRef = useRef(null);
     useEffect(() => {
         if (gameOn) {
-            // Limpiamos cualquier intervalo previo por seguridad antes de empezar uno nuevo
             stopTimer();
 
             intervalRef.current = setInterval(() => {
@@ -136,13 +140,12 @@ const GamePage = () => {
             endGame(user.id, timeRef.current, gameWin, rounds)
         }
 
-        // Esto es VITAL: Limpiar al desmontar o cambiar gameOn
         return () => stopTimer();
-    }, [gameOn]); // Quité timeRef y formatedTimeRef de aquí, no deberían ser dependencias
+    }, [gameOn]);
 
     const stopTimer = () => {
-        if (intervalRef.current) { // Añadido .current
-            clearInterval(intervalRef.current); // Añadido .current
+        if (intervalRef.current) {
+            clearInterval(intervalRef.current);
             intervalRef.current = null;
         }
     };
@@ -196,7 +199,7 @@ const GamePage = () => {
     // State de oro
     const [gold, setGold] = useState(0);
 
-
+    const [shopAvailable, setShopAvailable] = useState(false);
 
 
     /**
@@ -255,8 +258,8 @@ const GamePage = () => {
         window.addEventListener('resize', handleResize);
         return () => {
             window.removeEventListener('resize', handleResize)
-            if (gameOn) {
-                endGame(user.id, timeRef.current, false, rounds)
+            if (user && character && modifiers.length > 0) {
+                endGame(user.id, timeRef.current, false, rounds, character)
             }
             stopTimer()
             setDungeon([])
@@ -490,6 +493,8 @@ const GamePage = () => {
      * ===================================
      */
     // Función para rellenar las cartas activas
+    const totalCardsUsed = useRef(0)
+
     const fillRoom = () => {
         if (dungeon.length === 0) return;
         let newRoom = [...room];
@@ -528,6 +533,13 @@ const GamePage = () => {
             setGameWin(true)
         }
     }
+
+    useEffect(() => {
+        if (!shopAvailable) {
+            setRoom([])
+            shuffleDeck(matchDeck)
+        }
+    }, [shopAvailable])
 
     // Función para escapar
     const scape = () => {
@@ -648,15 +660,20 @@ const GamePage = () => {
                 setHealth(prev => Math.min(maxHealth, prev + card.valor));
                 healAnimation(card.valor)
                 healedRef.current = true
+                logsRef.current.push((logsRef.current.length + 1) + " - " + card.valor + " de " + card.palo + " te ha curado " + card.valor + " de daño.")
+            } else {
+                logsRef.current.push((logsRef.current.length + 1) + " - " + card.valor + " de " + card.palo + " te no te ha curado nada.")
             }
             moveCardToDiscard([card])
             validMove = true;
             actualStreak.current = 0;
+
         }
         // Lógica de arma
         else if (card.palo === 'Diamante') {
             if (weapon) {
                 moveCardToDiscard([weapon], true)
+                logsRef.current.push((logsRef.current.length + 1) + " - " + "Arma de " + weapon.valor + " ha sido cambiada por arma de " + card.valor + ".")
                 setTimeout(() => {
                     setWeapon(card);
                     deleteFromRoom(card);
@@ -664,6 +681,7 @@ const GamePage = () => {
             } else {
                 deleteFromRoom(card)
                 setWeapon(card);
+                logsRef.current.push((logsRef.current.length + 1) + " - " + "Nueva arma de " + card.valor + " activa.")
             }
             if (slainMonsters.length > 0) {
                 moveCardToDiscard([...slainMonsters], true)
@@ -680,14 +698,14 @@ const GamePage = () => {
             if (weapon && (slainMonsters.length === 0 || card.valor < (slainMonsters[slainMonsters.length - 1]?.valor || 99))) {
                 // Ataque con arma
                 const pentakill = actualStreak.current >= pentakillTargetNumber.current ? pentakillDmg.current : 0
-                const final_user_dmg = weapon.valor + card.palo == 'Pica' ? spadesExtraTakedDmg.current : clubsExtraTakedDmg.current;
-                const final_dmg = final_enemy_dmg - pentakill;
-                const damage = Math.max(0, final_dmg - final_user_dmg);
-                damageAnimation(damage)
+                const final_user_dmg = weapon.valor + (card.palo == 'Pica' ? spadesExtraTakedDmg.current : clubsExtraTakedDmg.current);
+                const enemy_damage = final_enemy_dmg - pentakill;
+                const final_dmg = Math.max(0, enemy_damage - final_user_dmg);
+                damageAnimation(final_dmg)
                 const earnerGold = gold + 5;
                 coinAnimation(5)
                 setGold(earnerGold);
-                setHealth(prev => Math.max(0, prev - damage));
+                setHealth(prev => Math.max(0, prev - final_dmg));
                 if (healthSteal.current && card.valor < weapon.valor) {
                     const heal = Math.min(0, card.valor - weapon.valor) > -3 ? Math.min(0, card.valor - weapon.valor) * -1 : 3;
                     healAnimation(heal)
@@ -697,6 +715,7 @@ const GamePage = () => {
                 deleteFromRoom(card)
                 validMove = true;
                 actualStreak.current = actualStreak.current + 1;
+                logsRef.current.push((logsRef.current.length + 1) + " - " + card.valor + " de " + card.palo + " te ha hecho " + final_dmg + " de daño.")
             } else {
                 // Ataque sin arma
                 const pentakill = actualStreak.current >= pentakillTargetNumber.current ? pentakillDmg.current : 0
@@ -707,6 +726,7 @@ const GamePage = () => {
                 setHealth(prev => Math.max(0, prev - final_dmg));
                 validMove = true;
                 actualStreak.current = 0;
+                logsRef.current.push((logsRef.current.length + 1) + " - " + card.valor + " de " + card.palo + " te ha hecho " + final_dmg + " de daño.")
             }
         }
         if (validMove) {
@@ -714,6 +734,9 @@ const GamePage = () => {
                 setAvailableAbilitie(false)
             }
             canScape.current = false
+            totalCardsUsed.current += 1;
+        } else {
+            logsRef.current.push((logsRef.current.length + 1) + " - " + "Moviemiento no válido.")
         }
     }, [health, gold, weapon, discardPile])
     const handleDragEnd = (card, finalX, finalY) => {
@@ -727,7 +750,7 @@ const GamePage = () => {
         return false;
     };
 
-    if (!character) {
+    if (!character && !gameOver) {
         return (
             <Fragment>
                 <div>
@@ -736,7 +759,7 @@ const GamePage = () => {
             </Fragment>
         )
     }
-    if (selectModifier) {
+    if (selectModifier && !gameOver) {
         return (
             <Fragment>
                 <div>
@@ -745,13 +768,31 @@ const GamePage = () => {
             </Fragment>
         )
     }
-    if (modifiersLoading) {
+    if (modifiersLoading && !gameOver) {
         return (
             <Fragment>
                 <Loading />
             </Fragment>
         )
     }
+    if (shopAvailable && !gameOver) {
+        return (
+            <Fragment>
+                <GameShop
+                    gold={gold}
+                    setGold={setGold}
+                    setShopAvailable={setShopAvailable}
+                    health={health}
+                    maxHealth={maxHealth}
+                    formatedTimeRef={formatedTimeRef}
+                    healthIcon={healthIcon}
+                    character={character}
+                    round={rounds}
+                />
+            </Fragment>
+        )
+    }
+
 
     return (
         <Fragment>
@@ -759,9 +800,10 @@ const GamePage = () => {
                 {
                     !gameOn ?
                         <div className="gameOver-menu">
+                            <h1 className={gameWin ? "victory" : "lose"}>{gameWin ? "VICTORIA" : "DERROTA"}</h1>
                             {
                                 gameWin ?
-                                    <button onClick={()=>{continueFunction()}}>
+                                    <button onClick={() => { continueFunction() }}>
                                         CONTINUAR
                                     </button>
                                     : <></>
@@ -773,6 +815,12 @@ const GamePage = () => {
                             </button>
                             <button onClick={(event) => { startButtonSound(event); setRestart(true); navigate('/') }}>INICIO</button>
                             <button onClick={(event) => { startButtonSound(event); setRestart(true); navigate(`/perfil/${user ? user.nick : ''}`) }}>PERFIL</button>
+                            <div className="final-match-info">
+                                <p>{formatedTimeRef.current.textContent}</p>
+                                <p>Rondas: {rounds}</p>
+                                <p>Cartas restantes en esta ronda: {dungeon.length + room.length}</p>
+                                <p>Total de cartas jugadas: {totalCardsUsed.current}</p>
+                            </div>
                         </div> :
                         <></>
                 }
@@ -783,9 +831,9 @@ const GamePage = () => {
                             <h1 className="player-health"><img src={healthIcon} />{health}/{maxHealth}{healthAnimation !== null ? <div className="animation-container"><strong className="animation" disabled={healthAnimation}>{healthAnimationValue}</strong><img className="animation" disabled={healthAnimation} src={healthAnimation} /></div> : <></>}</h1>
                             <h1 className="player-gold"><img src={GoldIcon} />{gold}{goldAnimation !== null ? <div className="animation-container"><strong className="animation" disabled={goldAnimation}>{goldAnimationValue}</strong><img className="animation" disabled={goldAnimation} src={goldAnimation} /></div> : <></>}</h1>
                             {pentakillTargetNumber.current !== 0 ? <h1>Racha <strong>{actualStreak.current}</strong>/<strong>{pentakillTargetNumber.current}</strong></h1> : <></>}
-                            {gameOn && gameWin?<h1>Sin límite</h1>:<h1>RONDA {rounds}/{maxRounds}</h1>}
+                            {gameOn && gameWin ? <h1>Sin límite</h1> : <h1>RONDA {rounds}/{maxRounds}</h1>}
                             <h2 ref={formatedTimeRef}>Tiempo: 00:00</h2>
-                            <p>{dungeon.length} encuentros restantes</p>
+                            <p>{dungeon.length} cartas restantes</p>
                         </div>
                         <div className="game-character">
                             <img className="character-avatar" style={{ borderColor: user.color }} src={character?.imagen} alt={character?.nombre} />
@@ -794,7 +842,7 @@ const GamePage = () => {
                         <div className="game-modifiers">
                             {
                                 modifiers.map((modifierInfo) => (
-                                    <Modifier modifierInfo={modifierInfo} />
+                                    <Modifier key={modifierInfo.id + modifierInfo.nombre.charCodeAt(0)} modifierInfo={modifierInfo} />
                                 ))
                             }
                         </div>
@@ -815,10 +863,10 @@ const GamePage = () => {
                             <Group x={DUNGEON_ZONE.x} y={DUNGEON_ZONE.y}>
                                 <Rect width={DUNGEON_ZONE.width} height={DUNGEON_ZONE.height} fill="#0000006c" stroke="white" strokeWidth={2} cornerRadius={8} />
                                 <Text text="DUNGEON" rotation={55} fontFamily="Romulus" fontSize={30} fill="white" y={WEAPON_ZONE.height * 0.075} x={WEAPON_ZONE.width * 0.1} />
-                                {dungeon.map((card, i) => (
+                                {dungeon.slice(0,4).map((card, i) => (
                                     <Card
                                         ref={el => cardRefs.current[card.id] = el}
-                                        key={card.id + 2}
+                                        key={"dungeon-"+card.id}
                                         cardInfo={card}
                                         x={7.5}
                                         y={5}
@@ -840,7 +888,7 @@ const GamePage = () => {
                                 {discardPile.map((card, i) => (
                                     <Card
                                         ref={el => cardRefs.current[card.id] = el}
-                                        key={card.id + 4}
+                                        key={"discard-"+card.id}
                                         cardInfo={card}
                                         x={5}
                                         y={5}
@@ -857,7 +905,7 @@ const GamePage = () => {
                                 <Text text="ZONA DE EQUIPO" fontFamily="Romulus" fontSize={40} fill="white" y={WEAPON_ZONE.height * 0.4} x={WEAPON_ZONE.width * 0.12} />
                                 {weapon && <Card
                                     ref={el => cardRefs.current[weapon.id] = el}
-                                    key={weapon.id + 3}
+                                    key={"weapon-"+weapon.id}
                                     cardInfo={weapon}
                                     x={10}
                                     y={10}
@@ -868,7 +916,7 @@ const GamePage = () => {
                                 {slainMonsters.map((card, i) => (
                                     <Card
                                         ref={el => cardRefs.current[card.id] = el}
-                                        key={card.id + 3}
+                                        key={"slain-"+card.id}
                                         cardInfo={card}
                                         x={150 + (i * 20)}
                                         y={10 + (i * 10)}
@@ -884,7 +932,7 @@ const GamePage = () => {
                             {room.map((card, index) => (
                                 <Card
                                     ref={el => cardRefs.current[card.id] = el}
-                                    key={card.id + 5}
+                                    key={"room-"+card.id+index}
                                     cardInfo={card}
                                     x={card.x + (index * 140)}
                                     y={card.y + 10}
@@ -895,6 +943,20 @@ const GamePage = () => {
                             ))}
                         </Layer>
                     </Stage>
+                    {
+                        showLogs ?
+
+                            <div className="logs-container">
+                                {
+                                    logsRef.current.length > 0 ?
+                                        <div className="logs">
+                                            <pre>{logsRef.current.join('\n\n')}</pre>
+                                        </div>
+                                        : <h1 style={{ color: "white" }}>SIN LOGS</h1>
+                                }
+                            </div>
+                            : <></>
+                    }
                 </div>
             </div>
         </Fragment>
