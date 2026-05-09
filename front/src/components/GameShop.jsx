@@ -42,12 +42,12 @@ const GameShop = ({ gold, setGold, setShopAvailable, health, maxHealth, formated
 
         // Agregar armas
         weps.forEach((wep, index) => {
-            items.push({ id: `wep-${index}`, type: 'card', data: wep, price: (wep.valor * 10), isBought: false });
+            items.push({ id: `wep-${index}`, type: 'card', data: wep, price: Math.max(5,wep.valor * 5), isBought: false });
         });
 
         // Agregar cura
         heal.forEach((heal, index) => {
-            items.push({ id: `wep-${index}`, type: 'card', data: heal, price: 10 + (heal.valor * 5), isBought: false });
+            items.push({ id: `wep-${index}`, type: 'card', data: heal, price: (heal.valor * 5), isBought: false });
         });
 
         setShopItems(items);
