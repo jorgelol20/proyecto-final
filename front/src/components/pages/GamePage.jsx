@@ -726,7 +726,7 @@ const GamePage = () => {
             case 'progresive_heal_turns':
                 progresive_heal_turns.current = effect.value
             case 'weapon_dmg':
-                weapon_dmg = effect.value
+                weapon_dmg.current = effect.value
             case 'invincibility_turns':
                 invincibility_turns.current = effect.value
             case 'revive':
