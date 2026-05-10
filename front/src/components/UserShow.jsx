@@ -7,7 +7,7 @@ const UserShow = ({userInfo}) => {
         <Fragment>
             <div className="show">
                 <img className="show-avatar" src={userInfo.avatar} alt="" />
-                <h1>{userInfo.nick}</h1>
+                <h1 className={userInfo.es_admin ? "admin" : "user"}>{userInfo.nick}</h1>
             </div>
         </Fragment>
     )

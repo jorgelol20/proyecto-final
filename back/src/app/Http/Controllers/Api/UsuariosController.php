@@ -17,7 +17,16 @@ class UsuariosController extends Controller
 {
     public function index()
     {
-        $usuarios = Usuarios::select('id', 'nick', 'email', 'avatar', 'color', 'created_at')->get();
+        $usuarios = Usuarios::select('id', 'nick', 'email', 'avatar', 'color', 'created_at')
+            ->withCount([
+                'tiene_jugadas as total_victorias' => function ($query) {
+                    $query->where('victoria', true);
+                },
+                'tiene_jugadas as total_derrotas' => function ($query) {
+                    $query->where('victoria', false);
+                }
+            ])
+            ->get();
         $usuarios = $usuarios->load(['comentarios', 'tiene_jugadas.modificadores']);
         return response()->json(['usuario' => $usuarios]);
     }
@@ -100,6 +109,7 @@ class UsuariosController extends Controller
         return response()->json(['message' => 'Usuario eliminado'], 201);
     }
 
+
     public function storeComentario(Request $request)
     {
         $partida = Partidas::findOrFail($request->partida_id);
@@ -140,4 +150,22 @@ class UsuariosController extends Controller
             'message' => 'Comentario eliminado correctamente'
         ]);
     }
+    public function ranking()
+    {
+        $usuarios = Usuarios::select('id', 'nick', 'email', 'avatar', 'color', 'created_at', 'es_admin')
+            ->withCount([
+                'tiene_jugadas as total_victorias' => function ($query) {
+                    $query->where('victoria', true);
+                },
+                'tiene_jugadas as total_derrotas' => function ($query) {
+                    $query->where('victoria', false);
+                },
+                'tiene_jugadas'
+            ])
+            ->having('total_victorias', '>', 0)
+            ->orderBy('total_victorias', 'desc')
+            ->get();
+        return response()->json(['usuarios' => $usuarios]);
+    }
 }
+

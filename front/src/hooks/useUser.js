@@ -177,6 +177,16 @@ export const useUser = () => {
         }
     });
 
+    const getRanking = async () => {
+        try {
+            const response = await api.get(`/ranking`);
+            return response.data.usuarios;
+        } catch (error) {
+            console.error("Error al obtener usuario:", error.response?.data?.message);
+            throw error;
+        }
+    };
+
     return {
         user,
         isLoading,
@@ -199,5 +209,6 @@ export const useUser = () => {
         deleteComment: deleteComment.mutate,
         deleteCommentError: deleteComment.error,
         isDeletingComment: deleteComment.isPending,
+        getRanking,
     };
 };

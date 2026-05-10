@@ -1,0 +1,63 @@
+.ranking {
+    position: absolute;
+    background-color: var(--main-color);
+    border-color: var(--main-color);
+    border-width: 5px;
+    border-style: solid;
+    border-radius: 5px;
+    margin-left: 11%;
+    margin-top: -12.5%;
+    width: 25cqw;
+    height: 12cqw;
+    color: var(--main-white);
+    text-align: center;
+
+    h1 {
+        font-size: 1cqw;
+    }
+}
+
+.user-ranking {
+    display: flex;
+    align-items: center;
+    background-color: var(--second-color);
+    height: 3cqw;
+    width: 95%;
+    border-color: var(--second-color-dark);
+    border-width: 5px;
+    border-style: solid;
+    border-radius: 5px;
+
+    h1 {
+        font-size: 1cqw;
+        margin-left: 0.5cqw;
+        margin-right: 0.5cqw;
+        color: var(--main-black);
+    }
+
+    img {
+        width: 2cqw;
+        height: 2cqw;
+        border-width: 5px;
+        border-style: solid;
+        border-radius: 5px;
+    }
+
+    .admin {
+        color: var(--main-gold);
+    }
+}
+.ranking-container{
+    overflow-y: auto;
+    height: 80%;
+    margin: 5px solid var(--main-color);
+}
+#num-1 {
+    color: var(--main-gold);
+}
+#num-2 {
+    color: var(--main-silver);
+}
+#num-3 {
+    color: var(--main-bronze);
+}
