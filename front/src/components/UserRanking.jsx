@@ -26,7 +26,7 @@ const UserRanking = () => {
                                     <img style={{ borderColor: userInfo.color }} src={userInfo.avatar} alt="" />
                                     <h1 className={userInfo.es_admin ? 'admin' : 'user'}>{userInfo.nick}</h1>
                                     <h1>Total partidas: {userInfo.tiene_jugadas_count}</h1>
-                                    <h1>WR: <strong style={{ color: 'var(--main-gold)' }}>{(userInfo.total_victorias / userInfo.tiene_jugadas_count) * 100}%</strong></h1>
+                                    <h1>WR: <strong style={{ color: 'var(--main-gold)' }}>{Math.floor((userInfo.total_victorias / userInfo.tiene_jugadas_count) * 100)}%</strong></h1>
                                 </div>
                             )
                         })
