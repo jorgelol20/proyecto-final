@@ -47,7 +47,7 @@ const GameShop = ({ gold, setGold, setShopAvailable, health, maxHealth, formated
 
         // Agregar cura
         heal.forEach((heal, index) => {
-            items.push({ id: `wep-${index}`, type: 'card', data: heal, price: (heal.valor * 5), isBought: false });
+            items.push({ id: `heal-${index}`, type: 'card', data: heal, price: (heal.valor * 5), isBought: false });
         });
 
         setShopItems(items);
