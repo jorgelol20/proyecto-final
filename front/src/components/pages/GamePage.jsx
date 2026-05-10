@@ -83,19 +83,11 @@ const GamePage = () => {
             formatedTimeRef.current.textContent = `Tiempo: 00:00`;
         }
         // Reiniciar modificadores
-        pentakillTargetNumber.current = 0;
-        pentakillDmg.current = 0;
-        actualStreak.current = 0;
-        actualScapes.current = 1;
-        healthSteal.current = false;
-        ricochet.current = false
-        enemyDmgMultiplier.current = (1);
-        enemyExtraDmg.current = (0)
-        spadesExtraTakedDmg.current = (0);
-        clubsExtraTakedDmg.current = (0);
-        ricochet.current = false;
-        totalCardsUsed.current = 0
-        setMaxScapes(1)
+        cleanModifiers()
+
+        // Reiniciar efectos cartas
+        cleanHealEffects()
+        cleanWeaponEffects()
 
         // Reiniciar contexto
         setNewDeck();
@@ -416,7 +408,7 @@ const GamePage = () => {
 
     const setModifierWeapon = async (power) => {
         const newWeapon = await getWeapon(power)
-        setWeapon(newWeapon)
+        processCardAction(newWeapon)
         if (slainMonsters.length > 0) {
             moveCardToDiscard([...slainMonsters], true)
             setTimeout(() => {
@@ -479,6 +471,22 @@ const GamePage = () => {
         return true;
     }
 
+    const cleanModifiers = () => {
+        pentakillTargetNumber.current = 0;
+        pentakillDmg.current = 0;
+        actualStreak.current = 0;
+        actualScapes.current = 1;
+        healthSteal.current = false;
+        ricochet.current = false
+        enemyDmgMultiplier.current = (1);
+        enemyExtraDmg.current = (0)
+        spadesExtraTakedDmg.current = (0);
+        clubsExtraTakedDmg.current = (0);
+        ricochet.current = false;
+        totalCardsUsed.current = 0
+        setMaxScapes(1)
+    }
+
     const handleModifierEvent = async () => {
         const modifier = modifiers[modifiers.length - 1]
         const modifierEffects = modifier.efectos[0]
@@ -529,8 +537,8 @@ const GamePage = () => {
             setRounds(rounds + 1)
             await addEnemys(5)
             shuffleDeck(matchDeck);
-            setDiscardPile([]);+
-            setAvailableAbilitie(true)
+            setDiscardPile([]); +
+                setAvailableAbilitie(true)
         } else if (rounds === 10) {
             setGameOn(false)
             setGameWin(true)
@@ -653,84 +661,248 @@ const GamePage = () => {
         }, 450);
     };
 
+    // EFECTOS CARTAS
+    // Efectos vida
+    const currentHeal = useRef(0);
+    const progresive_heal = useRef(0);
+    const progresive_heal_turns = useRef(0);
+    const dmg_reduction = useRef(0);
+
+    const heal_roulete = (execute = false) => {
+        if (execute) {
+            if (Math.floor(Math.random() * 100) > 75) {
+                currentHeal.current = -100
+            } else {
+                currentHeal.current = 100
+            }
+        }
+    }
+
+    const cleanHealEffects = () => {
+        currentHeal.current = 0;
+        progresive_heal.current = 0;
+        progresive_heal_turns.current = 0;
+        dmg_reduction.current = 0;
+    }
+    // Efectos armas
+
+    const weapon_dmg = useRef(0)
+    const invincibility_turns = useRef(0);
+
+    const revive = useRef(false);
+    const revive_health = useRef(0)
+
+    const weapon_health_steal = useRef(false)
+    const weapon_health_steal_quantity = useRef(0)
+
+    const cleanWeaponEffects = () => {
+        weapon_dmg.current = 0
+        invincibility_turns.current = 0
+        revive.current = false
+        revive_health.current = 0
+        weapon_health_steal.current = false
+        weapon_health_steal_quantity.current = 0
+    }
+
+
+
+    const applyCardEffect = (effect) => {
+        switch (effect.name) {
+            case 'restore_abilitie':
+                setAvailableAbilitie(true)
+                break
+            case 'heal':
+                currentHeal.current = effect.value;
+                break;
+            case 'dmg_reduction':
+                dmg_reduction.current = effect.value
+                break;
+            case 'heal_roulete':
+                heal_roulete(true)
+                break;
+            case 'progresive_heal':
+                progresive_heal.current = effect.value
+                break;
+            case 'progresive_heal_turns':
+                progresive_heal_turns.current = effect.value
+            case 'weapon_dmg':
+                weapon_dmg = effect.value
+            case 'invincibility_turns':
+                invincibility_turns.current = effect.value
+            case 'revive':
+                revive.current = true;
+                break;
+            case 'revive_health':
+                revive_health.current = effect.value
+                break;
+            case 'health_steal':
+                weapon_health_steal.current = true;
+                weapon_health_steal_quantity.current = effect.value
+                break;
+            default:
+                return false;
+        }
+        return true;
+    }
+
+    const handleCardEffect = (card) => {
+        const cardEffects = card.efectos[0]
+        const effectsList = Array.isArray(cardEffects) ? cardEffects : [cardEffects];
+        effectsList.forEach((effect) => {
+            applyCardEffect(effect)
+        });
+    }
+
+
+    const handleHeal = (card) => {
+        currentHeal.current = card.valor;
+        if (card.especial) {
+            handleCardEffect(card)
+        }
+        if (!healedRef.current) {
+            setHealth(prev => Math.min(maxHealth, prev + currentHeal.current));
+            healAnimation(currentHeal.current)
+            healedRef.current = true
+            logsRef.current.push((logsRef.current.length + 1) + " - " + card.valor + " de " + card.palo + " te ha curado " + currentHeal.current + " de daño.")
+        } else {
+            logsRef.current.push((logsRef.current.length + 1) + " - " + card.valor + " de " + card.palo + " te no te ha curado nada.")
+        }
+        moveCardToDiscard([card])
+        actualStreak.current = 0;
+        return true;
+    }
+
+    const handleWeapon = (card) => {
+        cleanWeaponEffects();
+        weapon_dmg.current = card.valor
+        if (card.especial) {
+            handleCardEffect(card)
+        }
+        if (weapon) {
+            moveCardToDiscard([weapon], true)
+            logsRef.current.push((logsRef.current.length + 1) + " - " + "Arma de " + weapon.valor + " ha sido cambiada por arma de " + card.valor + ".")
+            setTimeout(() => {
+                setWeapon(card);
+                deleteFromRoom(card);
+            }, 100);
+        } else {
+            deleteFromRoom(card)
+            setWeapon(card);
+            logsRef.current.push((logsRef.current.length + 1) + " - " + "Nueva arma de " + card.valor + " activa.")
+        }
+        if (slainMonsters.length > 0) {
+            moveCardToDiscard([...slainMonsters], true)
+            setTimeout(() => {
+                setSlainMonsters([]);
+            }, 200);
+        }
+        actualStreak.current = 0;
+        return true;
+    }
+
+    const handleCombat = (card) => {
+
+        if (card.especial) {
+            handleCardEffect(card)
+        }
+        let user_dmg_reduction = 0;
+        if (dmg_reduction.current !== 0) {
+            user_dmg_reduction = dmg_reduction.current;
+            dmg_reduction.current = 0;
+        }
+
+        const enemy_dmg = Math.ceil((card.valor * enemyDmgMultiplier.current)) + enemyExtraDmg.current - user_dmg_reduction;
+        const pentakill = actualStreak.current >= pentakillTargetNumber.current ? pentakillDmg.current : 0
+
+        if (invincibility_turns.current > 0) {
+
+            const final_user_dmg = 100
+            const final_enemy_dmg = - pentakill;
+            const final_dmg = Math.max(0, final_enemy_dmg - final_user_dmg);
+
+            damageAnimation(final_dmg)
+            const earnedGold = 5;
+            coinAnimation(earnedGold)
+            setGold(prev => prev + earnedGold);
+
+            let final_health = Math.max(0, health - final_dmg)
+            if (final_health === 0 && revive.current) {
+                final_health = revive_health.current;
+                revive.current = false;
+            }
+
+            setHealth(final_health);
+
+            if (healthSteal.current && card.valor < weapon_dmg.current) {
+                const heal = Math.min(0, card.valor - weapon_dmg.current) > -3 ? Math.min(0, card.valor - weapon_dmg.current) * -1 : 3;
+                healAnimation(heal)
+                setHealth(prev => Math.min(maxHealth, prev + heal));
+            }
+            if (weapon_health_steal) {
+                setHealth(prev => Math.min(maxHealth, prev + weapon_health_steal_quantity));
+            }
+
+            setSlainMonsters([...slainMonsters, card]);
+            deleteFromRoom(card)
+            actualStreak.current = actualStreak.current + 1;
+            logsRef.current.push((logsRef.current.length + 1) + " - " + card.valor + " de " + card.palo + " te ha hecho " + final_dmg + " de daño.")
+            invincibility_turns.current -= 1;
+            return true
+        }
+
+        // ATAQUE CON ARMA
+        else if (weapon && (slainMonsters.length === 0 || card.valor < (slainMonsters[slainMonsters.length - 1]?.valor || 99))) {
+
+            const final_user_dmg = weapon_dmg.current + (card.palo == 'Pica' ? spadesExtraTakedDmg.current : clubsExtraTakedDmg.current);
+            const final_enemy_dmg = enemy_dmg - pentakill;
+
+            const final_dmg = Math.max(0, final_enemy_dmg - final_user_dmg);
+            damageAnimation(final_dmg)
+            const earnerGold = gold + 5;
+            coinAnimation(5)
+            setGold(earnerGold);
+            setHealth(prev => Math.max(0, prev - final_dmg));
+            if (healthSteal.current && card.valor < weapon_dmg.current) {
+                const heal = Math.min(0, card.valor - weapon_dmg.current) > -3 ? Math.min(0, card.valor - weapon_dmg.current) * -1 : 3;
+                healAnimation(heal)
+                setHealth(prev => Math.min(maxHealth, prev + heal));
+            }
+            setSlainMonsters([...slainMonsters, card]);
+            deleteFromRoom(card)
+            actualStreak.current = actualStreak.current + 1;
+            logsRef.current.push((logsRef.current.length + 1) + " - " + card.valor + " de " + card.palo + " te ha hecho " + final_dmg + " de daño.")
+            return true
+        }
+
+        // ATAQUE SIN ARMA
+        else {
+            const final_user_dmg = pentakill + (card.palo == 'Pica' ? spadesExtraTakedDmg.current : clubsExtraTakedDmg.current)
+            const final_dmg = Math.max(0, enemy_dmg - final_user_dmg);
+            moveCardToDiscard([card])
+            damageAnimation(final_dmg, true)
+            setHealth(prev => Math.max(0, prev - final_dmg));
+            actualStreak.current = 0;
+            logsRef.current.push((logsRef.current.length + 1) + " - " + card.valor + " de " + card.palo + " te ha hecho " + final_dmg + " de daño.")
+            return true
+        }
+    }
+
+
     // Lógica de combate
     const processCardAction = useCallback((card) => {
         document.body.style.cursor = "url('/images/cursor/Cursor_2.webp') 16 16, auto"
         let validMove = false;
         // Lógica de curación
         if (card.palo === 'Corazon') {
-            if (!healedRef.current) {
-                setHealth(prev => Math.min(maxHealth, prev + card.valor));
-                healAnimation(card.valor)
-                healedRef.current = true
-                logsRef.current.push((logsRef.current.length + 1) + " - " + card.valor + " de " + card.palo + " te ha curado " + card.valor + " de daño.")
-            } else {
-                logsRef.current.push((logsRef.current.length + 1) + " - " + card.valor + " de " + card.palo + " te no te ha curado nada.")
-            }
-            moveCardToDiscard([card])
-            validMove = true;
-            actualStreak.current = 0;
-
+            validMove = handleHeal(card)
         }
         // Lógica de arma
         else if (card.palo === 'Diamante') {
-            if (weapon) {
-                moveCardToDiscard([weapon], true)
-                logsRef.current.push((logsRef.current.length + 1) + " - " + "Arma de " + weapon.valor + " ha sido cambiada por arma de " + card.valor + ".")
-                setTimeout(() => {
-                    setWeapon(card);
-                    deleteFromRoom(card);
-                }, 100);
-            } else {
-                deleteFromRoom(card)
-                setWeapon(card);
-                logsRef.current.push((logsRef.current.length + 1) + " - " + "Nueva arma de " + card.valor + " activa.")
-            }
-            if (slainMonsters.length > 0) {
-                moveCardToDiscard([...slainMonsters], true)
-                setTimeout(() => {
-                    setSlainMonsters([]);
-                }, 200);
-            }
-            validMove = true;
-            actualStreak.current = 0;
+            validMove = handleWeapon(card)
         }
         // Lógica de combate
         else if (card.palo === 'Pica' || card.palo === 'Trebol') {
-            const final_enemy_dmg = Math.ceil((card.valor * enemyDmgMultiplier.current)) + enemyExtraDmg.current;
-            if (weapon && (slainMonsters.length === 0 || card.valor < (slainMonsters[slainMonsters.length - 1]?.valor || 99))) {
-                // Ataque con arma
-                const pentakill = actualStreak.current >= pentakillTargetNumber.current ? pentakillDmg.current : 0
-                const final_user_dmg = weapon.valor + (card.palo == 'Pica' ? spadesExtraTakedDmg.current : clubsExtraTakedDmg.current);
-                const enemy_damage = final_enemy_dmg - pentakill;
-                const final_dmg = Math.max(0, enemy_damage - final_user_dmg);
-                damageAnimation(final_dmg)
-                const earnerGold = gold + 5;
-                coinAnimation(5)
-                setGold(earnerGold);
-                setHealth(prev => Math.max(0, prev - final_dmg));
-                if (healthSteal.current && card.valor < weapon.valor) {
-                    const heal = Math.min(0, card.valor - weapon.valor) > -3 ? Math.min(0, card.valor - weapon.valor) * -1 : 3;
-                    healAnimation(heal)
-                    setHealth(prev => Math.min(maxHealth, prev + heal));
-                }
-                setSlainMonsters([...slainMonsters, card]);
-                deleteFromRoom(card)
-                validMove = true;
-                actualStreak.current = actualStreak.current + 1;
-                logsRef.current.push((logsRef.current.length + 1) + " - " + card.valor + " de " + card.palo + " te ha hecho " + final_dmg + " de daño.")
-            } else {
-                // Ataque sin arma
-                const pentakill = actualStreak.current >= pentakillTargetNumber.current ? pentakillDmg.current : 0
-                const final_user_dmg = pentakill + (card.palo == 'Pica' ? spadesExtraTakedDmg.current : clubsExtraTakedDmg.current)
-                const final_dmg = Math.max(0, final_enemy_dmg - final_user_dmg);
-                moveCardToDiscard([card])
-                damageAnimation(final_dmg, true)
-                setHealth(prev => Math.max(0, prev - final_dmg));
-                validMove = true;
-                actualStreak.current = 0;
-                logsRef.current.push((logsRef.current.length + 1) + " - " + card.valor + " de " + card.palo + " te ha hecho " + final_dmg + " de daño.")
-            }
+            validMove = handleCombat(card)
         }
         if (validMove) {
             if (character?.habilidad_personaje?.id === 1) {
@@ -739,9 +911,10 @@ const GamePage = () => {
             canScape.current = false
             totalCardsUsed.current += 1;
         } else {
-            logsRef.current.push((logsRef.current.length + 1) + " - " + "Moviemiento no válido.")
+            logsRef.current.push((logsRef.current.length + 1) + " - " + "Movimiento no válido.")
         }
     }, [health, gold, weapon, discardPile])
+
     const handleDragEnd = (card, finalX, finalY) => {
         const isOverZone =
             finalX > WEAPON_ZONE.x && finalX < WEAPON_ZONE.x + WEAPON_ZONE.width &&
@@ -866,10 +1039,10 @@ const GamePage = () => {
                             <Group x={DUNGEON_ZONE.x} y={DUNGEON_ZONE.y}>
                                 <Rect width={DUNGEON_ZONE.width} height={DUNGEON_ZONE.height} fill="#0000006c" stroke="white" strokeWidth={2} cornerRadius={8} />
                                 <Text text="DUNGEON" rotation={55} fontFamily="Romulus" fontSize={30} fill="white" y={WEAPON_ZONE.height * 0.075} x={WEAPON_ZONE.width * 0.1} />
-                                {dungeon.slice(0,4).map((card, i) => (
+                                {dungeon.slice(0, 4).map((card, i) => (
                                     <Card
                                         ref={el => cardRefs.current[card.id] = el}
-                                        key={"dungeon-"+card.id}
+                                        key={"dungeon-" + card.id + card.palo}
                                         cardInfo={card}
                                         x={7.5}
                                         y={5}
@@ -891,7 +1064,7 @@ const GamePage = () => {
                                 {discardPile.map((card, i) => (
                                     <Card
                                         ref={el => cardRefs.current[card.id] = el}
-                                        key={"discard-"+card.id}
+                                        key={"discard-" + card.id + card.palo}
                                         cardInfo={card}
                                         x={5}
                                         y={5}
@@ -908,7 +1081,7 @@ const GamePage = () => {
                                 <Text text="ZONA DE EQUIPO" fontFamily="Romulus" fontSize={40} fill="white" y={WEAPON_ZONE.height * 0.4} x={WEAPON_ZONE.width * 0.12} />
                                 {weapon && <Card
                                     ref={el => cardRefs.current[weapon.id] = el}
-                                    key={"weapon-"+weapon.id}
+                                    key={"weapon-" + weapon.id}
                                     cardInfo={weapon}
                                     x={10}
                                     y={10}
@@ -919,7 +1092,7 @@ const GamePage = () => {
                                 {slainMonsters.map((card, i) => (
                                     <Card
                                         ref={el => cardRefs.current[card.id] = el}
-                                        key={"slain-"+card.id}
+                                        key={"slain-" + card.id + card.palo}
                                         cardInfo={card}
                                         x={150 + (i * 20)}
                                         y={10 + (i * 10)}
@@ -935,7 +1108,7 @@ const GamePage = () => {
                             {room.map((card, index) => (
                                 <Card
                                     ref={el => cardRefs.current[card.id] = el}
-                                    key={"room-"+card.id+index}
+                                    key={"room-" + card.id + card.palo}
                                     cardInfo={card}
                                     x={card.x + (index * 140)}
                                     y={card.y + 10}

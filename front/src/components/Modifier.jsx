@@ -12,7 +12,6 @@ const Modifier = ({ modifierInfo, setSelectModifier, bigger }) => {
                 <div className="modifier-info-mini">
                     <img id={"nivel-" + modifierInfo.nivel} className={bigger?"bigger":""} onMouseOver={() => { setShowText(true) }} src={modifierInfo.imagen} popoverTarget="modifier-info" alt="" />
                     <div id="modifier-info" popover="auto" className="modifier-text" onMouseLeave={() => { setShowText(false) }}>
-                        {console.log(bigger)}
                         <img id={"nivel-" + modifierInfo.nivel} src={modifierInfo.imagen} alt="" />
                         <h3 id={"nivel-" + modifierInfo.nivel}>{modifierInfo.nombre}</h3>
                         <p>{modifierInfo.descripcion}</p>

@@ -54,7 +54,7 @@ const MatchProvider = (props) => {
         setGameLoading(false)
     }
     const endGame = async (user_id, tiempo, victoria, rondas, charInfo = null) => {
-        const matchCharacter = charInfo == null?character:charInfo
+        const matchCharacter = charInfo == null ? character : charInfo
         if (matchCharacter) {
             const gameModifiers = activeModifiers.map((modifier) => modifier.id);
             const payload = {
@@ -78,6 +78,12 @@ const MatchProvider = (props) => {
     }
 
     const addCardToMatchDeck = (card) => {
+        efectos: typeof item.efectos === 'string' ? Array(JSON.parse(item.efectos)) : item.efectos
+        if (card.efectos !== null) {
+            typeof card.efectos === 'string' ? Array(JSON.parse(card.efectos)) : card.efectos
+        }
+        card.x = 200
+        card.y = 0
         setMatchDeck(prevDeck => [...prevDeck, card]);
     }
 
@@ -91,6 +97,11 @@ const MatchProvider = (props) => {
         );
         const shuffled = candidates.sort(() => Math.random() - 0.5);
         const newEnemys = shuffled.slice(0, quantity);
+        const finalNewEnemys = newEnemys.map((card) => {
+            card.x = 200
+            card.y = 0
+            return card
+        })
         setMatchDeck(prevDeck => [...prevDeck, ...newEnemys]);
     }
 
@@ -150,10 +161,14 @@ const MatchProvider = (props) => {
 
     const getWeapon = (power) => {
         const card = cards.find((card) => card.palo == "Diamante" && card.valor == power)
+        card.x = 200
+        card.y = 0
         return card
     }
     const getHealItem = (power) => {
         const card = cards.find((card) => card.palo == "Corazon" && card.valor == power)
+        card.x = 200
+        card.y = 0
         return card
     }
 

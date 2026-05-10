@@ -22,6 +22,8 @@ class CartaFactory extends Factory
             'valor' => fake()->numberBetween(2,14),
             'imagen' => null,
             'activa' => True,
+            'especial' => False,
+            'efectos' => null
         ];
     }
 }

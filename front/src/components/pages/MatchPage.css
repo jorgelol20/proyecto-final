@@ -66,13 +66,14 @@
             width: 25%;
 
             img {
-                width: 10em;
+                width: 8cqw;
+                height: 8cqw;
                 border: 5px groove;
                 border-radius: 50%;
             }
 
             h1 {
-                font-size: 1em;
+                font-size: 1cqw;
             }
 
             .admin {

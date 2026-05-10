@@ -1,4 +1,4 @@
-import React, { useRef, useImperativeHandle, forwardRef, useState } from "react";
+import React, { useRef, useImperativeHandle, forwardRef, useState, useEffect } from "react";
 import { Group, Rect, Text, Image } from 'react-konva';
 import Konva from 'konva';
 import useImage from 'use-image';
@@ -35,6 +35,9 @@ const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = tru
     const [spadeImage] = useImage(SpadeIcon);
     const [defaultImage] = useImage(Default);
 
+    // Color de la carta
+    const colorRef = useRef('')
+
     const handleDragEndInternal = (e) => {
         const finalX = e.target.x();
         const finalY = e.target.y();
@@ -51,6 +54,15 @@ const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = tru
         }
     };
 
+    useEffect(() => {
+        const palos = ['Diamante', 'Corazon']
+        if (cardInfo.valor > 10 && palos.indexOf(cardInfo.palo) != -1) {
+            cardInfo.valor = 10;
+        }
+        colorRef.current = cardInfo.especial ? '#D4AF37' : cardInfo.palo === 'Corazon' ? '#1E5128' : cardInfo.palo === 'Diamante' ? '#F77F00' : '#0C0C0C';
+        
+    }, [])
+
     return (
         <Group
             ref={groupRef}
@@ -58,7 +70,7 @@ const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = tru
             y={y}
             draggable={isDraggable}
             onClick={() => onClick(cardInfo)}
-            onDragStart={()=>{setStrokeWidth(6)}}
+            onDragStart={() => { setStrokeWidth(6) }}
             onDragEnd={handleDragEndInternal}
             onDragMove={() => { document.body.style.cursor = "url('/images/cursor/Cursor_4.webp') 3 7, auto" }}
             onMouseEnter={() => { document.body.style.cursor = isDraggable ? "url('/images/cursor/Cursor_3.webp') 3 7, auto" : "url('/images/cursor/Cursor_5.webp') 3 7, auto"; }}
@@ -69,8 +81,8 @@ const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = tru
                 height={150}
                 fill={onDeck ? "#000" : "white"}
                 cornerRadius={8}
-                stroke={!onDeck?cardInfo.palo === 'Corazon' ? '#1E5128' : cardInfo.palo === 'Diamante' ? '#F77F00' : '#0C0C0C':'#0C0C0C'} 
-                strokeWidth={!onDeck?strokeWidth:0}
+                stroke={!onDeck ? colorRef.current : '#0C0C0C'}
+                strokeWidth={!onDeck ? strokeWidth : 0}
                 shadowBlur={10}
                 shadowOpacity={0.3}
                 lineJoin="round"
@@ -82,7 +94,7 @@ const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = tru
                     {/* VALOR SUPERIOR */}
                     <Text
                         text={`${cardInfo.valor}`}
-                        fill={cardInfo.palo === 'Corazon' ? '#1E5128' : cardInfo.palo === 'Diamante' ? '#F77F00' : '#0C0C0C'}
+                        fill={colorRef.current}
                         fontSize={34}
                         fontFamily="Romulus"
                         x={15}
@@ -127,7 +139,7 @@ const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = tru
                     {/* VALOR INFERIOR (Rotado) */}
                     <Text
                         text={`${cardInfo.valor}`}
-                        fill={cardInfo.palo === 'Corazon' ? '#1E5128' : cardInfo.palo === 'Diamante' ? '#F77F00' : '#0C0C0C'}
+                        fill={colorRef.current}
                         fontSize={34}
                         fontFamily="Romulus"
                         x={100}

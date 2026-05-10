@@ -17,12 +17,16 @@ class Carta extends Model
         'palo',
         'valor',
         'imagen',
-        'activa'
+        'activa',
+        'especial',
+        'efectos',
     ];
     protected function casts(): array
     {
         return [
-            'activa' => 'boolean'
+            'activa' => 'boolean',
+            'especial' => 'boolean',
+            'efectos' => 'array',
         ];
     }
 }
