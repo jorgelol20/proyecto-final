@@ -48,10 +48,25 @@ const GamePage = () => {
 
     const continueFunction = () => {
         setGameOn(true)
+        setGameWin(false)
         startNewRound(true)
     }
 
-    const restartFunction = () => {
+    const restartFunction = async () => {
+        // Limpieza de cartas y mazo
+        await setDungeon([]);
+        await setRoom([]);
+        await setDiscardPile([]);
+        await setWeapon(null);
+        await setSlainMonsters([]);
+
+        // Reiniciar contexto
+        await setNewDeck();
+        await setNewCharacter(null);
+        await setGameLoading(false)
+        await setRestart(false)
+        startNewGame();
+
         // Sonido y UI básica
         startButtonSound(event);
         setGameOver(false);
@@ -59,12 +74,8 @@ const GamePage = () => {
         setGameWin(false)
         logsRef.current = [];
 
-        // Limpieza de cartas y mazo
-        setDungeon([]);
-        setRoom([]);
-        setDiscardPile([]);
-        setWeapon(null);
-        setSlainMonsters([]);
+
+
 
         // Reset de estadísticas de partida
         setRounds(0);
@@ -89,12 +100,6 @@ const GamePage = () => {
         cleanHealEffects()
         cleanWeaponEffects()
 
-        // Reiniciar contexto
-        setNewDeck();
-        setNewCharacter(null);
-        setGameLoading(false)
-        startNewGame();
-        setRestart(false)
     }
 
     useEffect(() => {
@@ -224,6 +229,8 @@ const GamePage = () => {
 
     //Pila de descartes
     const [DISCARD_ZONE, setDISCARD_ZONE] = useState({ x: 650, y: 200, width: 130, height: 160 });
+    const [overDungeonZone, setOverDungeonZone] = useState(false)
+
     // Estado que almacena la pila de descartes
     const [discardPile, setDiscardPile] = useState([]);
 
@@ -324,19 +331,28 @@ const GamePage = () => {
     // Habilidad del elfo
     const elf = () => {
         let actualRoom = [...room];
-        let newCards = []
-        if (actualRoom.length < 2) {
-            newCards = actualRoom.map((card) => { card.valor = card.valor - 5 < 0 ? 0 : card.valor - 5;; return card })
+        let newCards = [];
+
+        if (actualRoom.length <= 2) {
+            newCards = actualRoom.map((card) => {
+                return {
+                    ...card,
+                    valor: Math.max(0, card.valor - 5)
+                };
+            });
         } else {
             newCards = actualRoom.map((card, index) => {
                 if (index == actualRoom.length - 1 || index == actualRoom.length - 2) {
-                    card.valor = card.valor - 5 < 0 ? 0 : card.valor - 5;
+                    return {
+                        ...card,
+                        valor: Math.max(0, card.valor - 5)
+                    };
                 }
-                return card
-            })
+                return card;
+            });
         }
-        const newRoom = [...newCards];
-        setRoom(newRoom);
+
+        setRoom(newCards);
     }
 
     // Función para usar la habilidad
@@ -427,6 +443,7 @@ const GamePage = () => {
                 setSlainMonsters([]);
             }, 200);
         }
+        canScape.current = true
 
     }
 
@@ -517,16 +534,36 @@ const GamePage = () => {
     // Función para rellenar las cartas activas
     const totalCardsUsed = useRef(0)
 
-    const fillRoom = () => {
-        if (dungeon.length === 0) return;
-        let newRoom = [...room];
-        let currentDungeon = [...dungeon];
-        while (newRoom.length < 4 && currentDungeon.length > 0) {
-            newRoom.push(currentDungeon.pop());
+    const fillRoom = useCallback(() => {
+        setDungeon(prevDungeon => {
+            if (prevDungeon.length === 0) return prevDungeon;
+            setRoom(prevRoom => {
+                if (prevRoom.length >= 4) return prevRoom;
+                const cardsNeeded = 4 - prevRoom.length;
+                const newCardsFromDungeon = prevDungeon.slice(-cardsNeeded).reverse();
+                return [...prevRoom, ...newCardsFromDungeon];
+            });
+            return prevDungeon.slice(0, prevDungeon.length - (4 - room.length));
+        });
+    }, [room.length]);
+
+    useEffect(() => {
+        // Rellenado por escapar o inicial
+        if (room.length === 0 && dungeon.length > 0) {
+            fillRoom()
+            healedRef.current = false
         }
-        setRoom(newRoom);
-        setDungeon(currentDungeon);
-    };
+        //Rellenado por gastar las cartas
+        else if (room.length <= 1 && dungeon.length > 0) {
+            fillRoom();
+            if (character?.habilidad_personaje?.id === 1) {
+                setAvailableAbilitie(true)
+            }
+            healedRef.current = false;
+            actualScapes.curren = maxScapes;
+            canScape.current = true;
+        }
+    }, [room.length, dungeon.length]);
 
     const addEnemy = async (value, randomModifier = false) => {
 
@@ -541,6 +578,7 @@ const GamePage = () => {
         setDungeon([...shuffled])
     }
     const startNewRound = async (continueMatch = false) => {
+        console.log(matchDeck)
         if (rounds !== 10 || continueMatch) {
             setSelectModifier(true)
             if (rounds !== 0) {
@@ -549,8 +587,8 @@ const GamePage = () => {
             setRounds(rounds + 1)
             await addEnemys(5)
             shuffleDeck(matchDeck);
-            setDiscardPile([]); +
-                setAvailableAbilitie(true)
+            setDiscardPile([]);
+            setAvailableAbilitie(true)
         } else if (rounds === 10) {
             setGameOn(false)
             setGameWin(true)
@@ -570,25 +608,6 @@ const GamePage = () => {
         }
     }
 
-    // Cada vez que se realiza un cambio en la mano o en el 
-    // mazo general, salta el useEffect.
-    useEffect(() => {
-        // Rellenado por escapar o inicial
-        if (room.length === 0 && dungeon.length > 0) {
-            fillRoom()
-            healedRef.current = false
-        }
-        //Rellenado por gastar las cartas
-        else if (room.length <= 1 && dungeon.length > 0) {
-            fillRoom();
-            if (character?.habilidad_personaje?.id === 1) {
-                setAvailableAbilitie(true)
-            }
-            healedRef.current = false;
-            actualScapes.curren = maxScapes;
-            canScape.current = true;
-        }
-    }, [room.length, dungeon.length]);
 
 
     /**
@@ -974,7 +993,7 @@ const GamePage = () => {
         )
     }
 
-
+    
     return (
         <Fragment>
             <div className="game">
@@ -1042,20 +1061,24 @@ const GamePage = () => {
                         <Layer ref={layerRef}>
                             {/* ZONA DEL MAZO */}
                             <Group x={DUNGEON_ZONE.x} y={DUNGEON_ZONE.y}>
-                                <Rect width={DUNGEON_ZONE.width} height={DUNGEON_ZONE.height} fill="#0000006c" stroke="white" strokeWidth={2} cornerRadius={8} />
-                                <Text text="DUNGEON" rotation={55} fontFamily="Romulus" fontSize={30} fill="white" y={WEAPON_ZONE.height * 0.075} x={WEAPON_ZONE.width * 0.1} />
+                                <Rect width={DUNGEON_ZONE.width} height={DUNGEON_ZONE.height} fill="#0000006c" stroke="white" strokeWidth={2} cornerRadius={8} onMouseEnter={(e)=>{setOverDungeonZone(true)}} onMouseLeave={(e)=>{setOverDungeonZone(false)}}/>
+                                <Text text="DUNGEON" rotation={55} fontFamily="Romulus" fontSize={30} fill="white" y={20} x={25} />
+
                                 {dungeon.slice(0, 4).map((card, i) => (
                                     <Card
                                         ref={el => cardRefs.current[card.id] = el}
                                         key={"dungeon-" + card.id + card.palo}
                                         cardInfo={card}
+                                        // Si es mago, las desplazamos a la derecha (i * 30) para que no se solapen
                                         x={7.5}
-                                        y={5}
+                                        // Las bajamos un poco escalonadamente
+                                        y={isWizard ? 5 + (i * (overDungeonZone?100:0)) : 5}
                                         onDragEnd={() => { }}
                                         onClick={() => { }}
                                         isDraggable={false}
                                         isWizard={isWizard}
                                         onDeck={true}
+                                        setOverDungeonZone={setOverDungeonZone}
                                     />
                                 ))}
                             </Group>

@@ -67,7 +67,6 @@ const GameShop = ({ gold, setGold, setShopAvailable, health, maxHealth, formated
         if (item.type === 'modifier') {
             addModifierToMatch(item.data);
         } else if (item.type === 'card') {
-            console.log(item.data)
             addCardToMatchDeck(item.data);
         }
 
@@ -92,9 +91,10 @@ const GameShop = ({ gold, setGold, setShopAvailable, health, maxHealth, formated
                     </div>
                     <div className="game-modifiers">
                             {
-                                modifiers.map((modifierInfo) => (
+                                modifiers.length > 0 ? modifiers.map((modifierInfo) => (
                                     <Modifier key={modifierInfo.id + modifierInfo.nombre.charCodeAt(0)} modifierInfo={modifierInfo} />
                                 ))
+                                : <></>
                             }
                         </div>
                 </div>
