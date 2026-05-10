@@ -7,6 +7,7 @@
     min-width: 250px;
     h1{
         font-size: 0.7em;
+        margin-left: 0.5cqw;
     }
     .show-avatar{
         width: 35px;
