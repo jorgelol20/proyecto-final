@@ -195,6 +195,13 @@ const GamePage = () => {
 
     const [shopAvailable, setShopAvailable] = useState(false);
 
+    useEffect(() => {
+        if (!shopAvailable) {
+            setRoom([])
+            shuffleDeck(matchDeck)
+        }
+    }, [shopAvailable])
+
 
     /**
      * ===================================
@@ -255,6 +262,7 @@ const GamePage = () => {
             if (user && character && modifiers.length > 0) {
                 endGame(user.id, timeRef.current, false, rounds, character)
             }
+            restartFunction()
             stopTimer()
             setDungeon([])
             setRoom([])
@@ -374,6 +382,7 @@ const GamePage = () => {
      *           MODIFICADORES
      * ===================================
      */
+
     const [selectModifier, setSelectModifier] = useState(false)
     const [modifiersLoading, setModifiersLoading] = useState(true)
 
@@ -402,9 +411,12 @@ const GamePage = () => {
 
     useEffect(() => {
         if (modifiers.length > 0) {
+            setModifiersLoading(true)
             handleModifierEvent()
         }
     }, [modifiers])
+
+
 
     const setModifierWeapon = async (power) => {
         const newWeapon = await getWeapon(power)
@@ -471,7 +483,7 @@ const GamePage = () => {
         return true;
     }
 
-    const cleanModifiers = () => {
+    const cleanModifiers = async () => {
         pentakillTargetNumber.current = 0;
         pentakillDmg.current = 0;
         actualStreak.current = 0;
@@ -544,13 +556,6 @@ const GamePage = () => {
             setGameWin(true)
         }
     }
-
-    useEffect(() => {
-        if (!shopAvailable) {
-            setRoom([])
-            shuffleDeck(matchDeck)
-        }
-    }, [shopAvailable])
 
     // Función para escapar
     const scape = () => {
@@ -1006,7 +1011,7 @@ const GamePage = () => {
                         <div>
                             <h1 className="player-health"><img src={healthIcon} />{health}/{maxHealth}{healthAnimation !== null ? <div className="animation-container"><strong className="animation" disabled={healthAnimation}>{healthAnimationValue}</strong><img className="animation" disabled={healthAnimation} src={healthAnimation} /></div> : <></>}</h1>
                             <h1 className="player-gold"><img src={GoldIcon} />{gold}{goldAnimation !== null ? <div className="animation-container"><strong className="animation" disabled={goldAnimation}>{goldAnimationValue}</strong><img className="animation" disabled={goldAnimation} src={goldAnimation} /></div> : <></>}</h1>
-                            {pentakillTargetNumber.current !== 0 ? <h1>Racha <strong>{actualStreak.current}</strong>/<strong>{pentakillTargetNumber.current}</strong></h1> : <></>}
+                            {!modifiersLoading && pentakillTargetNumber.current !== 0 ? <h1>Racha <strong>{actualStreak.current}</strong>/<strong>{pentakillTargetNumber.current}</strong></h1> : <></>}
                             {gameOn && gameWin ? <h1>Sin límite</h1> : <h1>RONDA {rounds}/{maxRounds}</h1>}
                             <h2 ref={formatedTimeRef}>Tiempo: 00:00</h2>
                             <p>{dungeon.length} cartas restantes</p>
