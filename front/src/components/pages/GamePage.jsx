@@ -1,5 +1,13 @@
 import React, { act, Fragment, useCallback, useContext, useEffect, useRef, useState } from "react";
-import { Stage, Layer, Text, Group, Rect } from 'react-konva';
+import { Stage, Layer, Text, Group, Rect, Image } from 'react-konva';
+// Importaciones de imágenes (mantenidas igual)
+import ClubIcon from '/images/suit_club.webp'
+import HeartIcon from '/images/suit_heart.webp'
+import DiamonIcon from '/images/suit_diamond.webp'
+import SpadeIcon from '/images/suit_spade.webp'
+import DefaultCardImage from '/images/default_card.webp'
+
+
 import lodash, { fill, forEach, invert, round, toInteger } from 'lodash';
 
 import { matchContext } from "../../context/MatchProvider.jsx";
@@ -27,14 +35,18 @@ import Modifier from "../Modifier.jsx";
 import Loading from "../Loading.jsx";
 import { settingsContext } from "../../context/SettingsProvider.jsx";
 import GameShop from "../GameShop.jsx";
+import useImage from "use-image";
 
 
 
 const GamePage = () => {
     const navigate = useNavigate();
     const { startButtonSound, showLogs } = useContext(settingsContext)
-    const { matchDeck, character, activeModifiers: modifiers, setNewDeck, setNewCharacter, startNewGame, addCardToMatchDeck, gameLoading, availableCharacters, getWeapon, endGame, setCharacter, setActiveModifiers, setGameLoading, addEnemysToMatchDeck, addModifierToMatch } = useContext(matchContext);
+    const { matchDeck, character, activeModifiers: modifiers, setNewDeck, setNewCharacter, startNewGame, addCardToMatchDeck, gameLoading, availableCharacters, getWeapon, endGame, updateActualGame, setCharacter, setActiveModifiers, setGameLoading, addEnemysToMatchDeck, addModifierToMatch } = useContext(matchContext);
     const { user, isLoading } = useUser();
+
+    // Imagen por defecto
+    const [defaultImage] = useImage(DefaultCardImage);
 
 
     //Estados que almacenan si el juego ha empezado y si el juego está en GameOver
@@ -42,6 +54,10 @@ const GamePage = () => {
     const [gameOver, setGameOver] = useState(false);
     const [gameWin, setGameWin] = useState(false);
     const [restart, setRestart] = useState(false);
+
+    const totalEarnedGold = useRef(0);
+    const healedLife = useRef(0);
+    const enemysDefeated = useRef(0)
 
 
     const logsRef = useRef([]);
@@ -86,6 +102,9 @@ const GamePage = () => {
         setShopAvailable(false)
         actualStreak.current = 0;
         canScape.current = true;
+        healedLife.current = 0;
+        totalEarnedGold.current = 0;
+        enemysDefeated.current = 0;
 
         // Reset del Timer
         stopTimer();
@@ -136,7 +155,11 @@ const GamePage = () => {
             }, 1000);
         } else if (user !== undefined) {
             stopTimer();
-            endGame(user.id, timeRef.current, gameWin, rounds)
+            if (gameWin) {
+                updateActualGame(user.id, timeRef.current, gameWin, rounds, totalEarnedGold.current, healedLife.current, enemysDefeated.current)
+            } else {
+                endGame(user.id, timeRef.current, gameWin, rounds, totalEarnedGold.current, healedLife.current, enemysDefeated.current)
+            }
         }
 
         return () => stopTimer();
@@ -216,6 +239,17 @@ const GamePage = () => {
     // Zona principal de Konva
     const layerRef = useRef(null);
 
+    // La carta puede ser clicada
+    const [canBeClicked, setCanBeClicked] = useState(true);
+
+    useEffect(() => {
+        if (canBeClicked == false) {
+            setTimeout(() => {
+                setCanBeClicked(true)
+            }, 500)
+        }
+    }, [canBeClicked])
+
     // Mapa de referencias de las cartas (Animaciones)
     const cardRefs = useRef({});
 
@@ -267,7 +301,8 @@ const GamePage = () => {
         return () => {
             window.removeEventListener('resize', handleResize)
             if (user && character && modifiers.length > 0) {
-                endGame(user.id, timeRef.current, false, rounds, character)
+                // user_id, tiempo, victoria, rondas, earnedGold, healedLife, enemysDefeated
+                endGame(user.id, timeRef.current, gameWin, rounds, totalEarnedGold.current, healedLife.current, enemysDefeated.current)
             }
             restartFunction()
             stopTimer()
@@ -364,6 +399,7 @@ const GamePage = () => {
                     break
                 case 2: // Paladín (1 vez por ronda)
                     setHealth(prev => Math.min(maxHealth, prev + 5));
+                    healedLife.current += 5;
                     healAnimation(5)
                     setAvailableAbilitie(false)
                     break
@@ -578,7 +614,6 @@ const GamePage = () => {
         setDungeon([...shuffled])
     }
     const startNewRound = async (continueMatch = false) => {
-        console.log(matchDeck)
         if (rounds !== 10 || continueMatch) {
             setSelectModifier(true)
             if (rounds !== 0) {
@@ -786,6 +821,7 @@ const GamePage = () => {
         if (!healedRef.current) {
             setHealth(prev => Math.min(maxHealth, prev + currentHeal.current));
             healAnimation(currentHeal.current)
+            healedLife.current += currentHeal.current;
             healedRef.current = true
             logsRef.current.push((logsRef.current.length + 1) + " - " + card.valor + " de " + card.palo + " te ha curado " + currentHeal.current + " de daño.")
         } else {
@@ -847,6 +883,7 @@ const GamePage = () => {
             damageAnimation(final_dmg)
             const earnedGold = 5;
             coinAnimation(earnedGold)
+            totalEarnedGold.current += earnedGold;
             setGold(prev => prev + earnedGold);
 
             let final_health = Math.max(0, health - final_dmg)
@@ -882,9 +919,10 @@ const GamePage = () => {
 
             const final_dmg = Math.max(0, final_enemy_dmg - final_user_dmg);
             damageAnimation(final_dmg)
-            const earnerGold = gold + 5;
+            const earnedGold = gold + 5;
             coinAnimation(5)
-            setGold(earnerGold);
+            setGold(earnedGold);
+            totalEarnedGold.current += earnedGold;
             setHealth(prev => Math.max(0, prev - final_dmg));
             if (healthSteal.current && card.valor < weapon_dmg.current) {
                 const heal = Math.min(0, card.valor - weapon_dmg.current) > -3 ? Math.min(0, card.valor - weapon_dmg.current) * -1 : 3;
@@ -897,7 +935,6 @@ const GamePage = () => {
             logsRef.current.push((logsRef.current.length + 1) + " - " + card.valor + " de " + card.palo + " te ha hecho " + final_dmg + " de daño.")
             return true
         }
-
         // ATAQUE SIN ARMA
         else {
             const final_user_dmg = pentakill + (card.palo == 'Pica' ? spadesExtraTakedDmg.current : clubsExtraTakedDmg.current)
@@ -914,6 +951,7 @@ const GamePage = () => {
 
     // Lógica de combate
     const processCardAction = useCallback((card) => {
+        setCanBeClicked(false)
         document.body.style.cursor = "url('/images/cursor/Cursor_2.webp') 16 16, auto"
         let validMove = false;
         // Lógica de curación
@@ -927,10 +965,16 @@ const GamePage = () => {
         // Lógica de combate
         else if (card.palo === 'Pica' || card.palo === 'Trebol') {
             validMove = handleCombat(card)
+            validMove ? enemysDefeated.current += 1 : null;
         }
         if (validMove) {
             if (character?.habilidad_personaje?.id === 1) {
                 setAvailableAbilitie(false)
+            }
+            if (progresive_heal_turns.current > 0) {
+                setHealth(prev => Math.min(maxHealth, prev + progresive_heal));
+                healedLife.current += progresive_heal.current;
+                progresive_heal_turns.current -= 1;
             }
             canScape.current = false
             totalCardsUsed.current += 1;
@@ -993,7 +1037,7 @@ const GamePage = () => {
         )
     }
 
-    
+
     return (
         <Fragment>
             <div className="game">
@@ -1058,10 +1102,11 @@ const GamePage = () => {
 
                     {/* VENTANA DE JUEVO */}
                     <Stage className="game-window" width={stageSize.width * (0.5)} height={stageSize.height / 2} scaleX={scale} scaleY={scale} imageSmoothingEnabled={false}>
-                        <Layer ref={layerRef}>
+                        {/* CAPA ESTÁTICA */}
+                        <Layer>
                             {/* ZONA DEL MAZO */}
                             <Group x={DUNGEON_ZONE.x} y={DUNGEON_ZONE.y}>
-                                <Rect width={DUNGEON_ZONE.width} height={DUNGEON_ZONE.height} fill="#0000006c" stroke="white" strokeWidth={2} cornerRadius={8} onMouseEnter={(e)=>{setOverDungeonZone(true)}} onMouseLeave={(e)=>{setOverDungeonZone(false)}}/>
+                                <Rect width={DUNGEON_ZONE.width} height={DUNGEON_ZONE.height} fill="#0000006c" stroke="white" strokeWidth={2} cornerRadius={8} onMouseEnter={(e) => { setOverDungeonZone(true) }} onMouseLeave={(e) => { setOverDungeonZone(false) }} />
                                 <Text text="DUNGEON" rotation={55} fontFamily="Romulus" fontSize={30} fill="white" y={20} x={25} />
 
                                 {dungeon.toReversed().slice(0, 4).toReversed().map((card, i) => (
@@ -1069,27 +1114,25 @@ const GamePage = () => {
                                         ref={el => cardRefs.current[card.id] = el}
                                         key={"dungeon-" + card.id + card.palo}
                                         cardInfo={card}
-                                        // Si es mago, las desplazamos a la derecha (i * 30) para que no se solapen
                                         x={7.5}
-                                        // Las bajamos un poco escalonadamente
-                                        y={isWizard ? 5 + (i * (overDungeonZone?100:0)) : 5}
+                                        y={isWizard ? 5 + (i * (overDungeonZone ? 100 : 0)) : 5}
                                         onDragEnd={() => { }}
                                         onClick={() => { }}
                                         isDraggable={false}
                                         isWizard={isWizard}
                                         onDeck={true}
                                         setOverDungeonZone={setOverDungeonZone}
+                                        cardSuit={card.palo == "Diamante" ? DiamonIcon : card.palo == "Trebol" ? ClubIcon : card.palo == "Corazon" ? HeartIcon : SpadeIcon}
+                                        defaultImage={defaultImage}
                                     />
                                 ))}
                             </Group>
-
-
 
                             {/* PILA DE DESCARTES */}
                             <Group x={DISCARD_ZONE.x} y={DISCARD_ZONE.y}>
                                 <Rect width={DISCARD_ZONE.width} height={DISCARD_ZONE.height} fill="#9c4747c9" stroke="white" strokeWidth={2} cornerRadius={8} />
                                 <Text text="DESCARTES" rotation={55} fontFamily="Romulus" fontSize={30} fill="white" y={WEAPON_ZONE.height * 0.05} x={WEAPON_ZONE.width * 0.08} />
-                                {discardPile.map((card, i) => (
+                                {discardPile.toReversed().slice(0, 1).map((card, i) => (
                                     <Card
                                         ref={el => cardRefs.current[card.id] = el}
                                         key={"discard-" + card.id + card.palo}
@@ -1099,6 +1142,8 @@ const GamePage = () => {
                                         onDragEnd={() => { }}
                                         onClick={() => { }}
                                         isDraggable={false}
+                                        cardSuit={card.palo == "Diamante" ? DiamonIcon : card.palo == "Trebol" ? ClubIcon : card.palo == "Corazon" ? HeartIcon : SpadeIcon}
+                                        defaultImage={defaultImage}
                                     />
                                 ))}
                             </Group>
@@ -1116,6 +1161,8 @@ const GamePage = () => {
                                     onDragEnd={() => { }}
                                     onClick={() => { }}
                                     isDraggable={false}
+                                    cardSuit={weapon.palo == "Diamante" ? DiamonIcon : weapon.palo == "Trebol" ? ClubIcon : weapon.palo == "Corazon" ? HeartIcon : SpadeIcon}
+                                    defaultImage={defaultImage}
                                 />}
                                 {slainMonsters.map((card, i) => (
                                     <Card
@@ -1127,12 +1174,15 @@ const GamePage = () => {
                                         onDragEnd={() => { }}
                                         onClick={() => { }}
                                         isDraggable={false}
+                                        cardSuit={card.palo == "Diamante" ? DiamonIcon : card.palo == "Trebol" ? ClubIcon : card.palo == "Corazon" ? HeartIcon : SpadeIcon}
+                                        defaultImage={defaultImage}
                                     />
                                 ))}
                             </Group>
+                        </Layer>
 
-
-                            {/* CARTAS EN JUEGO */}
+                        {/* PARTES JUGABLES (No estáticas) */}
+                        <Layer ref={layerRef}>
                             {room.map((card, index) => (
                                 <Card
                                     ref={el => cardRefs.current[card.id] = el}
@@ -1142,7 +1192,10 @@ const GamePage = () => {
                                     y={card.y + 10}
                                     onDragEnd={handleDragEnd}
                                     onClick={gameOn ? processCardAction : () => { }}
+                                    canBeClicked={canBeClicked}
                                     isDraggable={gameOn}
+                                    cardSuit={card.palo == "Diamante" ? DiamonIcon : card.palo == "Trebol" ? ClubIcon : card.palo == "Corazon" ? HeartIcon : SpadeIcon}
+                                    defaultImage={defaultImage}
                                 />
                             ))}
                         </Layer>

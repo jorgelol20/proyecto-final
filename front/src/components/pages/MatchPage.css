@@ -56,6 +56,26 @@
             }
         }
 
+        .info {
+            display: flex;
+
+            h2 {
+                margin-right: 1cqw;
+            }
+        }
+
+        .extra-info {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+
+            img{
+                background:none;
+                width: 1cqw;
+                height: 1cqw;
+            }
+        }
+
         .player-info {
             display: flex;
             flex-direction: column;

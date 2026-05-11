@@ -46,6 +46,15 @@
             font-size: 50%;
             width: 100%;
         }
+
+        .admin {
+            color: var(--main-gold);
+        }
+
+        .user {
+            color: var(--main-white);
+        }
+
     }
 }
 
@@ -78,6 +87,7 @@
         width: 100%;
     }
 
+
     .match-modifiers {
         width: 80%;
         border: 0.5cqh groove var(--second-color-dark);
@@ -89,10 +99,13 @@
         justify-content: start;
         align-items: start;
         flex-wrap: wrap;
-        img{
+        height: 6cqh;
+
+        img {
             background-color: var(--second-color-dark);
         }
     }
+
 }
 
 article {
@@ -103,6 +116,6 @@ article {
         text-align: center;
         width: 4cqw;
         max-width: 5cqw;
-        color: var(--main-black);
+        color: var(--main-white);
     }
 }

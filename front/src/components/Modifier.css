@@ -27,7 +27,7 @@
     }
 
 
-
+    
 
     p {
         padding-left: 5%;
@@ -81,7 +81,6 @@
         img {
             width: 10cqw;
             height: 10cqw;
-            margin: 1cqw;
             margin-bottom: 0;
             border-width: 1cqw;
         }
@@ -139,3 +138,4 @@
     width: 5cqw;
     height: 5cqw;
 }
+

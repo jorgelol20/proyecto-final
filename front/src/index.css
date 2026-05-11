@@ -23,13 +23,16 @@
     font-weight: normal;
     font-style: normal;
 }
-
+img{
+    image-rendering: pixelated; /* Chrome/Edge/Safari */
+    image-rendering: crisp-edges; /* Firefox */
+}
 
 
 body {
     font-family: 'Romulus';
     font-size: 1.3em;
-    text-shadow: 5px 0px 5px white white white;
+    text-shadow: 1.5px 1px 2px black;
     font-weight: bold;
     background-color: var(--second-color);
     background-size: 50px 50px;

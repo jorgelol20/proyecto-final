@@ -18,7 +18,11 @@ class UpdatePartidaRequest extends FormRequest
             'personaje_id' => 'sometimes|exists:personajes,id',
             'tiempo' => 'sometimes|integer',
             'victoria' => 'sometimes|boolean',
-            'rondas' => 'sometimes|integer'
+            'rondas' => 'sometimes|integer',
+            'modificadores' => 'sometimes|array',
+            'oro_obtenido' => 'sometimes|integer',
+            'vida_curada' => 'sometimes|integer',
+            'enemigos_enfrentados' => 'sometimes|integer',
         ];
     }
 }

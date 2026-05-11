@@ -18,16 +18,20 @@ export const useUser = () => {
     const { data: user, isLoading, error } = useQuery({
         queryKey: ['authUser'],
         queryFn: async () => {
-            const response = await api.get('/perfil');
-            // Asegúrate de devolver el objeto usuario directamente
-            return response.data.usuario || response.data;
+            try{
+                const response = await api.get('/perfil');
+                return response.data.usuario || response.data;
+            }catch(e){
+                return null
+            }
+            
         },
 
         // Si no existe token, ejecuta la función queryFn.
         enabled: !!token,
 
         // Número de intentos para realizar la solicitud.
-        retry: 1,
+        retry: 3,
 
         // Tiempo que React Query tratará como "nueva" la información del usuario (5min).
         staleTime: 300000,
@@ -51,7 +55,8 @@ export const useUser = () => {
             localStorage.setItem('auth_token', data.token);
             queryClient.setQueryData(['authUser'], data.usuario);
             navigate(`/`);
-        }
+        },
+        
     });
 
     /**

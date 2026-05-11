@@ -18,7 +18,9 @@ const MatchProvider = (props) => {
     const { modifiers, getModificadorById, isLoading: isLoadingModifier, error: modifierError } = useModifier();
     const [gameLoading, setGameLoading] = useState(true);
 
-    const { saveMatch } = useMatch()
+    const [actualMatchId, setActualMatchId] = useState(null);
+
+    const { saveMatch, updateMatch } = useMatch()
 
     const [baseDeck, setBaseDeck] = useState([]);
     const [matchDeck, setMatchDeck] = useState([]);
@@ -52,23 +54,50 @@ const MatchProvider = (props) => {
         setCharacter(undefined)
         setActiveModifiers([])
         setGameLoading(false)
+        setActualMatchId(null)
     }
-    const endGame = async (user_id, tiempo, victoria, rondas, charInfo = null) => {
-        const matchCharacter = charInfo == null ? character : charInfo
-        if (matchCharacter) {
+    const endGame = async (user_id, tiempo, victoria, rondas, earnedGold, healedLife, enemysDefeated) => {
+        if (character) {
             const gameModifiers = activeModifiers.map((modifier) => modifier.id);
             const payload = {
                 usuario_id: user_id,
-                personaje_id: matchCharacter.id,
+                personaje_id: character.id,
                 tiempo: tiempo,
                 victoria: victoria,
                 rondas: rondas,
-                modificadores: gameModifiers
+                modificadores: gameModifiers,
+                oro_obtenido: earnedGold,
+                vida_curada: healedLife,
+                enemigos_enfrentados: enemysDefeated
             };
-            await saveMatch({ form: payload });
+            const savedMatch = await saveMatch({ form: payload });
+            console.log(savedMatch)
+            setActualMatchId(savedMatch.id);
             return true
         }
     }
+
+    const updateActualGame = async (user_id, tiempo, victoria, rondas, earnedGold, healedLife, enemysDefeated) => {
+        if (character) {
+            const gameModifiers = activeModifiers.map((modifier) => modifier.id);
+            const payload = {
+                usuario_id: user_id,
+                personaje_id: character.id,
+                tiempo: tiempo,
+                victoria: victoria,
+                rondas: rondas,
+                modificadores: gameModifiers,
+                oro_obtenido: earnedGold,
+                vida_curada: healedLife,
+                enemigos_enfrentados: enemysDefeated
+            };
+            const savedMatch = await updateMatch({ matchId: actualMatchId ,form: payload });
+            setActualMatchId(savedMatch.id);
+            return true
+        }
+    }
+
+
     const shuffleMatchDeck = () => {
         setMatchDeck(lodash.shuffle(matchDeck))
     }
@@ -197,7 +226,8 @@ const MatchProvider = (props) => {
         setActiveModifiers,
         setGameLoading,
         addEnemysToMatchDeck,
-        getHealItem
+        getHealItem,
+        updateActualGame
     };
 
 

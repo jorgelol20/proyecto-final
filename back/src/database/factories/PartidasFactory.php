@@ -22,7 +22,10 @@ class PartidasFactory extends Factory
             'personaje_id' => null,
             'tiempo' => null,
             'victoria' => null,
-            'rondas' => null
+            'rondas' => null,
+            'oro_obtenido' => null,
+            'vida_curada' => null,
+            'enemigos_enfrentados' => null,
         ];
     }
 }

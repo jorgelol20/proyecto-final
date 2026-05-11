@@ -36,10 +36,9 @@ const Match = ({ match, showUser }) => {
                     {showUser ?
                         <div className="player-info">
                             <img className='user-avatar' style={{ borderColor: match.jugador.color }} src={match.jugador.avatar !== "" && match.jugador.avatar ? match.jugador.avatar : Placeholder} alt={`Avatar de ${match.jugador.nick}`} />
-                            <p>{match.jugador.nick}</p>
+                            <p className={match.jugador.es_admin?"admin":"user"}>{match.jugador.nick}</p>
                         </div>
                         : <></>}
-
                 </article>
             </Fragment>
         )
