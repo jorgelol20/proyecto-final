@@ -1064,7 +1064,7 @@ const GamePage = () => {
                                 <Rect width={DUNGEON_ZONE.width} height={DUNGEON_ZONE.height} fill="#0000006c" stroke="white" strokeWidth={2} cornerRadius={8} onMouseEnter={(e)=>{setOverDungeonZone(true)}} onMouseLeave={(e)=>{setOverDungeonZone(false)}}/>
                                 <Text text="DUNGEON" rotation={55} fontFamily="Romulus" fontSize={30} fill="white" y={20} x={25} />
 
-                                {dungeon.slice(0, 4).map((card, i) => (
+                                {dungeon.toReversed().slice(0, 4).toReversed().map((card, i) => (
                                     <Card
                                         ref={el => cardRefs.current[card.id] = el}
                                         key={"dungeon-" + card.id + card.palo}
