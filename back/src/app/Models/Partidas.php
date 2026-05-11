@@ -12,7 +12,7 @@ class Partidas extends Model
    
     public $timestamps = true;
     protected $table = 'partidas';
-    protected $fillable = ['usuario_id','personaje_id','tiempo','victoria', 'rondas'];
+    protected $fillable = ['usuario_id','personaje_id','tiempo','victoria', 'rondas', 'oro_obtenido', 'vida_curada', 'enemigos_enfrentados'];
 
     public function casts(): array {
         return [

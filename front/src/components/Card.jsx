@@ -2,15 +2,10 @@ import React, { useRef, useImperativeHandle, forwardRef, useState, useEffect } f
 import { Group, Rect, Text, Image } from 'react-konva';
 import Konva from 'konva';
 import useImage from 'use-image';
-
-// Importaciones de imágenes (mantenidas igual)
-import ClubIcon from '/images/suit_club.webp'
-import HeartIcon from '/images/suit_heart.webp'
-import DiamonIcon from '/images/suit_diamond.webp'
-import SpadeIcon from '/images/suit_spade.webp'
 import Default from '/images/default_card.webp'
 
-const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = true, onDeck = false, isWizard = false, setOverDungeonZone}, ref) => {
+
+const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = true, onDeck = false, isWizard = false, setOverDungeonZone, canBeClicked, cardSuit, defaultImage}, ref) => {
 
     const groupRef = useRef(null);
     const [strokeWidth, setStrokeWidth] = useState(2);
@@ -28,12 +23,8 @@ const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = tru
     }));
 
     // Carga de imágenes
-    const [image] = useImage(cardInfo?.imagen ?? null);
-    const [diamonImage] = useImage(DiamonIcon);
-    const [clubImage] = useImage(ClubIcon);
-    const [heartImage] = useImage(HeartIcon);
-    const [spadeImage] = useImage(SpadeIcon);
-    const [defaultImage] = useImage(Default);
+    const [image] = useImage(cardInfo?.imagen);
+    const [suit] = useImage(cardSuit);
 
     // Color de la carta
     const colorRef = useRef('')
@@ -70,11 +61,9 @@ const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = tru
             x={x}
             y={y}
             draggable={isDraggable}
-            onClick={() => onClick(cardInfo)}
-            onDragStart={() => { setStrokeWidth(6) }}
+            onClick={() => canBeClicked?onClick(cardInfo):null}
+            onDragStart={() => { setStrokeWidth(6);document.body.style.cursor = "url('/images/cursor/Cursor_4.webp') 3 7, auto"  }}
             onDragEnd={handleDragEndInternal}
-            onDragMove={() => { document.body.style.cursor = "url('/images/cursor/Cursor_4.webp') 3 7, auto" }}
-            // Crear on handleEnter para la pasiva mago (10/05/2026)
             onMouseEnter={() => { isWizard?setOverDungeonZone(true):"";document.body.style.cursor = isDraggable ? "url('/images/cursor/Cursor_3.webp') 3 7, auto" : "url('/images/cursor/Cursor_5.webp') 3 7, auto"; }}
             onMouseLeave={() => { isWizard?setOverDungeonZone(false):"";document.body.style.cursor = "url('/images/cursor/Cursor_1.webp') 3 7, auto"; }}
         >
@@ -85,8 +74,6 @@ const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = tru
                 cornerRadius={8}
                 stroke={!onDeck ? colorRef.current : '#0C0C0C'}
                 strokeWidth={!onDeck ? strokeWidth : 0}
-                shadowBlur={10}
-                shadowOpacity={0.3}
                 lineJoin="round"
                 onDragMove={null}
             />
@@ -101,16 +88,18 @@ const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = tru
                         fontFamily="Romulus"
                         x={15}
                         y={4}
+                        listening={false}
                     />
 
                     {/* PALO SUPERIOR */}
                     <Image
-                        image={cardInfo.palo == "Diamante" ? diamonImage : cardInfo.palo == "Trebol" ? clubImage : cardInfo.palo == "Corazon" ? heartImage : spadeImage}
+                        image={suit}
                         width={25}
                         height={25}
                         x={75}
                         y={8}
                         imageSmoothingEnabled={false}
+                        listening={false}
                     />
 
                     {/* IMAGEN CENTRAL */}
@@ -121,17 +110,19 @@ const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = tru
                         x={15}
                         y={35}
                         imageSmoothingEnabled={false}
+                        listening={false}
                     />
 
                     {/* PALO INFERIOR (Rotado) */}
                     <Image
-                        image={cardInfo.palo == "Diamante" ? diamonImage : cardInfo.palo == "Trebol" ? clubImage : cardInfo.palo == "Corazon" ? heartImage : spadeImage}
+                        image={suit}
                         width={25}
                         height={25}
                         x={40}
                         y={142}
                         imageSmoothingEnabled={false}
                         rotation={180}
+                        listening={false}
                     />
                     {/* 
                         --main-green: #1E5128;
@@ -147,6 +138,7 @@ const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = tru
                         x={100}
                         y={146}
                         rotation={180}
+                        listening={false}
                     />
                 </>
             )}
@@ -160,6 +152,7 @@ const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = tru
                         x={0}
                         y={0}
                         imageSmoothingEnabled={false}
+                        listening={false}
                     />
                 </>
             )
@@ -173,6 +166,7 @@ const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = tru
                         y={0}
                         opacity={0.5}
                         imageSmoothingEnabled={false}
+                        listening={false}
                     />
                     {/* VALOR SUPERIOR */}
                     <Text
@@ -182,16 +176,18 @@ const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = tru
                         fontFamily="Romulus"
                         x={15}
                         y={4}
+                        listening={false}
                     />
                     
                     {/* PALO SUPERIOR */}
                     <Image
-                        image={cardInfo.palo == "Diamante" ? diamonImage : cardInfo.palo == "Trebol" ? clubImage : cardInfo.palo == "Corazon" ? heartImage : spadeImage}
+                        image={suit}
                         width={25}
                         height={25}
                         x={75}
                         y={8}
                         imageSmoothingEnabled={false}
+                        listening={false}
                     />
 
                     {/* IMAGEN CENTRAL */}
@@ -202,17 +198,19 @@ const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = tru
                         x={15}
                         y={35}
                         imageSmoothingEnabled={false}
+                        listening={false}
                     />
 
                     {/* PALO INFERIOR (Rotado) */}
                     <Image
-                        image={cardInfo.palo == "Diamante" ? diamonImage : cardInfo.palo == "Trebol" ? clubImage : cardInfo.palo == "Corazon" ? heartImage : spadeImage}
+                        image={suit}
                         width={25}
                         height={25}
                         x={40}
                         y={142}
                         imageSmoothingEnabled={false}
                         rotation={180}
+                        listening={false}
                     />
                     {/* 
                         --main-green: #1E5128;
@@ -228,6 +226,7 @@ const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = tru
                         x={100}
                         y={146}
                         rotation={180}
+                        listening={false}
                     />
                 </>
         ): <></>}
