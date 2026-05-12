@@ -11,6 +11,7 @@
     border: 3px solid black;
     border-radius: 5px;
     background-color: #E5CEA4;
+    color: var(--main-white);
 
     .character-image {
         image-rendering: pixelated;
@@ -99,8 +100,7 @@
         justify-content: start;
         align-items: start;
         flex-wrap: wrap;
-        height: 6cqh;
-
+        
         img {
             background-color: var(--second-color-dark);
         }
@@ -114,8 +114,14 @@ article {
     .match-id {
         margin: 0;
         text-align: center;
-        width: 4cqw;
+        width: 3cqw;
         max-width: 5cqw;
         color: var(--main-white);
+        font-size: 2cqw;
+    }
+}
+@media (max-width: 1080) {
+    .match-modifiers{
+        min-height: 5cqw;
     }
 }
