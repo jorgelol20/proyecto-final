@@ -122,6 +122,10 @@ article {
     }
 }
 @media (max-width: 1080) {
+    .match-row{
+        margin-top: 5%;
+        max-height: 5cqw;
+    }
     .match-modifiers{
         min-height: 5cqw;
     }

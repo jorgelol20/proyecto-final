@@ -103,5 +103,11 @@ article {
 @media (max-width: 1080px) {
     article {
         top: -5em;
+
+        .last-matches {
+            .match-history {
+                padding-top: 10cqw;
+            }
+        }
     }
 }
