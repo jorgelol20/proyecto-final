@@ -20,7 +20,7 @@ const SelectModifier = ({ setSelectModifier, rounds }) => {
                 <div className="modifiers-list">
                     {modifiersList.length > 0 ? modifiersList.map((modifierInfo) => (
                         modifierInfo == null ? <></> :
-                            <Modifier key={crypto.randomUUID()} modifierInfo={modifierInfo} setSelectModifier={setSelectModifier} />
+                            <Modifier key={modifierInfo.id - "-"} modifierInfo={modifierInfo} setSelectModifier={setSelectModifier} />
                     )) :
                         <div>
                             <div className="shop-man">

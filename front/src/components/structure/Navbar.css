@@ -79,16 +79,23 @@ nav {
 }
 .search-input{
     position: relative;
-    height: 100%;
     font-size: 0.7cqw;
     border: 2px solid var(--main-black);
     width: 100%;
+    height: 1em;
+    min-height: 2em;
+    font-size: 1cqw;
 }
 .searc-list{
     position: absolute;
     display: flex;
     flex-direction: column;
-    margin-top: 7em;
+    align-items: start;
+    justify-content: start;
+    margin-top:2.5em;
+    width: 1cqw;
+    margin-left: -11em;
+    height: 1em;
     a{
         color: var(--main-white);
         text-decoration: none;

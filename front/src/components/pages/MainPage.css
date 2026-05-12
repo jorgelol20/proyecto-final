@@ -77,12 +77,13 @@ article {
     margin-top: 2em;
     width: 50%;
     text-align: center;
-    height: 40cqh;
+    height: 45cqh;
     border-radius: 5px;
 
     h1 {
         color: var(--main-gold);
         margin-bottom: 0%;
+        font-size: 3cqw;
     }
 
     .match-history {
@@ -95,5 +96,12 @@ article {
         border-width: 5px;
         border-style: groove;
         border-radius: 5px;
+        min-height: 5cqw;
+    }
+}
+
+@media (max-width: 1080px) {
+    article {
+        top: -5em;
     }
 }
