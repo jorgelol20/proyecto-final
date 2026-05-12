@@ -1,5 +1,6 @@
 .match-row {
     height: 10cqh;
+    max-height: 10cqw;
     width: 90%;
     display: flex;
     justify-content: start;
