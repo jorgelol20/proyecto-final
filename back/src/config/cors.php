@@ -19,7 +19,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => [env('FRONTEND_URL', 'https://scoundrels-quest.com'),'http://localhost:5173','http://localhost:5174'],
+    'allowed_origins' => [env('FRONTEND_URL', 'https://scoundrels-quest.com'),'http://localhost:5173','http://localhost:5174', 'http://192.168.8.5:5174'],
 
     'allowed_origins_patterns' => [],
 
