@@ -81,7 +81,9 @@ const GamePage = () => {
         setMaxHealth(20)
         setAvailableAbility(true);
         setShopAvailable(false)
-        actualStreak.current = 0;
+        setActualStreak(0);
+        setPentakillDmg(0)
+        setPentakillTargetNumber(0)
         canScape.current = true;
         healedLife.current = 0;
         totalEarnedGold.current = 0;
