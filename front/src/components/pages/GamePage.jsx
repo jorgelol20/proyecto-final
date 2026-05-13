@@ -564,7 +564,7 @@ const GamePage = () => {
 
     const handleModifierEvent = () => {
         const modifier = modifiers[modifiers.length - 1]
-        const modifierEffects = modifier.efectos[0]
+        const modifierEffects = modifier.efectos
         const effectsList = Array.isArray(modifierEffects) ? modifierEffects : [modifierEffects];
         effectsList.forEach((effect) => {
             applyEffect(effect)
@@ -917,11 +917,10 @@ const GamePage = () => {
 
         const enemy_dmg = Math.ceil((card.valor * enemyDmgMultiplier.current)) + enemyExtraDmg.current - user_dmg_reduction;
         const pentakill = actualStreak.current >= pentakillTargetNumber.current ? pentakillDmg.current : 0
-
         if (invincibility_turns.current > 0) {
 
             const final_user_dmg = 100
-            const final_enemy_dmg = - pentakill;
+            const final_enemy_dmg = enemy_dmg - pentakill;
             const final_dmg = Math.max(0, final_enemy_dmg - final_user_dmg);
 
             damageAnimation(final_dmg)
