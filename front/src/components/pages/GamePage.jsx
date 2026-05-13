@@ -473,13 +473,7 @@ const GamePage = () => {
     const setModifierWeapon = async (power) => {
         const newWeapon = await getWeapon(power)
         processCardAction(newWeapon)
-        if (slainMonsters.length > 0) {
-            moveCardToDiscard([...slainMonsters], true)
-            setTimeout(() => {
-                setSlainMonsters([]);
-            }, 200);
-        }
-        canScape.current = true
+        canScape.current = true 
 
     }
 
