@@ -48,7 +48,6 @@ const GamePage = () => {
         restartFunction();
         setShopAvailable(false)
         startNewGame();
-        console.log(shopAvailable)
     }, []);
 
     // Imagen por defecto
@@ -340,7 +339,6 @@ const GamePage = () => {
     // Cuando el mazo base de la partida esté listo, se carga en el mazo de juego.
     useEffect(() => {
         if (matchDeck && matchDeck.length > 0 && dungeon.length == 0 && room.length == 0) {
-            console.log(room)
             startNewRound();
         }
     }, [matchDeck, dungeon, room]);

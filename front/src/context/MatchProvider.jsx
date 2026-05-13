@@ -91,7 +91,7 @@ const MatchProvider = (props) => {
                 vida_curada: healedLife,
                 enemigos_enfrentados: enemysDefeated
             };
-            const savedMatch = await updateMatch({ matchId: actualMatchId ,form: payload });
+            const savedMatch = await updateMatch({ matchId: actualMatchId, form: payload });
             setActualMatchId(savedMatch.id);
             return true
         }
@@ -110,10 +110,12 @@ const MatchProvider = (props) => {
         if (card.efectos !== null) {
             typeof card.efectos === 'string' ? Array(JSON.parse(card.efectos)) : card.efectos
         }
-        card.x = 200
-        card.y = 0
-        card.key = crypto.randomUUID()
-        setMatchDeck(prevDeck => [...prevDeck, card]);
+        if (card !== undefined) {
+            card.x = 200
+            card.y = 0
+            card.key = crypto.randomUUID()
+            setMatchDeck(prevDeck => [...prevDeck, card]);
+        }
     }
 
     const addEnemysToMatchDeck = (quantity, round) => {
@@ -127,10 +129,12 @@ const MatchProvider = (props) => {
         const shuffled = candidates.sort(() => Math.random() - 0.5);
         const newEnemys = shuffled.slice(0, quantity);
         const finalNewEnemys = newEnemys.map((card) => {
-            card.x = 200
-            card.y = 0
-            card.key = crypto.randomUUID()
-            return card
+            if (card !== undefined) {
+                card.x = 200
+                card.y = 0
+                card.key = crypto.randomUUID()
+                return card
+            }
         })
         setMatchDeck(prevDeck => [...prevDeck, ...newEnemys]);
     }
@@ -183,17 +187,21 @@ const MatchProvider = (props) => {
 
     const getWeapon = (power) => {
         const card = cards.find((card) => card.palo == "Diamante" && card.valor == power)
-        card.x = 200
-        card.y = 0
-        card.key = crypto.randomUUID()
-        return card
+        if (card !== undefined) {
+            card.x = 200
+            card.y = 0
+            card.key = crypto.randomUUID()
+            return card
+        }
     }
     const getHealItem = (power) => {
         const card = cards.find((card) => card.palo == "Corazon" && card.valor == power)
-        card.x = 200
-        card.y = 0
-        card.key = crypto.randomUUID()
-        return card
+        if (card !== undefined) {
+            card.x = 200
+            card.y = 0
+            card.key = crypto.randomUUID()
+            return card
+        }
     }
 
     useEffect(() => {
