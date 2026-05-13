@@ -18,17 +18,14 @@ const UserRanking = () => {
 
     const loadVictoryRanking = async () => {
         const newRanking = await getVictoryRanking();
-        console.log(newRanking)
         return newRanking
     }
     const loadMatchRanking = async () => {
         const newRanking = await getMatchRanking();
-        console.log(newRanking)
         return newRanking
     }
     const loadRoundRanking = async () => {
         const newRanking = await getRoundRanking();
-        console.log(newRanking)
         return newRanking
     }
 
@@ -90,21 +87,20 @@ const UserRanking = () => {
         switch (rankingType) {
             case 'BEST_MATCH':
                 finalRanking = ranking.map((matchInfo, index) => {
-                    return <MatchRanking matchInfo={matchInfo} index={index} />
+                    return <MatchRanking key={matchInfo.id + "match-ranking"} matchInfo={matchInfo} index={index} />
                 })
                 break;
             case 'VICTORIAS':
                 finalRanking = ranking.map((userInfo, index) => {
-                    return <UserVictoryRanking userInfo={userInfo} index={index} />
+                    return <UserVictoryRanking key={userInfo.id + "victory-ranking"} userInfo={userInfo} index={index} />
                 })
                 break;
             case 'RONDAS':
                 finalRanking = ranking.map((userInfo, index) => {
-                    return <UserRoundRanking userInfo={userInfo} index={index} />
+                    return <UserRoundRanking key={userInfo.id + "rounds-ranking"} userInfo={userInfo} index={index} />
                 })
                 break;
             default:
-                console.log("WTF")
                 break;
         }
         return finalRanking;
@@ -115,9 +111,6 @@ const UserRanking = () => {
         handleRankingChange(savedRankingType)
     }, [])
 
-    useEffect(() => {
-        console.log(ranking)
-    }, [ranking])
 
     return (
         <Fragment>

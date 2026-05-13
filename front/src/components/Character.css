@@ -81,6 +81,7 @@
     font-size: 0.9em;
     line-height: 1.2; /* Ligeramente más pequeño para que quepa bien */
     flex-grow: 1; /* Hace que el cuadro ocupe el resto del espacio disponible */
+    text-shadow: 0.5px 0px 0px var(--main-gold);
 }
 
 .character-description {
@@ -93,4 +94,5 @@
     line-height: 1.4;
     word-wrap: break-word;
     width: 93%;
+    text-shadow: 0.5px 0px 0px var(--main-gold);
 }

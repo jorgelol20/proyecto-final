@@ -88,7 +88,6 @@ export const useUser = () => {
     const searchUsuario = async (search) => {
         try {
             const response = await api.get(`/usuarios/search/${search}`)
-            console.log(response.data.usuarios)
             return response.data.usuarios
         } catch (error) {
             console.error("Error al obtener usuario:", error.response?.data?.message);
@@ -139,7 +138,6 @@ export const useUser = () => {
      */
     const comment = useMutation({
         mutationFn: async (form) => {
-            console.log(form)
             const { data } = await api.post(`/usuarios/comentario/`, form, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
@@ -170,7 +168,6 @@ export const useUser = () => {
      */
     const updateComment = useMutation({
         mutationFn: async (form) => {
-            console.log(form)
             const { data } = await api.put(`/usuarios/comentario/`, form, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
