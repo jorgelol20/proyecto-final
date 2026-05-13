@@ -62,6 +62,7 @@ const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = tru
             y={y}
             draggable={isDraggable}
             onClick={() => !onDeck?canBeClicked?onClick(cardInfo):null:canBeClicked && setOverDungeonZone?setOverDungeonZone(prev => !prev):null}
+            onTap={() => !onDeck?canBeClicked?onClick(cardInfo):null:canBeClicked && setOverDungeonZone?setOverDungeonZone(prev => !prev):null}
             onDragStart={() => { setStrokeWidth(6);document.body.style.cursor = "url('/images/cursor/Cursor_4.webp') 3 7, auto"  }}
             onDragEnd={handleDragEndInternal}
             onMouseEnter={() => { isWizard?setOverDungeonZone(true):"";document.body.style.cursor = isDraggable ? "url('/images/cursor/Cursor_3.webp') 3 7, auto" : "url('/images/cursor/Cursor_5.webp') 3 7, auto"; }}
