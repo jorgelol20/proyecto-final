@@ -1117,7 +1117,8 @@ const GamePage = () => {
                                         x={7.5}
                                         y={isWizard ? 5 + (i * (overDungeonZone ? 100 : 0)) : 5}
                                         onDragEnd={() => { }}
-                                        onClick={() => { }}
+                                        onClick={setOverDungeonZone}
+                                        canBeClicked={canBeClicked}
                                         isDraggable={false}
                                         isWizard={isWizard}
                                         onDeck={true}
