@@ -150,7 +150,7 @@ class UsuariosController extends Controller
             'message' => 'Comentario eliminado correctamente'
         ]);
     }
-    public function ranking()
+    public function ranking_victorias()
     {
         $usuarios = Usuarios::select('id', 'nick', 'email', 'avatar', 'color', 'created_at', 'es_admin')
             ->withCount([
@@ -165,6 +165,19 @@ class UsuariosController extends Controller
             ->having('total_victorias', '>', 0)
             ->orderBy('total_victorias', 'desc')
             ->get();
+        return response()->json(['usuarios' => $usuarios]);
+    }
+    public function ranking_rondas()
+    {
+        $usuarios = Usuarios::select('id', 'nick', 'email', 'avatar', 'color', 'created_at', 'es_admin')
+            ->withMax('tiene_jugadas as record_rondas', 'rondas')
+            ->withCount([
+                'tiene_jugadas as total_partidas'
+            ])
+            ->having('total_partidas', '>', 0)
+            ->orderBy('record_rondas', 'desc')
+            ->get();
+
         return response()->json(['usuarios' => $usuarios]);
     }
 }

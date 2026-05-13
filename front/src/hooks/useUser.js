@@ -182,12 +182,21 @@ export const useUser = () => {
         }
     });
 
-    const getRanking = async () => {
+    const getVictoryRanking = async () => {
         try {
-            const response = await api.get(`/ranking`);
+            const response = await api.get(`/ranking-victorias`);
             return response.data.usuarios;
         } catch (error) {
-            console.error("Error al obtener usuario:", error.response?.data?.message);
+            console.error("Error al obtener el ranking:", error.response?.data?.message);
+            throw error;
+        }
+    };
+    const getRoundRanking = async () => {
+        try {
+            const response = await api.get(`/ranking-rondas`);
+            return response.data.usuarios;
+        } catch (error) {
+            console.error("Error al obtener el ranking:", error.response?.data?.message);
             throw error;
         }
     };
@@ -214,6 +223,7 @@ export const useUser = () => {
         deleteComment: deleteComment.mutate,
         deleteCommentError: deleteComment.error,
         isDeletingComment: deleteComment.isPending,
-        getRanking,
+        getVictoryRanking,
+        getRoundRanking,
     };
 };
