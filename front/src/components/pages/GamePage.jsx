@@ -455,7 +455,7 @@ const GamePage = () => {
     const [modifiersLoading, setModifiersLoading] = useState(true)
 
     // Daño enemigos
-    const enemyDmgMultiplier = useRef(1);
+    const enemyDmgMultiplier = useRef(0);
     const enemyExtraDmg = useRef(0)
     const spadesExtraTakedDmg = useRef(0);
     const clubsExtraTakedDmg = useRef(0);
@@ -553,7 +553,7 @@ const GamePage = () => {
         actualScapes.current = 1;
         healthSteal.current = false;
         ricochet.current = false
-        enemyDmgMultiplier.current = (1);
+        enemyDmgMultiplier.current = (0);
         enemyExtraDmg.current = (0)
         spadesExtraTakedDmg.current = (0);
         clubsExtraTakedDmg.current = (0);
@@ -639,14 +639,14 @@ const GamePage = () => {
         await addEnemysToMatchDeck(quantity, rounds)
     }
 
-    // Función para barajar el mazo de la ronda
     const shuffleDeck = (deck) => {
-        const shuffled = lodash.shuffle(deck).map((card) => {
-            card.key = crypto.randomUUID()
-            return card;
-        })
-        setDungeon([...shuffled])
-    }
+        const shuffled = lodash.shuffle(deck).map((card) => ({
+            ...card,              
+            key: crypto.randomUUID()
+        }));
+
+        setDungeon(shuffled);
+    };
     const startNewRound = async (continueMatch = false) => {
         if (rounds !== 10 || continueMatch) {
             setSelectModifier(true)
@@ -667,6 +667,7 @@ const GamePage = () => {
             setGameOn(false)
             setGameWin(true)
         }
+        cardRefs.current = []
     }
 
     const scape = () => {
@@ -1155,7 +1156,6 @@ const GamePage = () => {
 
                                 {dungeon.toReversed().slice(0, 4).toReversed().map((card, i) => (
                                     <Card
-                                        ref={el => cardRefs.current[card.key] = el}
                                         key={card.key}
                                         cardInfo={card}
                                         x={7}
@@ -1179,7 +1179,6 @@ const GamePage = () => {
                                 <Text text="DESCARTES" rotation={55} fontFamily="Romulus" fontSize={30} fill="white" y={WEAPON_ZONE.height * 0.05} x={WEAPON_ZONE.width * 0.08} />
                                 {discardPile.toReversed().slice(0, 1).map((card, i) => (
                                     <Card
-                                        ref={el => cardRefs.current[card.id] = el}
                                         key={card.key}
                                         cardInfo={card}
                                         x={5}

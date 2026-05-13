@@ -30,33 +30,41 @@ const MatchProvider = (props) => {
     const [activeModifiers, setActiveModifiers] = useState([]);
 
     const load = () => {
-        // Convertimos los datos para que 'efectos' sea un objeto manejable
         const modifiersList = modifiers.map(item => ({
             ...item,
-            efectos: typeof item.efectos === 'string' ? Array(JSON.parse(item.efectos)) : item.efectos
+            efectos: typeof item.efectos === 'string' ? JSON.parse(item.efectos) : item.efectos
         }));
-        const tempCards = cards.filter((card) => {
-            if (!(card.palo == 'Diamante' && card.valor > 10) && !(card.palo == 'Corazon' && card.valor > 10)) {
-                card.x = 200
-                card.y = 0
-                card.key = crypto.randomUUID()
-                return card
-            }
-        });
+        const tempCards = cards
+            .filter((card) => {
+                const isForbiddenDiamond = card.palo === 'Diamante' && card.valor > 10;
+                const isForbiddenHeart = card.palo === 'Corazon' && card.valor > 10;
+                return !isForbiddenDiamond && !isForbiddenHeart;
+            })
+            .map((card) => ({
+                ...card,
+                x: 200,
+                y: 0,
+                key: crypto.randomUUID() // Cada carta tiene su propia identidad
+            }));
+
         setBaseDeck(tempCards);
         setAvailableCharacters(characters);
-        setAvailableModifiers(modifiersList)
-        setGameLoading(false)
-    }
+        setAvailableModifiers(modifiersList);
+        setGameLoading(false);
+    };
     const startNewGame = () => {
-        setGameLoading(true)
-        const shuffledDeck = lodash.shuffle(baseDeck);
-        setMatchDeck(shuffledDeck)
-        setCharacter(undefined)
-        setActiveModifiers([])
-        setGameLoading(false)
-        setActualMatchId(null)
-    }
+        setGameLoading(true);
+        const shuffledDeck = lodash.shuffle(baseDeck).map(card => ({
+            ...card,
+            key: crypto.randomUUID()
+        }));
+
+        setMatchDeck(shuffledDeck);
+        setCharacter(undefined);
+        setActiveModifiers([]);
+        setActualMatchId(null);
+        setGameLoading(false);
+    };
     const endGame = async (user_id, tiempo, victoria, rondas, earnedGold, healedLife, enemysDefeated) => {
         if (character) {
             const gameModifiers = activeModifiers.map((modifier) => modifier.id);
@@ -83,19 +91,25 @@ const MatchProvider = (props) => {
             const payload = {
                 usuario_id: user_id,
                 personaje_id: character.id,
-                tiempo: tiempo,
-                victoria: victoria,
-                rondas: rondas,
+                tiempo,
+                victoria,
+                rondas,
                 modificadores: gameModifiers,
                 oro_obtenido: earnedGold,
                 vida_curada: healedLife,
                 enemigos_enfrentados: enemysDefeated
             };
-            const savedMatch = await updateMatch({ matchId: actualMatchId, form: payload });
-            setActualMatchId(savedMatch.id);
-            return true
+
+            try {
+                const savedMatch = await updateMatch({ matchId: actualMatchId, form: payload });
+                setActualMatchId(savedMatch.id);
+                return true;
+            } catch (err) {
+                console.error("Error al actualizar partida:", err);
+                return false;
+            }
         }
-    }
+    };
 
 
     const shuffleMatchDeck = () => {
@@ -107,37 +121,41 @@ const MatchProvider = (props) => {
     }
 
     const addCardToMatchDeck = (card) => {
-        if (card.efectos !== null) {
-            typeof card.efectos === 'string' ? Array(JSON.parse(card.efectos)) : card.efectos
+        if (card) {
+            const newCard = {
+                ...card,
+                efectos: typeof card.efectos === 'string' ? JSON.parse(card.efectos) : card.efectos,
+                x: 200,
+                y: 0,
+                key: crypto.randomUUID()
+            };
+            setMatchDeck(prevDeck => [...prevDeck, newCard]);
         }
-        if (card !== undefined) {
-            card.x = 200
-            card.y = 0
-            card.key = crypto.randomUUID()
-            setMatchDeck(prevDeck => [...prevDeck, card]);
-        }
-    }
+    };
 
     const addEnemysToMatchDeck = (quantity, round) => {
         const minPower = Math.max(2, round);
         const maxPower = Math.min(round + 5, 14);
+
         const candidates = cards.filter(({ palo, valor }) =>
             (palo === "Trebol" || palo === "Pica") &&
             valor >= minPower &&
             valor <= maxPower
         );
-        const shuffled = candidates.sort(() => Math.random() - 0.5);
-        const newEnemys = shuffled.slice(0, quantity);
-        const finalNewEnemys = newEnemys.map((card) => {
-            if (card !== undefined) {
-                card.x = 200
-                card.y = 0
-                card.key = crypto.randomUUID()
-                return card
-            }
-        })
+
+        const shuffled = lodash.shuffle(candidates);
+        const selectedEnemys = shuffled.slice(0, quantity);
+
+        // Mapeamos a objetos NUEVOS para evitar que dos enemigos iguales compartan key
+        const newEnemys = selectedEnemys.map((card) => ({
+            ...card,
+            x: 200,
+            y: 0,
+            key: crypto.randomUUID()
+        }));
+
         setMatchDeck(prevDeck => [...prevDeck, ...newEnemys]);
-    }
+    };
 
     const addModifierToMatch = (modifier) => {
         setActiveModifiers([...activeModifiers, modifier])
@@ -186,23 +204,28 @@ const MatchProvider = (props) => {
     };
 
     const getWeapon = (power) => {
-        const card = cards.find((card) => card.palo == "Diamante" && card.valor == power)
-        if (card !== undefined) {
-            card.x = 200
-            card.y = 0
-            card.key = crypto.randomUUID()
-            return card
+        const card = cards.find((c) => c.palo === "Diamante" && c.valor === power);
+        if (card) {
+            return {
+                ...card,
+                x: 200,
+                y: 0,
+                key: crypto.randomUUID() // Key única aunque el jugador saque la misma arma 2 veces
+            };
         }
-    }
+    };
+
     const getHealItem = (power) => {
-        const card = cards.find((card) => card.palo == "Corazon" && card.valor == power)
-        if (card !== undefined) {
-            card.x = 200
-            card.y = 0
-            card.key = crypto.randomUUID()
-            return card
+        const card = cards.find((c) => c.palo === "Corazon" && c.valor === power);
+        if (card) {
+            return {
+                ...card,
+                x: 200,
+                y: 0,
+                key: crypto.randomUUID()
+            };
         }
-    }
+    };
 
     useEffect(() => {
         if (!isLoadingCard && !isLoadingCharacter && !isLoadingModifier) {
