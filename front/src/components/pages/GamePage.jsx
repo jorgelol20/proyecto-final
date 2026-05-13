@@ -589,7 +589,7 @@ const GamePage = () => {
 
         // 2. Identificamos qué cartas vamos a mover (las últimas del mazo)
         const actualToDraw = Math.min(cardsNeeded, dungeon.length);
-        const newCards = dungeon.slice(-actualToDraw).reverse();
+        const newCards = dungeon.toReversed().slice(-actualToDraw).reverse();
 
         // 3. Actualizamos el Dungeon: quitamos esas cartas
         setDungeon(prevDungeon => prevDungeon.slice(0, prevDungeon.length - actualToDraw));
