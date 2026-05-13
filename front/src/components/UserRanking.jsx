@@ -111,7 +111,7 @@ const UserRanking = () => {
     }
 
     useEffect(() => {
-        const savedRankingType = localStorage['rankingType'];
+        const savedRankingType = localStorage['rankingType']??'RONDAS';
         handleRankingChange(savedRankingType)
     }, [])
 
