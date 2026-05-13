@@ -455,7 +455,7 @@ const GamePage = () => {
     const [modifiersLoading, setModifiersLoading] = useState(true)
 
     // Daño enemigos
-    const enemyDmgMultiplier = useRef(0);
+    const enemyDmgMultiplier = useRef(1);
     const enemyExtraDmg = useRef(0)
     const spadesExtraTakedDmg = useRef(0);
     const clubsExtraTakedDmg = useRef(0);
@@ -553,7 +553,7 @@ const GamePage = () => {
         actualScapes.current = 1;
         healthSteal.current = false;
         ricochet.current = false
-        enemyDmgMultiplier.current = (0);
+        enemyDmgMultiplier.current = (1);
         enemyExtraDmg.current = (0)
         spadesExtraTakedDmg.current = (0);
         clubsExtraTakedDmg.current = (0);
