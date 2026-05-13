@@ -39,6 +39,7 @@ const MatchProvider = (props) => {
             if (!(card.palo == 'Diamante' && card.valor > 10) && !(card.palo == 'Corazon' && card.valor > 10)) {
                 card.x = 200
                 card.y = 0
+                card.key = crypto.randomUUID()
                 return card
             }
         });
@@ -106,12 +107,12 @@ const MatchProvider = (props) => {
     }
 
     const addCardToMatchDeck = (card) => {
-        efectos: typeof item.efectos === 'string' ? Array(JSON.parse(item.efectos)) : item.efectos
         if (card.efectos !== null) {
             typeof card.efectos === 'string' ? Array(JSON.parse(card.efectos)) : card.efectos
         }
         card.x = 200
         card.y = 0
+        card.key = crypto.randomUUID()
         setMatchDeck(prevDeck => [...prevDeck, card]);
     }
 
@@ -128,6 +129,7 @@ const MatchProvider = (props) => {
         const finalNewEnemys = newEnemys.map((card) => {
             card.x = 200
             card.y = 0
+            card.key = crypto.randomUUID()
             return card
         })
         setMatchDeck(prevDeck => [...prevDeck, ...newEnemys]);
@@ -143,21 +145,13 @@ const MatchProvider = (props) => {
 
     const getRandomsModifier = (quantity = 3, round = 1) => {
         const activeIds = new Set(activeModifiers.map(mod => mod.id));
-
-        // 1. Filtrar los que no están activos y nivel > 0 una sola vez
         const pool = availableModifiers.filter(mod => !activeIds.has(mod.id) && mod.nivel > 0);
-
-        // 2. Definir probabilidades según la ronda
-        // Ejemplo de escalado: El nivel 2 empieza a aparecer en ronda 2, el nivel 3 en la 5.
         const getTargetLevel = () => {
             const roll = Math.random() * 100; // 0 a 100
 
             if (round === 1) return 1;
-
-            // Probabilidades dinámicas
-            // Por ejemplo, en ronda 10: Nivel 3 (25%), Nivel 2 (45%), Nivel 1 (30%)
-            const probLvl3 = Math.min((round - 4) * 5, 25); // Empieza en ronda 5
-            const probLvl2 = Math.min((round - 1) * 10, 45); // Empieza en ronda 2
+            const probLvl3 = Math.min((round - 4) * 5, 15);
+            const probLvl2 = Math.min((round - 1) * 10, 35);
 
             if (roll < probLvl3) return 3;
             if (roll < probLvl3 + probLvl2) return 2;
@@ -191,12 +185,14 @@ const MatchProvider = (props) => {
         const card = cards.find((card) => card.palo == "Diamante" && card.valor == power)
         card.x = 200
         card.y = 0
+        card.key = crypto.randomUUID()
         return card
     }
     const getHealItem = (power) => {
         const card = cards.find((card) => card.palo == "Corazon" && card.valor == power)
         card.x = 200
         card.y = 0
+        card.key = crypto.randomUUID()
         return card
     }
 

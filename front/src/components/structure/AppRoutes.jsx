@@ -9,6 +9,7 @@ import GamePage from "../pages/GamePage.jsx";
 import SettingsPage from "../pages/SettingsPage.jsx";
 import GoogleCallback from "./GoogleCallback.jsx";
 import MatchPage from "../pages/MatchPage.jsx";
+import Tutorial from "../pages/Tutorial.jsx";
 
 const AppRoutes = () => {
     return (
@@ -17,6 +18,8 @@ const AppRoutes = () => {
                 <Route path="/perfil/:nick/editar" element={<ProfileEdit/>}/>
                 <Route path='/perfil/:nick' element={<ProfilePage/>}/>
                 <Route path='/perfil' element={<ProfilePage/>}/>
+
+                <Route path='/jugar/tutorial' element={<Tutorial/>}/>
 
                 <Route path='/partida/:matchId' element={<MatchPage/>}/>
                 

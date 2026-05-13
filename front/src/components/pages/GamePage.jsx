@@ -44,6 +44,12 @@ const GamePage = () => {
     const { startButtonSound, showLogs } = useContext(settingsContext)
     const { matchDeck, character, activeModifiers: modifiers, setNewDeck, setNewCharacter, startNewGame, addCardToMatchDeck, gameLoading, availableCharacters, getWeapon, endGame, updateActualGame, setCharacter, setActiveModifiers, setGameLoading, addEnemysToMatchDeck, addModifierToMatch } = useContext(matchContext);
     const { user, isLoading } = useUser();
+    useEffect(() => {
+        restartFunction();
+        setShopAvailable(false)
+        startNewGame();
+        console.log(shopAvailable)
+    }, []);
 
     // Imagen por defecto
     const [defaultImage] = useImage(DefaultCardImage);
@@ -68,19 +74,32 @@ const GamePage = () => {
         startNewRound(true)
     }
 
-    const restartFunction = async () => {
+    const restartFunction = () => {
+        // Reset de estadísticas de partida
+        setRounds(0);
+        setGold(0);
+        setHealth(20);
+        setMaxHealth(20)
+        setAvailableAbility(true);
+        setShopAvailable(false)
+        actualStreak.current = 0;
+        canScape.current = true;
+        healedLife.current = 0;
+        totalEarnedGold.current = 0;
+        enemysDefeated.current = 0;
+
         // Limpieza de cartas y mazo
-        await setDungeon([]);
-        await setRoom([]);
-        await setDiscardPile([]);
-        await setWeapon(null);
-        await setSlainMonsters([]);
+        setDungeon([]);
+        setRoom([]);
+        setDiscardPile([]);
+        setWeapon(null);
+        setSlainMonsters([]);
 
         // Reiniciar contexto
-        await setNewDeck();
-        await setNewCharacter(null);
-        await setGameLoading(false)
-        await setRestart(false)
+        setNewDeck();
+        setNewCharacter(null);
+        setGameLoading(false)
+        setRestart(false)
         startNewGame();
 
         // Sonido y UI básica
@@ -93,18 +112,7 @@ const GamePage = () => {
 
 
 
-        // Reset de estadísticas de partida
-        setRounds(0);
-        setGold(0);
-        setHealth(20);
-        setMaxHealth(20)
-        setAvailableAbilitie(true);
-        setShopAvailable(false)
-        actualStreak.current = 0;
-        canScape.current = true;
-        healedLife.current = 0;
-        totalEarnedGold.current = 0;
-        enemysDefeated.current = 0;
+
 
         // Reset del Timer
         stopTimer();
@@ -332,6 +340,7 @@ const GamePage = () => {
     // Cuando el mazo base de la partida esté listo, se carga en el mazo de juego.
     useEffect(() => {
         if (matchDeck && matchDeck.length > 0 && dungeon.length == 0 && room.length == 0) {
+            console.log(room)
             startNewRound();
         }
     }, [matchDeck, dungeon, room]);
@@ -344,11 +353,12 @@ const GamePage = () => {
      */
     // Parámetros de personaje
     const [isWizard, setIsWizard] = useState(false);
+    const isScapingRef = useRef(false);
     const canScape = useRef(true)
-    const [availableAbilitie, setAvailableAbilitie] = useState(true)
+    const [availableAbility, setAvailableAbility] = useState(true)
 
     // Habilidad del guerrero
-    const guarrior = () => {
+    const warrior = () => {
         let actualRoom = [...room];
         let currentDungeon = [...dungeon];
         const allEnemys = actualRoom.filter(card => card.palo === 'Pica' || card.palo === "Trebol");
@@ -368,7 +378,7 @@ const GamePage = () => {
         actualScapes.current - 1 > 0 ?
             actualScapes.current -= 1 :
             canScape.current = false;
-        canScape.current ? setAvailableAbilitie(true) : setAvailableAbilitie(false)
+        canScape.current ? setAvailableAbility(true) : setAvailableAbility(false)
     }
 
     // Habilidad del elfo
@@ -399,25 +409,25 @@ const GamePage = () => {
     }
 
     // Función para usar la habilidad
-    const handleUseAbilitie = (id) => {
-        if (availableAbilitie) {
+    const handleUseAbility = (id) => {
+        if (availableAbility) {
             switch (id) {
                 case 1: // Guerrero
-                    guarrior()
+                    warrior()
                     break
                 case 2: // Paladín (1 vez por ronda)
                     setHealth(prev => Math.min(maxHealth, prev + 5));
                     healedLife.current += 5;
                     healAnimation(5)
-                    setAvailableAbilitie(false)
+                    setAvailableAbility(false)
                     break
                 case 3: // Elfo
                     elf()
-                    setAvailableAbilitie(false)
+                    setAvailableAbility(false)
                     break
                 case 4: // Mago (1 vez por ronda)
                     shuffleDeck(dungeon)
-                    setAvailableAbilitie(false)
+                    setAvailableAbility(false)
                     break
             }
 
@@ -447,7 +457,7 @@ const GamePage = () => {
     const [modifiersLoading, setModifiersLoading] = useState(true)
 
     // Daño enemigos
-    const enemyDmgMultiplier = useRef(1);
+    const enemyDmgMultiplier = useRef(0);
     const enemyExtraDmg = useRef(0)
     const spadesExtraTakedDmg = useRef(0);
     const clubsExtraTakedDmg = useRef(0);
@@ -479,7 +489,7 @@ const GamePage = () => {
 
 
     const setModifierWeapon = async (power) => {
-        const newWeapon = await getWeapon(power)
+        const newWeapon = getWeapon(power)
         processCardAction(newWeapon)
         canScape.current = true
 
@@ -538,14 +548,14 @@ const GamePage = () => {
         return true;
     }
 
-    const cleanModifiers = async () => {
+    const cleanModifiers = () => {
         pentakillTargetNumber.current = 0;
         pentakillDmg.current = 0;
         actualStreak.current = 0;
         actualScapes.current = 1;
         healthSteal.current = false;
         ricochet.current = false
-        enemyDmgMultiplier.current = (1);
+        enemyDmgMultiplier.current = (0);
         enemyExtraDmg.current = (0)
         spadesExtraTakedDmg.current = (0);
         clubsExtraTakedDmg.current = (0);
@@ -554,7 +564,7 @@ const GamePage = () => {
         setMaxScapes(1)
     }
 
-    const handleModifierEvent = async () => {
+    const handleModifierEvent = () => {
         const modifier = modifiers[modifiers.length - 1]
         const modifierEffects = modifier.efectos[0]
         const effectsList = Array.isArray(modifierEffects) ? modifierEffects : [modifierEffects];
@@ -573,33 +583,54 @@ const GamePage = () => {
     const totalCardsUsed = useRef(0)
 
     const fillRoom = useCallback(() => {
-        setDungeon(prevDungeon => {
-            if (prevDungeon.length === 0) return prevDungeon;
-            setRoom(prevRoom => {
-                if (prevRoom.length >= 4) return prevRoom;
-                const cardsNeeded = 4 - prevRoom.length;
-                const newCardsFromDungeon = prevDungeon.slice(-cardsNeeded).reverse();
-                return [...prevRoom, ...newCardsFromDungeon];
-            });
-            return prevDungeon.slice(0, prevDungeon.length - (4 - room.length));
+        // 1. Calculamos cuántas cartas necesitamos basándonos en el estado actual de la habitación
+        const roomSize = room.length;
+        const cardsNeeded = 4 - roomSize;
+
+        if (cardsNeeded <= 0 || dungeon.length === 0) return;
+
+        // 2. Identificamos qué cartas vamos a mover (las últimas del mazo)
+        const actualToDraw = Math.min(cardsNeeded, dungeon.length);
+        const newCards = dungeon.slice(-actualToDraw).reverse();
+
+        // 3. Actualizamos el Dungeon: quitamos esas cartas
+        setDungeon(prevDungeon => prevDungeon.slice(0, prevDungeon.length - actualToDraw));
+
+        // 4. Actualizamos la Room: añadimos las cartas asegurando que no haya duplicados por ID
+        setRoom(prevRoom => {
+            const uniqueNewCards = newCards.filter(
+                newCard => !prevRoom.some(existingCard => existingCard.key === newCard.key)
+            );
+            return [...prevRoom, ...uniqueNewCards];
         });
-    }, [room.length]);
+    }, [room.length, dungeon]); // Ahora depende de dungeon para tener los datos frescos
+
+    const isDrawingRef = useRef(false); // Nueva referencia al inicio del componente
 
     useEffect(() => {
-        // Rellenado por escapar o inicial
-        if (room.length === 0 && dungeon.length > 0) {
-            fillRoom()
-            healedRef.current = false
-        }
-        //Rellenado por gastar las cartas
-        else if (room.length <= 1 && dungeon.length > 0) {
+        // Si no hay cartas o ya estamos robando, cancelamos
+        if (dungeon.length === 0 || isDrawingRef.current) return;
+
+        if (room.length <= 1) {
+            isDrawingRef.current = true; // Bloqueamos
+
             fillRoom();
-            if (character?.habilidad_personaje?.id === 1) {
-                setAvailableAbilitie(true)
+
+            if (!isScapingRef.current) {
+                if (character?.habilidad_personaje?.id === 1) {
+                    setAvailableAbility(true);
+                }
+                healedRef.current = false;
+                actualScapes.current = maxScapes;
+                canScape.current = true;
             }
-            healedRef.current = false;
-            actualScapes.curren = maxScapes;
-            canScape.current = true;
+
+            isScapingRef.current = false;
+
+            // Liberamos el bloqueo después de un pequeño delay para que React procese los estados
+            setTimeout(() => {
+                isDrawingRef.current = false;
+            }, 100);
         }
     }, [room.length, dungeon.length]);
 
@@ -612,38 +643,50 @@ const GamePage = () => {
 
     // Función para barajar el mazo de la ronda
     const shuffleDeck = (deck) => {
-        const shuffled = lodash.shuffle(deck)
+        const shuffled = lodash.shuffle(deck).map((card) => {
+            card.key = crypto.randomUUID()
+            return card;
+        })
         setDungeon([...shuffled])
     }
     const startNewRound = async (continueMatch = false) => {
         if (rounds !== 10 || continueMatch) {
             setSelectModifier(true)
-            if (rounds !== 0) {
+            if (rounds >= 1 && gameOn) {
                 setShopAvailable(true)
+                await addEnemys(5)
+
+            } else {
+                setShopAvailable(false)
             }
-            setRounds(rounds + 1)
-            await addEnemys(5)
+            if (gameOn || rounds == 0) {
+                setRounds(rounds + 1)
+            }
             shuffleDeck(matchDeck);
             setDiscardPile([]);
-            setAvailableAbilitie(true)
+            setAvailableAbility(true)
         } else if (rounds === 10) {
             setGameOn(false)
             setGameWin(true)
         }
     }
 
-    // Función para escapar
     const scape = () => {
         if (canScape.current) {
-            actualScapes.current - 1 > 0 ? actualScapes.current -= 1 : canScape.current = false;
-            // Condición del guerrero
-            if (character?.habilidad_personaje?.id === 1 && canScape.current == false) {
-                setAvailableAbilitie(false)
+            isScapingRef.current = true;
+            setDungeon(prev => [...room, ...prev]);
+            setRoom([]);
+            if (actualScapes.current - 1 > 0) {
+                actualScapes.current -= 1;
+            } else {
+                canScape.current = false;
             }
-            setDungeon([...room, ...dungeon])
-            setRoom([])
+
+            if (character?.habilidad_personaje?.id === 1 && !canScape.current) {
+                setAvailableAbilitie(false);
+            }
         }
-    }
+    };
 
 
 
@@ -701,23 +744,23 @@ const GamePage = () => {
     const moveCardToDiscard = (cardsToMove, moved = false) => {
         if (moved) {
             cardsToMove.forEach((card) => {
-                if (cardRefs.current[card.id]) {
+                if (cardRefs.current[card.key]) {
                     const x = 660 - card.x - 2
-                    cardRefs.current[card.id].animateTo(x, 6, 0.2);
+                    cardRefs.current[card.key].animateTo(x, 6, 0.2);
                 }
             });
         } else {
             cardsToMove.forEach((card) => {
-                if (cardRefs.current[card.id]) {
-                    cardRefs.current[card.id].animateTo(660, 204, 0.4);
+                if (cardRefs.current[card.key]) {
+                    cardRefs.current[card.key].animateTo(660, 204, 0.4);
                 }
             });
         }
         setTimeout(() => {
             setDiscardPile(prev => [...prev, ...cardsToMove]);
-            setRoom(prev => prev.filter(c => !cardsToMove.find(moved => moved.id === c.id)));
+            setRoom(prev => prev.filter(c => !cardsToMove.find(moved => moved.key === c.key)));
             cardsToMove.forEach(card => {
-                delete cardRefs.current[card.id];
+                delete cardRefs.current[card.key];
             });
         }, 450);
     };
@@ -769,8 +812,8 @@ const GamePage = () => {
 
     const applyCardEffect = (effect) => {
         switch (effect.name) {
-            case 'restore_abilitie':
-                setAvailableAbilitie(true)
+            case 'restore_ability':
+                setAvailableAbility(true)
                 break
             case 'heal':
                 currentHeal.current = effect.value;
@@ -971,7 +1014,7 @@ const GamePage = () => {
         }
         if (validMove) {
             if (character?.habilidad_personaje?.id === 1) {
-                setAvailableAbilitie(false)
+                setAvailableAbility(false)
             }
             if (progresive_heal_turns.current > 0) {
                 setHealth(prev => Math.min(maxHealth, prev + progresive_heal));
@@ -995,6 +1038,7 @@ const GamePage = () => {
         }
         return false;
     };
+
 
     if (!character && !gameOver) {
         return (
@@ -1083,12 +1127,12 @@ const GamePage = () => {
                         </div>
                         <div className="game-character">
                             <img className="character-avatar" style={{ borderColor: user.color }} src={character?.imagen} alt={character?.nombre} />
-                            <img className={availableAbilitie ? "character-abilitie available" : "character-abilitie"} src={character?.habilidad_personaje?.icono} style={null} />
+                            <img className={availableAbility ? "character-ability available" : "character-ability"} src={character?.habilidad_personaje?.icono} style={null} />
                         </div>
                         <div className="game-modifiers">
                             {
                                 modifiers.map((modifierInfo) => (
-                                    <Modifier key={modifierInfo.id + modifierInfo.nombre.charCodeAt(0)} modifierInfo={modifierInfo} />
+                                    <Modifier key={crypto.randomUUID()} modifierInfo={modifierInfo} />
                                 ))
                             }
                         </div>
@@ -1096,8 +1140,8 @@ const GamePage = () => {
                             <button disabled={!canScape.current || !gameOn} onClick={() => {
                                 scape()
                             }}>HUIR</button>
-                            <button disabled={!availableAbilitie || !gameOn} onClick={() => {
-                                handleUseAbilitie(character.habilidad_personaje.id)
+                            <button disabled={!availableAbility || !gameOn} onClick={() => {
+                                handleUseAbility(character.habilidad_personaje.id)
                             }}>HABILIDAD</button>
                         </div>
                     </div>
@@ -1109,14 +1153,14 @@ const GamePage = () => {
                             {/* ZONA DEL MAZO */}
                             <Group x={DUNGEON_ZONE.x} y={DUNGEON_ZONE.y}>
                                 <Rect width={DUNGEON_ZONE.width} height={DUNGEON_ZONE.height} fill="#0000006c" stroke="white" strokeWidth={2} cornerRadius={8} onMouseEnter={(e) => { setOverDungeonZone(true) }} onMouseLeave={(e) => { setOverDungeonZone(false) }} />
-                                <Text text="DUNGEON" rotation={55} fontFamily="Romulus" fontSize={30} fill="white" y={20} x={25} />
+                                <Text text="DUNGEON" rotation={55} fontFamily="Romulus" fontSize={30} fill="white" y={20} x={35} />
 
                                 {dungeon.toReversed().slice(0, 4).toReversed().map((card, i) => (
                                     <Card
-                                        ref={el => cardRefs.current[card.id] = el}
-                                        key={"dungeon-" + card.id + card.palo}
+                                        ref={el => cardRefs.current[card.key] = el}
+                                        key={card.key}
                                         cardInfo={card}
-                                        x={7.5}
+                                        x={7}
                                         y={isWizard ? 5 + (i * (overDungeonZone ? 100 : 0)) : 5}
                                         onDragEnd={() => { }}
                                         onClick={setOverDungeonZone}
@@ -1138,7 +1182,7 @@ const GamePage = () => {
                                 {discardPile.toReversed().slice(0, 1).map((card, i) => (
                                     <Card
                                         ref={el => cardRefs.current[card.id] = el}
-                                        key={"discard-" + card.id + card.palo}
+                                        key={card.key}
                                         cardInfo={card}
                                         x={5}
                                         y={5}
@@ -1156,8 +1200,8 @@ const GamePage = () => {
                                 <Rect width={WEAPON_ZONE.width} height={WEAPON_ZONE.height} fill="#6a9c476e" stroke="white" strokeWidth={2} cornerRadius={8} />
                                 <Text text="ZONA DE EQUIPO" fontFamily="Romulus" fontSize={40} fill="white" y={WEAPON_ZONE.height * 0.4} x={WEAPON_ZONE.width * 0.12} />
                                 {weapon && <Card
-                                    ref={el => cardRefs.current[weapon.id] = el}
-                                    key={"weapon-" + weapon.id}
+                                    ref={el => cardRefs.current[weapon.key] = el}
+                                    key={weapon.key}
                                     cardInfo={weapon}
                                     x={10}
                                     y={10}
@@ -1169,8 +1213,8 @@ const GamePage = () => {
                                 />}
                                 {slainMonsters.map((card, i) => (
                                     <Card
-                                        ref={el => cardRefs.current[card.id] = el}
-                                        key={"slain-" + card.id + card.palo}
+                                        ref={el => cardRefs.current[card.key] = el}
+                                        key={card.key}
                                         cardInfo={card}
                                         x={150 + (i * 20)}
                                         y={10 + (i * 10)}
@@ -1188,8 +1232,8 @@ const GamePage = () => {
                         <Layer ref={layerRef}>
                             {room.map((card, index) => (
                                 <Card
-                                    ref={el => cardRefs.current[card.id] = el}
-                                    key={"room-" + card.id + card.palo}
+                                    ref={el => cardRefs.current[card.key] = el}
+                                    key={card.key}
                                     cardInfo={card}
                                     x={card.x + (index * 140)}
                                     y={card.y + 10}
@@ -1210,7 +1254,7 @@ const GamePage = () => {
                                 {
                                     logsRef.current.length > 0 ?
                                         <div className="logs">
-                                            <pre>{logsRef.current.join('\n\n')}</pre>
+                                            <pre>{logsRef.current.toReversed().join('\n\n')}</pre>
                                         </div>
                                         : <h1 style={{ color: "white" }}>SIN LOGS</h1>
                                 }

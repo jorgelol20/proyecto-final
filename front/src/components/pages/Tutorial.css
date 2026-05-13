@@ -1,0 +1,59 @@
+.tutorial-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .tutorial-carousel {
+        position: relative;
+        width: 60%;
+        margin: auto;
+        overflow: hidden;
+        border-radius: 8px;
+        background-color: var(--main-color);
+
+        button {
+            opacity: 0.9;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            border: none;
+            padding: 15px;
+            cursor: pointer;
+            z-index: 10;
+        }
+        button:hover{
+            opacity: 1;
+        }
+    }
+}
+
+.slide-1{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--second-color);
+    min-height: 50cqh;
+    justify-content: start;
+    align-items: center;
+    padding-top: 5cqh;
+    color: var(--main-white);
+    img{
+        background: none;
+        width: 30cqw;
+    }
+    p{
+        font-size: 1cqw;
+    }
+    
+}
+
+
+.btn-prev {
+    position: absolute;
+    left: 15cqw;
+}
+
+.btn-next {
+    position: absolute;
+    right: 15cqw;
+}
