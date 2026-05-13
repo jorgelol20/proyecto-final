@@ -736,7 +736,7 @@ const GamePage = () => {
      */
     // Función para eliminar una carta del mazo de ronda.
     const deleteFromRoom = (card) => {
-        setRoom(prev => prev.filter(c => c.key !== card.key));
+        setRoom(prev => prev.filter(c => c.id !== card.id));
     }
 
     // Función para ejecutar la animación para mover a descartes
