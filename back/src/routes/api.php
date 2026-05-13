@@ -23,17 +23,20 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 //Controlador Usuarios.
-Route::get('/ranking', [UsuarioApiController::class, 'ranking'])->name('api.usuarios.ranking');
 Route::apiResource('/usuarios', UsuarioApiController::class)->names('api.usuarios');
 Route::get('/usuarios/search/{search}', [UsuarioApiController::class, 'search'])->name('api.usuarios.search');
 Route::post('/usuarios/comentario/', [UsuarioApiController::class, 'storeComentario'])->name('api.usuarios.comentario');
 Route::delete('/usuarios/comentario/{id}', [UsuarioApiController::class, 'destroyComentario'])->name('api.usuarios.comentario.eliminar');
 Route::put('/usuarios/comentario/{id}', [UsuarioApiController::class, 'updateComentario'])->name('api.usuarios.comentario.actualizar');
 
-
+//Rankings
+Route::get('/ranking-victorias', [UsuarioApiController::class, 'ranking_victorias'])->name('api.usuarios.ranking-victorias');
+Route::get('/ranking-rondas', [UsuarioApiController::class, 'ranking_rondas'])->name('api.usuarios.ranking-rondas');
+Route::get('/ranking-partidas', [PartidasApiController::class, 'ranking_partidas'])->name('api.partidas.ranking-partidas');
 
 //Controlador Partidas.
 Route::apiResource('/partidas', PartidasApiController::class)->names('api.partidas');
+
 
 //Controlador Modificadores.
 Route::apiResource('/modificadores', ModificadoresApiController::class)->names('api.modificadores');

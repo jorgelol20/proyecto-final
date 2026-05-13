@@ -44,6 +44,16 @@ export const useMatch = () => {
         }
     };
 
+    const getRanking = async () => {
+        try {
+            const response = await api.get(`/ranking-partidas`);
+            return response.data;
+        } catch (error) {
+            console.error("Error al obtener usuario:", error.response?.data?.message);
+            throw error;
+        }
+    };
+
     return {
         matches,
         isLoading,
@@ -55,5 +65,6 @@ export const useMatch = () => {
         saveError: saveMatch.error,
         updateError: updateMatch.error,
         getMatchById,
+        getRanking
     };
 };

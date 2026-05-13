@@ -12,8 +12,8 @@ class PartidasController extends Controller
 {
     public function index()
     {
-        $partidas = Partidas::select('id','created_at', 'usuario_id','personaje_id','tiempo','victoria', 'rondas', 'oro_obtenido', 'vida_curada', 'enemigos_enfrentados')->latest()->limit(10)->get();
-        $partidas = $partidas->load(['comentarios','modificadores','jugador', 'personaje']);
+        $partidas = Partidas::select('id', 'created_at', 'usuario_id', 'personaje_id', 'tiempo', 'victoria', 'rondas', 'oro_obtenido', 'vida_curada', 'enemigos_enfrentados')->latest()->limit(10)->get();
+        $partidas = $partidas->load(['comentarios', 'modificadores', 'jugador', 'personaje']);
         return response()->json($partidas, 200);
     }
 
@@ -26,7 +26,7 @@ class PartidasController extends Controller
     }
 
     public function show($id)
-    {   
+    {
         $partida = Partidas::with(['comentarios', 'modificadores', 'jugador', 'personaje'])->findOrFail($id);
         return response()->json($partida, 200);
     }
@@ -43,5 +43,28 @@ class PartidasController extends Controller
     {
         Partidas::findOrFail($id)->delete();
         return response()->json(['message' => 'Partida eliminada'], 201);
+    }
+
+    public function ranking_partidas()
+    {
+        $partidas = Partidas::select(
+            'id',
+            'created_at',
+            'usuario_id',
+            'personaje_id',
+            'tiempo',
+            'victoria',
+            'rondas',
+            'oro_obtenido',
+            'vida_curada',
+            'enemigos_enfrentados'
+        )
+            ->orderBy('rondas', 'desc')
+            ->limit(10)
+            ->get();
+
+        $partidas->load(['comentarios', 'modificadores', 'jugador', 'personaje']);
+
+        return response()->json($partidas, 200);
     }
 }

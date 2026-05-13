@@ -11,10 +11,11 @@
     height: 12cqw;
     color: var(--main-white);
     text-align: center;
-
+    z-index: 1000;
     h1 {
         font-size: 1cqw;
     }
+    
 }
 
 .user-ranking {
@@ -27,17 +28,18 @@
     border-width: 5px;
     border-style: solid;
     border-radius: 5px;
+    
 
     h1 {
         font-size: 1cqw;
         margin-left: 0.5cqw;
         margin-right: 0.5cqw;
-        color: var(--main-black);
+        color: var(--main-white);
     }
 
     img {
-        width: 2cqw;
-        height: 2cqw;
+        width: 2.5em;
+        height: 2em;
         border-width: 5px;
         border-style: solid;
         border-radius: 5px;
@@ -49,8 +51,28 @@
 }
 .ranking-container{
     overflow-y: auto;
-    height: 80%;
+    height:75%;
     margin: 5px solid var(--main-color);
+    overflow: auto;
+    z-index: 10;
+}
+.ranking-buttons{
+    position: absolute;
+    right: 0;
+    top: -2.2cqw;
+    z-index: 1;
+    display: flex;
+    .ranking-button{
+        width: 6cqw;
+        height: 2cqw;
+        font-size: 0.8cqw;
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+        filter: brightness(0.9);
+    }
+    .active{
+        filter: brightness(1.2);
+    }
 }
 #num-1 {
     color: var(--main-gold);
