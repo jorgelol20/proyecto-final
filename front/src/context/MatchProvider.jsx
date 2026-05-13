@@ -71,7 +71,6 @@ const MatchProvider = (props) => {
                 enemigos_enfrentados: enemysDefeated
             };
             const savedMatch = await saveMatch({ form: payload });
-            console.log(savedMatch)
             setActualMatchId(savedMatch.id);
             return true
         }

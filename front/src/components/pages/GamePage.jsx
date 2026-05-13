@@ -250,6 +250,12 @@ const GamePage = () => {
         }
     }, [canBeClicked])
 
+
+    const windowWidth = window.innerWidth;
+    const windowHeight = window.innerHeight;
+
+    const vertical = windowHeight > windowWidth ? true : false
+
     // Mapa de referencias de las cartas (Animaciones)
     const cardRefs = useRef({});
 
@@ -286,6 +292,8 @@ const GamePage = () => {
         height: window.innerHeight
     });
     const scale = stageSize.width / 1920;
+
+
 
     useEffect(() => {
         if (!user) {
@@ -473,7 +481,7 @@ const GamePage = () => {
     const setModifierWeapon = async (power) => {
         const newWeapon = await getWeapon(power)
         processCardAction(newWeapon)
-        canScape.current = true 
+        canScape.current = true
 
     }
 
