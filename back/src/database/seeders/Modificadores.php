@@ -54,7 +54,7 @@ class Modificadores extends Seeder
             ],
             [
                 'nombre' => '4K',
-                'descripcion' => '¡Estás en racha! Matar a 3 o más enemigos te dará daño extra.',
+                'descripcion' => '¡Estás en racha! Matar a 4 o más enemigos te dará daño extra.',
                 'imagen' => "/storage/modificadores/4K.webp",
                 'nivel' => 2,
                 'efectos' => json_encode([
@@ -126,13 +126,15 @@ class Modificadores extends Seeder
         ];
 
         foreach ($modificadores as $data) {
-            ModelModificadores::factory()->create([
-                'nombre' => $data['nombre'],
-                'descripcion' => $data['descripcion'],
-                'imagen' => config('app.backend_url') . $data['imagen'],
-                'nivel' => $data['nivel'],
-                'efectos' => $data['efectos'],
-            ]);
+            ModelModificadores::updateOrCreate(
+                ['nombre' => $data['nombre']],
+                [
+                    'descripcion' => $data['descripcion'],
+                    'imagen' => config('app.backend_url') . $data['imagen'],
+                    'nivel' => $data['nivel'],
+                    'efectos' => $data['efectos'],
+                ]
+            );
         }
     }
 }
