@@ -86,6 +86,7 @@ const GamePage = () => {
         healedLife.current = 0;
         totalEarnedGold.current = 0;
         enemysDefeated.current = 0;
+        setIsWizard(false)
 
         // Limpieza de cartas y mazo
         setDungeon([]);
@@ -107,11 +108,6 @@ const GamePage = () => {
         setGameOn(false);
         setGameWin(false)
         logsRef.current = [];
-
-
-
-
-
 
         // Reset del Timer
         stopTimer();
@@ -464,9 +460,9 @@ const GamePage = () => {
     const healthSteal = useRef(false);
 
     // Pentakill
-    const pentakillTargetNumber = useRef(0);
-    const pentakillDmg = useRef(0);
-    const actualStreak = useRef(0);
+    const [pentakillTargetNumber, setPentakillTargetNumber] = useState(0);
+    const [pentakillDmg, setPentakillDmg] = useState(0);
+    const [actualStreak, setActualStreak] = useState(0);
 
     // Escape
     const [maxScapes, setMaxScapes] = useState(1)
@@ -501,16 +497,16 @@ const GamePage = () => {
                 break;
             case "pentakill_target_number":
                 // Lógica para registrar cuántas muertes se necesitan (ej: 3)
-                pentakillTargetNumber.current = pentakillTargetNumber.current < effect.value ?
-                    effect.value
-                    : pentakillTargetNumber.current
+                if(pentakillTargetNumber < effect.value){
+                    setPentakillTargetNumber(effect.value)
+                }
                 break;
 
             case "pentakill_dmg":
                 // Lógica para aplicar el daño extra
-                pentakillDmg.current = pentakillDmg.current < effect.value ?
-                    effect.value
-                    : pentakillDmg.current
+                if(pentakillDmg < effect.value){
+                    setPentakillDmg(effect.value)
+                }
                 break;
 
             case "health_steal":
@@ -547,9 +543,9 @@ const GamePage = () => {
     }
 
     const cleanModifiers = () => {
-        pentakillTargetNumber.current = 0;
-        pentakillDmg.current = 0;
-        actualStreak.current = 0;
+        setPentakillTargetNumber(0);
+        setPentakillDmg(0);
+        setActualStreak(0);
         actualScapes.current = 1;
         healthSteal.current = false;
         ricochet.current = false
@@ -872,7 +868,7 @@ const GamePage = () => {
             logsRef.current.push((logsRef.current.length + 1) + " - " + card.valor + " de " + card.palo + " te no te ha curado nada.")
         }
         moveCardToDiscard([card])
-        actualStreak.current = 0;
+        setActualStreak(0);
         return true;
     }
 
@@ -900,7 +896,7 @@ const GamePage = () => {
                 setSlainMonsters([]);
             }, 200);
         }
-        actualStreak.current = 0;
+        setActualStreak(0);
         return true;
     }
 
@@ -916,7 +912,7 @@ const GamePage = () => {
         }
 
         const enemy_dmg = Math.ceil((card.valor * enemyDmgMultiplier.current)) + enemyExtraDmg.current - user_dmg_reduction;
-        const pentakill = actualStreak.current >= pentakillTargetNumber.current ? pentakillDmg.current : 0
+        const pentakill = actualStreak >= pentakillTargetNumber ? pentakillDmg : 0
         if (invincibility_turns.current > 0) {
 
             const final_user_dmg = 100
@@ -948,7 +944,7 @@ const GamePage = () => {
 
             setSlainMonsters([...slainMonsters, card]);
             deleteFromRoom(card)
-            actualStreak.current = actualStreak.current + 1;
+            setActualStreak(prev => prev + 1);
             logsRef.current.push((logsRef.current.length + 1) + " - " + card.valor + " de " + card.palo + " te ha hecho " + final_dmg + " de daño.")
             invincibility_turns.current -= 1;
             return true
@@ -974,7 +970,7 @@ const GamePage = () => {
             }
             setSlainMonsters([...slainMonsters, card]);
             deleteFromRoom(card)
-            actualStreak.current = actualStreak.current + 1;
+            setActualStreak(prev => prev + 1);
             logsRef.current.push((logsRef.current.length + 1) + " - " + card.valor + " de " + card.palo + " te ha hecho " + final_dmg + " de daño.")
             return true
         }
@@ -985,7 +981,7 @@ const GamePage = () => {
             moveCardToDiscard([card])
             damageAnimation(final_dmg, true)
             setHealth(prev => Math.max(0, prev - final_dmg));
-            actualStreak.current = 0;
+            setActualStreak(prev => prev + 1);
             logsRef.current.push((logsRef.current.length + 1) + " - " + card.valor + " de " + card.palo + " te ha hecho " + final_dmg + " de daño.")
             return true
         }
@@ -1118,7 +1114,7 @@ const GamePage = () => {
                         <div>
                             <h1 className="player-health"><img src={healthIcon} />{health}/{maxHealth}{healthAnimation !== null ? <div className="animation-container"><strong className="animation" disabled={healthAnimation}>{healthAnimationValue}</strong><img className="animation" disabled={healthAnimation} src={healthAnimation} /></div> : <></>}</h1>
                             <h1 className="player-gold"><img src={GoldIcon} />{gold}{goldAnimation !== null ? <div className="animation-container"><strong className="animation" disabled={goldAnimation}>{goldAnimationValue}</strong><img className="animation" disabled={goldAnimation} src={goldAnimation} /></div> : <></>}</h1>
-                            {!modifiersLoading && pentakillTargetNumber.current !== 0 ? <h1>Racha <strong>{actualStreak.current}</strong>/<strong>{pentakillTargetNumber.current}</strong></h1> : <></>}
+                            {!modifiersLoading && pentakillTargetNumber !== 0 ? <h1>Racha <strong>{actualStreak}</strong>/<strong>{pentakillTargetNumber}</strong></h1> : <></>}
                             {gameOn && gameWin ? <h1>Sin límite</h1> : <h1>RONDA {rounds}/{maxRounds}</h1>}
                             <h2 ref={formatedTimeRef}>Tiempo: 00:00</h2>
                             <p>{dungeon.length} cartas restantes</p>
