@@ -29,7 +29,7 @@ const Match = ({ match, showUser }) => {
                         </div>
                         <div className="match-modifiers">
                             {match.modificadores.length > 0 ? match.modificadores.map((modifierInfo) => {
-                                return <Modifier key={modifierInfo.key + "-" + match.id} modifierInfo={modifierInfo} />
+                                return <Modifier key={crypto.randomUUID()} modifierInfo={modifierInfo} />
                             }) : <h1>Sin modificadores</h1>}
                         </div>
                     </div>
