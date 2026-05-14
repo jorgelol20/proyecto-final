@@ -163,7 +163,6 @@ const GamePage = () => {
             if (gameWin) {
                 updateActualGame(user.id, timeRef.current, gameWin, rounds, totalEarnedGold.current, healedLife.current, enemysDefeated.current)
             } else {
-                console.log(totalEarnedGold)
                 endGame(user.id, timeRef.current, gameWin, rounds, totalEarnedGold.current, healedLife.current, enemysDefeated.current)
             }
         }
