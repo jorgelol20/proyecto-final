@@ -163,6 +163,7 @@ const GamePage = () => {
             if (gameWin) {
                 updateActualGame(user.id, timeRef.current, gameWin, rounds, totalEarnedGold.current, healedLife.current, enemysDefeated.current)
             } else {
+                console.log(totalEarnedGold)
                 endGame(user.id, timeRef.current, gameWin, rounds, totalEarnedGold.current, healedLife.current, enemysDefeated.current)
             }
         }
@@ -960,9 +961,9 @@ const GamePage = () => {
 
             const final_dmg = Math.max(0, final_enemy_dmg - final_user_dmg);
             damageAnimation(final_dmg)
-            const earnedGold = gold + 5;
+            const earnedGold = 5;
             coinAnimation(5)
-            setGold(earnedGold);
+            setGold(prev => prev + earnedGold);
             totalEarnedGold.current += earnedGold;
             setHealth(prev => Math.max(0, prev - final_dmg));
             if (healthSteal.current && card.valor < weapon_dmg.current) {
