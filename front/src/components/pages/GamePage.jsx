@@ -88,6 +88,7 @@ const GamePage = () => {
         healedLife.current = 0;
         totalEarnedGold.current = 0;
         enemysDefeated.current = 0;
+        totalCardsUsed.current = 0
         setIsWizard(false)
 
         // Limpieza de cartas y mazo
@@ -226,7 +227,7 @@ const GamePage = () => {
     // State de oro
     const [gold, setGold] = useState(0);
 
-    const [shopAvailable, setShopAvailable] = useState(false);
+    const [shopAvailable, setShopAvailable] = useState(true);
 
     useEffect(() => {
         if (!shopAvailable) {
@@ -473,6 +474,9 @@ const GamePage = () => {
     // Ricochet
     const ricochet = useRef(false)
 
+    // Oro
+    const goldMultiplier = useRef(1);
+
 
 
     useEffect(() => {
@@ -538,6 +542,9 @@ const GamePage = () => {
             case "ricochet":
                 ricochet.current = true;
                 break;
+            case 'gold_multiplier':
+                goldMultiplier.current = effect.value
+                break;
             default:
                 return false;
         }
@@ -556,7 +563,7 @@ const GamePage = () => {
         spadesExtraTakedDmg.current = (0);
         clubsExtraTakedDmg.current = (0);
         ricochet.current = false;
-        totalCardsUsed.current = 0
+        goldMultiplier.current = (1)
         setMaxScapes(1)
     }
 
@@ -684,8 +691,6 @@ const GamePage = () => {
             }
         }
     };
-
-
 
     /**
      * ===================================
@@ -920,8 +925,8 @@ const GamePage = () => {
         if (invincibility_turns.current > 0) {
             damageAnimation(0)
             if (weapon) {
+                const earnedGold = 5 * goldMultiplier.current;
                 setGold(prev => prev + earnedGold);
-                const earnedGold = 5;
                 coinAnimation(earnedGold)
                 totalEarnedGold.current += earnedGold;
             }
@@ -934,7 +939,7 @@ const GamePage = () => {
         }
 
         // ATAQUE CON ARMA
-        else if (weapon && (slainMonsters.length === 0 || card.valor < (slainMonsters[slainMonsters.length - 1]?.valor || 99))) {
+        else if (weapon && ((slainMonsters.length === 0 || card.valor < (slainMonsters[slainMonsters.length - 1]?.valor || 99))||(ricochet.current && card.valor === (slainMonsters[slainMonsters.length - 1]?.valor || 99)))) {
 
             const final_user_dmg = weapon_dmg.current + (card.palo == 'Pica' ? spadesExtraTakedDmg.current : clubsExtraTakedDmg.current);
             const final_enemy_dmg = enemy_dmg - pentakill;
@@ -945,7 +950,13 @@ const GamePage = () => {
             coinAnimation(5)
             setGold(prev => prev + earnedGold);
             totalEarnedGold.current += earnedGold;
-            setHealth(prev => Math.max(0, prev - final_dmg));
+            if(health - final_dmg <= 0 && revive.current){
+                setHealth(revive_health.current)
+                revive.current = false;
+                revive_health.current = 0;
+            }else{
+                setHealth(prev => Math.max(0, prev - final_dmg));
+            }
             if (healthSteal.current && card.valor < weapon_dmg.current) {
                 const heal = Math.min(0, card.valor - weapon_dmg.current) > -3 ? Math.min(0, card.valor - weapon_dmg.current) * -1 : 3;
                 healAnimation(heal)
@@ -963,7 +974,13 @@ const GamePage = () => {
             const final_dmg = Math.max(0, enemy_dmg - final_user_dmg);
             moveCardToDiscard([card])
             damageAnimation(final_dmg, true)
-            setHealth(prev => Math.max(0, prev - final_dmg));
+            if(health - final_dmg <= 0 && revive.current){
+                setHealth(revive_health.current)
+                revive.current = false;
+                revive_health.current = 0;
+            }else{
+                setHealth(prev => Math.max(0, prev - final_dmg));
+            }
             setActualStreak(prev => prev + 1);
             logsRef.current.push((logsRef.current.length + 1) + " - " + card.valor + " de " + card.palo + " te ha hecho " + final_dmg + " de daño.")
             return true
@@ -995,6 +1012,7 @@ const GamePage = () => {
             }
             if (progresive_heal_turns.current > 0) {
                 setHealth(prev => Math.min(maxHealth, prev + progresive_heal));
+                healAnimation(progresive_heal.current)
                 healedLife.current += progresive_heal.current;
                 progresive_heal_turns.current -= 1;
             }
@@ -1087,6 +1105,8 @@ const GamePage = () => {
                                 <p>Rondas: {rounds}</p>
                                 <p>Cartas restantes en esta ronda: {dungeon.length + room.length}</p>
                                 <p>Total de cartas jugadas: {totalCardsUsed.current}</p>
+                                <p>Oro obtenido esta partida: {totalEarnedGold.current}</p>
+                                <p>Total enemigos derrotados: {enemysDefeated.current}</p>
                             </div>
                         </div> :
                         <></>

@@ -123,24 +123,24 @@ class Modificadores extends Seeder
                     ['name' => 'user_spades_dmg', 'value' => 3]
                 ])
             ],
-            // [
-            //     'nombre' => 'Gato de la suerte',
-            //     'descripcion' => 'La suerte te sonrie. Ganas más oro.',
-            //     'imagen' => "/storage/modificadores/GatoDeLaSuerte.webp",
-            //     'nivel' => 1,
-            //     'efectos' => json_encode([
-            //         ['name' => 'gold_multiplier', 'value' => 2],
-            //     ])
-            // ],
-            // [
-            //     'nombre' => 'Ricochet',
-            //     'descripcion' => 'Te permite golpear con la misma arma a enemigos con el mismo valor que el último enemigo derrotado.',
-            //     'imagen' => "/storage/modificadores/Ricochet.webp",
-            //     'nivel' => 3,
-            //     'efectos' => json_encode([
-            //         ['name' => 'ricochet', 'value' => true],
-            //     ])
-            // ],
+            [
+                'nombre' => 'Gato de la suerte',
+                'descripcion' => 'La suerte te sonrie. Ganas más oro.',
+                'imagen' => "/storage/modificadores/GatoDeLaSuerte.webp",
+                'nivel' => 1,
+                'efectos' => json_encode([
+                    ['name' => 'gold_multiplier', 'value' => 2],
+                ])
+            ],
+            [
+                'nombre' => 'Ricochet',
+                'descripcion' => 'Te permite golpear con la misma arma a enemigos con el mismo valor que el último enemigo derrotado.',
+                'imagen' => "/storage/modificadores/Ricochet.webp",
+                'nivel' => 3,
+                'efectos' => json_encode([
+                    ['name' => 'ricochet', 'value' => true],
+                ])
+            ],
         ];
 
         foreach ($modificadores as $data) {
