@@ -813,7 +813,6 @@ const GamePage = () => {
 
 
     const applyCardEffect = (effect) => {
-        console.log(effect.name)
         switch (effect.name) {
             case 'restore_ability':
                 setAvailableAbility(true);
@@ -947,7 +946,7 @@ const GamePage = () => {
             const final_dmg = Math.max(0, final_enemy_dmg - final_user_dmg);
             damageAnimation(final_dmg)
             const earnedGold = 5 * goldMultiplier.current;
-            coinAnimation(5)
+            coinAnimation(earnedGold)
             setGold(prev => prev + earnedGold);
             totalEarnedGold.current += earnedGold;
             if(health - final_dmg <= 0 && revive.current){
