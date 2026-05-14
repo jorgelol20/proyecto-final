@@ -543,6 +543,7 @@ const GamePage = () => {
                 ricochet.current = true;
                 break;
             case 'gold_multiplier':
+                console.log("ORO")
                 goldMultiplier.current = effect.value
                 break;
             default:
