@@ -543,7 +543,6 @@ const GamePage = () => {
                 ricochet.current = true;
                 break;
             case 'gold_multiplier':
-                console.log("ORO")
                 goldMultiplier.current = effect.value
                 break;
             default:
@@ -947,7 +946,7 @@ const GamePage = () => {
 
             const final_dmg = Math.max(0, final_enemy_dmg - final_user_dmg);
             damageAnimation(final_dmg)
-            const earnedGold = 5;
+            const earnedGold = 5 * goldMultiplier.current;
             coinAnimation(5)
             setGold(prev => prev + earnedGold);
             totalEarnedGold.current += earnedGold;
