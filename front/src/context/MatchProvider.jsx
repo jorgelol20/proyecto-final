@@ -218,6 +218,7 @@ const MatchProvider = (props) => {
                 ...card,
                 x: 200,
                 y: 0,
+                efectos: typeof card.efectos === 'string' ? JSON.parse(card.efectos) : card.efectos,
                 key: crypto.randomUUID() // Key única aunque el jugador saque la misma arma 2 veces
             };
         }
@@ -230,6 +231,7 @@ const MatchProvider = (props) => {
                 ...card,
                 x: 200,
                 y: 0,
+                efectos: typeof card.efectos === 'string' ? JSON.parse(card.efectos) : card.efectos,
                 key: crypto.randomUUID()
             };
         }

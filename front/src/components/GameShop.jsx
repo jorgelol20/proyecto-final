@@ -5,7 +5,7 @@ import GoldIcon from '/images/gold.webp';
 import { useUser } from "../hooks/useUser";
 import Card from "./Card.jsx";
 import Modifier from "./Modifier.jsx";
-import { Stage, Layer } from 'react-konva';
+import { Stage, Layer, Group, Label, Tag, Text, Rect } from 'react-konva';
 import ShopMan from '/images/ShopMan.webp'
 import Dialogs from './../assets/database/dialogs.json'
 import lodash from 'lodash';
@@ -17,18 +17,22 @@ const GameShop = ({ gold, setGold, setShopAvailable, health, maxHealth, formated
 
     const dialogs = Dialogs;
 
+    const [dialog, setDialog] = useState(lodash.shuffle(dialogs)[0])
+
     // Estado para almacenar los ítems de la tienda
     const [shopItems, setShopItems] = useState([]);
+
+    const [hoveredIndex, setHoveredIndex] = useState(null);
 
     useEffect(() => {
         const currentRound = 1;
         const mods = getRandomsModifier(3, currentRound) || [];
         let temp_weapons = []
-        for(let i = 2; i <= 14; i++){
+        for (let i = 2; i <= 14; i++) {
             temp_weapons.push(getWeapon(i))
         }
         let temp_heal = []
-        for(let i = 2; i <= 14; i++){
+        for (let i = 2; i <= 14; i++) {
             temp_heal.push(getHealItem(i))
         }
         const weps = [...temp_weapons].filter(w => w !== undefined);
@@ -42,12 +46,12 @@ const GameShop = ({ gold, setGold, setShopAvailable, health, maxHealth, formated
 
         // Agregar armas
         weps.forEach((wep, index) => {
-            items.push({ id: `wep-${index}`, type: 'card', data: wep, price: Math.max(5,wep.valor * 5), isBought: false });
+            items.push({ id: `wep-${index}`, type: 'card', data: wep, price: Math.max(5, (index < 9?wep.valor * 5:((wep.valor - 4) * 5) + (10 * (wep.valor - 8)))), isBought: false });
         });
 
         // Agregar cura
         heal.forEach((heal, index) => {
-            items.push({ id: `heal-${index}`, type: 'card', data: heal, price: (heal.valor * 5), isBought: false });
+            items.push({ id: `heal-${index}`, type: 'card', data: heal, price: Math.max(5, (index < 9?heal.valor * 5:((heal.valor - 4) * 5) + (10 * (heal.valor - 8)))), isBought: false });
         });
 
         setShopItems(items);
@@ -55,6 +59,7 @@ const GameShop = ({ gold, setGold, setShopAvailable, health, maxHealth, formated
 
     // Función para manejar la compra
     const handleBuyItem = (index) => {
+        setDialog(lodash.shuffle(dialogs)[0])
         const item = shopItems[index];
 
         // Validar si ya se compró o no hay oro suficiente
@@ -90,13 +95,13 @@ const GameShop = ({ gold, setGold, setShopAvailable, health, maxHealth, formated
                         <img className="character-abilitie" src={character?.habilidad_personaje?.icono} alt="Habilidad" style={null} />
                     </div>
                     <div className="game-modifiers">
-                            {
-                                modifiers.length > 0 ? modifiers.map((modifierInfo) => (
-                                    <Modifier key={modifierInfo.id + modifierInfo.nombre.charCodeAt(0)} modifierInfo={modifierInfo} />
-                                ))
+                        {
+                            modifiers.length > 0 ? modifiers.map((modifierInfo) => (
+                                <Modifier key={modifierInfo.id + modifierInfo.nombre.charCodeAt(0)} modifierInfo={modifierInfo} />
+                            ))
                                 : <></>
-                            }
-                        </div>
+                        }
+                    </div>
                 </div>
 
                 <div className="shop-container">
@@ -113,16 +118,47 @@ const GameShop = ({ gold, setGold, setShopAvailable, health, maxHealth, formated
                                         {item.type === 'modifier' ? (
                                             <Modifier modifierInfo={item.data} bigger={true} />
                                         ) : (
-                                            <Stage width={150} height={200}>
+                                            <Stage width={250} height={200}>
                                                 <Layer>
-                                                    <Card
-                                                        cardInfo={item?.data}
-                                                        x={0}
-                                                        y={0}
-                                                        onDragEnd={() => { }}
-                                                        onClick={() => { }}
-                                                        isDraggable={false}
-                                                    />
+                                                    <Group
+                                                        onMouseOver={() => item.data.efectos ?setHoveredIndex(index):null}
+                                                        onMouseLeave={() => item.data.efectos ?setHoveredIndex(null):null}
+                                                    >
+                                                        <Card
+                                                            cardInfo={item?.data}
+                                                            x={55}
+                                                            y={0}
+                                                            isDraggable={false}
+                                                        />
+                                                    
+
+                                                    {/* Ventana emergente simple */}
+                                                    {hoveredIndex === index && item.data.efectos && (
+                                                        <Label x={0} y={0}>
+
+                                                            <Rect
+                                                                width={150}
+                                                                height={90}
+                                                                fill="#685a5a"
+                                                                x={40}
+                                                                y={0}
+                                                                cornerRadius={5}
+                                                                stroke={"black"}
+                                                            />
+                                                            <Text
+                                                                text={item.data.efectos[0].description}
+                                                                fill="white"
+                                                                padding={5}
+                                                                fontSize={16}
+                                                                width={150}
+                                                                align="center"
+                                                                fontFamily="Romulus"
+                                                                x={40}
+                                                                y={0}
+                                                            />
+                                                        </Label>
+                                                    )}
+                                                    </Group>
                                                 </Layer>
                                             </Stage>
                                         )}
@@ -150,7 +186,7 @@ const GameShop = ({ gold, setGold, setShopAvailable, health, maxHealth, formated
                 <div className="shop-man">
                     <div className="dialog">
                         <div>
-                            <p>{lodash.shuffle(dialogs)[0]}</p>
+                            <p>{dialog}</p>
                         </div>
                     </div>
                     <img src={ShopMan} alt="" />
