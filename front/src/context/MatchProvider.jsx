@@ -167,16 +167,19 @@ const MatchProvider = (props) => {
 
     const getRandomsModifier = (quantity = 3, round = 1) => {
         const activeIds = new Set(activeModifiers.map(mod => mod.id));
-        // Filtramos el pool inicial
         let pool = availableModifiers.filter(mod => !activeIds.has(mod.id) && mod.nivel > 0);
 
         const getTargetLevel = (isGuaranteed) => {
-            if (isGuaranteed) return 3; // Forzamos nivel 3
-            if (round === 1) return 1;
+            if (isGuaranteed) return 3;
 
             const roll = Math.random() * 100;
-            const probLvl3 = Math.max(0, Math.min((round - 2) * 5, 15));
-            const probLvl2 = Math.max(0, Math.min((round - 1) * 10, 35));
+
+            // CÁLCULO DE PROBABILIDADES
+            // Nivel 3: Empieza en 5% y sube 2.5% por ronda (Cap en 25%)
+            const probLvl3 = Math.min(5 + (round - 1) * 2.5, 25);
+
+            // Nivel 2: Empieza en 10% y sube 5% por ronda (Cap en 40%)
+            const probLvl2 = Math.min(10 + (round - 1) * 5, 40);
 
             if (roll < probLvl3) return 3;
             if (roll < probLvl3 + probLvl2) return 2;
@@ -186,14 +189,13 @@ const MatchProvider = (props) => {
         const selectedModifiers = [];
 
         for (let i = 0; i < quantity; i++) {
-            // En la ronda 5, el primer modificador (i === 0) es nivel 3 sí o sí
+            // REGLA DE ORO: En ronda 5, el primer slot es nivel 3 sí o sí
             const forceLevel3 = (round === 5 && i === 0);
             let targetLevel = getTargetLevel(forceLevel3);
 
-            // Buscamos modificadores de ese nivel en el pool
             let options = pool.filter(mod => mod.nivel === targetLevel);
 
-            // Si por casualidad no hay de ese nivel, bajamos al nivel anterior
+            // Fallback: Si no hay del nivel pedido, busca el más cercano por debajo
             if (options.length === 0) {
                 options = pool.filter(mod => mod.nivel < targetLevel).sort((a, b) => b.nivel - a.nivel);
             }
@@ -202,8 +204,6 @@ const MatchProvider = (props) => {
                 const randomIndex = Math.floor(Math.random() * options.length);
                 const chosen = options[randomIndex];
                 selectedModifiers.push(chosen);
-
-                // Lo eliminamos del pool local para que no salga repetido en la misma tirada
                 pool = pool.filter(mod => mod.id !== chosen.id);
             }
         }

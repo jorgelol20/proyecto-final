@@ -125,17 +125,17 @@ class Modificadores extends Seeder
             ],
             // [
             //     'nombre' => 'Gato de la suerte',
-            //     'descripcion' => 'La suerte te sonrie. Ganas más oro',
-            //     'imagen' => "/storage/modificadores/AsesinoEspecialista.webp",
+            //     'descripcion' => 'La suerte te sonrie. Ganas más oro.',
+            //     'imagen' => "/storage/modificadores/GatoDeLaSuerte.webp",
             //     'nivel' => 1,
             //     'efectos' => json_encode([
-            //         ['name' => 'gold_multiplier', 'value' => 1.2],
+            //         ['name' => 'gold_multiplier', 'value' => 2],
             //     ])
             // ],
             // [
             //     'nombre' => 'Ricochet',
-            //     'descripcion' => 'Nada mejor que el acero en la batalla, salvo contra esas criaturas del demonio, contra esas cosas no funciona tan bien. (+3 de daño a las picas, -2 de daño a los tréboles)',
-            //     'imagen' => "/storage/modificadores/AsesinoEspecialista.webp",
+            //     'descripcion' => 'Te permite golpear con la misma arma a enemigos con el mismo valor que el último enemigo derrotado.',
+            //     'imagen' => "/storage/modificadores/Ricochet.webp",
             //     'nivel' => 3,
             //     'efectos' => json_encode([
             //         ['name' => 'ricochet', 'value' => true],
