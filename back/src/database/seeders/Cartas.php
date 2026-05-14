@@ -40,7 +40,7 @@ class Cartas extends Seeder
                 if ($esEspecial) {
                     $idCarta = "{$num}-{$palo}";
                     $arrayEfectos = match ($idCarta) {
-                        '11-Corazon' => [['name' => 'restore_abilitie', 'value' => true], ['name' => 'heal', 'value' => 0]],
+                        '11-Corazon' => [['name' => 'restore_ability', 'value' => true], ['name' => 'heal', 'value' => 0]],
                         '12-Corazon' => [['name' => 'progresive_heal', 'value' => 5], ['name'=>'progresive_heal_turns', 'value'=>3]],
                         '13-Corazon' => [['name' => 'dmg_reduction', 'value' => 10]],
                         '14-Corazon' => [['name' => 'heal_roulete', 'value' => true]],

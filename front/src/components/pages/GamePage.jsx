@@ -76,7 +76,7 @@ const GamePage = () => {
     const restartFunction = () => {
         // Reset de estadísticas de partida
         setRounds(0);
-        setGold(0);
+        setGold(1000);
         setHealth(20);
         setMaxHealth(20)
         setAvailableAbility(true);
@@ -224,7 +224,7 @@ const GamePage = () => {
      * ===================================
      */
     // State de oro
-    const [gold, setGold] = useState(0);
+    const [gold, setGold] = useState(1000);
 
     const [shopAvailable, setShopAvailable] = useState(false);
 
@@ -453,7 +453,7 @@ const GamePage = () => {
     const [modifiersLoading, setModifiersLoading] = useState(true)
 
     // Daño enemigos
-    const enemyDmgMultiplier = useRef(1);
+    const enemyDmgMultiplier = useRef(0);
     const enemyExtraDmg = useRef(0)
     const spadesExtraTakedDmg = useRef(0);
     const clubsExtraTakedDmg = useRef(0);
@@ -499,14 +499,14 @@ const GamePage = () => {
                 break;
             case "pentakill_target_number":
                 // Lógica para registrar cuántas muertes se necesitan (ej: 3)
-                if(pentakillTargetNumber < effect.value){
+                if (pentakillTargetNumber < effect.value) {
                     setPentakillTargetNumber(effect.value)
                 }
                 break;
 
             case "pentakill_dmg":
                 // Lógica para aplicar el daño extra
-                if(pentakillDmg < effect.value){
+                if (pentakillDmg < effect.value) {
                     setPentakillDmg(effect.value)
                 }
                 break;
@@ -551,7 +551,7 @@ const GamePage = () => {
         actualScapes.current = 1;
         healthSteal.current = false;
         ricochet.current = false
-        enemyDmgMultiplier.current = (1);
+        enemyDmgMultiplier.current = (0);
         enemyExtraDmg.current = (0)
         spadesExtraTakedDmg.current = (0);
         clubsExtraTakedDmg.current = (0);
@@ -639,7 +639,7 @@ const GamePage = () => {
 
     const shuffleDeck = (deck) => {
         const shuffled = lodash.shuffle(deck).map((card) => ({
-            ...card,              
+            ...card,
             key: crypto.randomUUID()
         }));
 
@@ -680,7 +680,7 @@ const GamePage = () => {
             }
 
             if (character?.habilidad_personaje?.id === 1 && !canScape.current) {
-                setAvailableAbilitie(false);
+                setAvailableAbility(false);
             }
         }
     };
@@ -808,9 +808,11 @@ const GamePage = () => {
 
 
     const applyCardEffect = (effect) => {
+        console.log(effect.name)
         switch (effect.name) {
             case 'restore_ability':
-                setAvailableAbility(true)
+                setAvailableAbility(true);
+                currentHeal.current = 0;
                 break
             case 'heal':
                 currentHeal.current = effect.value;
@@ -916,38 +918,17 @@ const GamePage = () => {
         const enemy_dmg = Math.ceil((card.valor * enemyDmgMultiplier.current)) + enemyExtraDmg.current - user_dmg_reduction;
         const pentakill = actualStreak >= pentakillTargetNumber ? pentakillDmg : 0
         if (invincibility_turns.current > 0) {
-
-            const final_user_dmg = 100
-            const final_enemy_dmg = enemy_dmg - pentakill;
-            const final_dmg = Math.max(0, final_enemy_dmg - final_user_dmg);
-
-            damageAnimation(final_dmg)
-            const earnedGold = 5;
-            coinAnimation(earnedGold)
-            totalEarnedGold.current += earnedGold;
-            setGold(prev => prev + earnedGold);
-
-            let final_health = Math.max(0, health - final_dmg)
-            if (final_health === 0 && revive.current) {
-                final_health = revive_health.current;
-                revive.current = false;
+            damageAnimation(0)
+            if (weapon) {
+                setGold(prev => prev + earnedGold);
+                const earnedGold = 5;
+                coinAnimation(earnedGold)
+                totalEarnedGold.current += earnedGold;
             }
-
-            setHealth(final_health);
-
-            if (healthSteal.current && card.valor < weapon_dmg.current) {
-                const heal = Math.min(0, card.valor - weapon_dmg.current) > -3 ? Math.min(0, card.valor - weapon_dmg.current) * -1 : 3;
-                healAnimation(heal)
-                setHealth(prev => Math.min(maxHealth, prev + heal));
-            }
-            if (weapon_health_steal) {
-                setHealth(prev => Math.min(maxHealth, prev + weapon_health_steal_quantity));
-            }
-
             setSlainMonsters([...slainMonsters, card]);
             deleteFromRoom(card)
             setActualStreak(prev => prev + 1);
-            logsRef.current.push((logsRef.current.length + 1) + " - " + card.valor + " de " + card.palo + " te ha hecho " + final_dmg + " de daño.")
+            logsRef.current.push((logsRef.current.length + 1) + " - " + card.valor + " de " + card.palo + " te ha hecho " + 0 + " de daño.")
             invincibility_turns.current -= 1;
             return true
         }
@@ -966,7 +947,7 @@ const GamePage = () => {
             totalEarnedGold.current += earnedGold;
             setHealth(prev => Math.max(0, prev - final_dmg));
             if (healthSteal.current && card.valor < weapon_dmg.current) {
-                const heal = Math.min(0, card.valor - weapon_dmg.current) > -3 ? Math.min(0, card.valor - weapon_dmg.current) * -1 : 3;
+                const heal = Math.min(0, card.valor - weapon_dmg.current) > -1 ? Math.min(0, card.valor - weapon_dmg.current) * -1 : 1;
                 healAnimation(heal)
                 setHealth(prev => Math.min(maxHealth, prev + heal));
             }
