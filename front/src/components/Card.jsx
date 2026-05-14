@@ -49,7 +49,11 @@ const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = tru
     useEffect(() => {
         const palos = ['Diamante', 'Corazon']
         if (cardInfo.valor > 10 && palos.indexOf(cardInfo.palo) != -1) {
-            cardInfo.valor = 10;
+            if(cardInfo.valor == 14){
+                cardInfo.valor = 14;
+            }else{
+                cardInfo.valor = 10;
+            }
         }
         colorRef.current = cardInfo.especial ? '#D4AF37' : cardInfo.palo === 'Corazon' ? '#1E5128' : cardInfo.palo === 'Diamante' ? '#F77F00' : '#0C0C0C';
         
