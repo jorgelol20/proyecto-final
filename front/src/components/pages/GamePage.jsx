@@ -947,7 +947,7 @@ const GamePage = () => {
             totalEarnedGold.current += earnedGold;
             setHealth(prev => Math.max(0, prev - final_dmg));
             if (healthSteal.current && card.valor < weapon_dmg.current) {
-                const heal = Math.min(0, card.valor - weapon_dmg.current) > -1 ? Math.min(0, card.valor - weapon_dmg.current) * -1 : 1;
+                const heal = Math.min(0, card.valor - weapon_dmg.current) > -3 ? Math.min(0, card.valor - weapon_dmg.current) * -1 : 3;
                 healAnimation(heal)
                 setHealth(prev => Math.min(maxHealth, prev + heal));
             }

@@ -37,10 +37,10 @@ class Modificadores extends Seeder
             ],
             [
                 'nombre' => 'Drenaje de Vitalidad',
-                'descripcion' => 'Eres uno con la muerte. Siempre que tu arma tenga más daño que la vida de tu enemigo, drenarás 1 de vida al enemigo.',
+                'descripcion' => 'Eres uno con la muerte. Siempre que tu arma tenga más daño que la vida de tu enemigo, drenarás el exceso de daño. (Máximo de 3)',
                 'imagen' => "/storage/modificadores/DrenajeDeVitalidad.webp",
                 'nivel' => 3,
-                'efectos' => json_encode([['name' => 'health_steal', 'value' => True],['name'=> 'health_steal_quantity', 'value' => 1]])
+                'efectos' => json_encode([['name' => 'health_steal', 'value' => True]])
             ],
             [
                 'nombre' => '3K',
