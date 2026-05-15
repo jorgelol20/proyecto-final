@@ -67,7 +67,7 @@ const MatchProvider = (props) => {
         setGameLoading(false);
     };
     const endGame = async (user_id, tiempo, victoria, rondas, earnedGold, healedLife, enemysDefeated) => {
-        if (character) {
+        if (character && activeModifiers.length > 0) {
             const gameModifiers = activeModifiers.map((modifier) => modifier.id);
             const payload = {
                 usuario_id: user_id,

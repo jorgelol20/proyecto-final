@@ -25,22 +25,17 @@ const Navbar = () => {
     const navigate = useNavigate()
 
     const handleNavClick = (e, to) => {
-        // Cambia '/juego' por la URL exacta de tu pantalla de juego
-        if (location.pathname === '/jugar') {
-            e.preventDefault(); // Frena la navegación inmediata
-
-            const proceder = window.confirm("¿Estás seguro de que quieres salir de la partida? Tu progreso actual se guardará y la partida finalizará.");
-
-            if (proceder) {
-                // 1. Despachamos un evento global para que la pantalla de juego reaccione
-                const eventoSalir = new CustomEvent('interrumpirPartida');
-                window.dispatchEvent(eventoSalir);
-
-                // 2. Redirigimos al usuario a donde quería ir originalmente
-                navigate(to);
-            }
+    if (location.pathname === '/jugar') {
+        e.preventDefault();
+        
+        const proceder = window.confirm("Si sales, la partida contará como derrota.");
+        
+        if (proceder) {
+            const eventoSalir = new CustomEvent('interrumpirPartida', { detail: { destino: to } });
+            window.dispatchEvent(eventoSalir);
         }
-    };
+    }
+};
 
     useEffect(() => {
         if (!isLoading && user) {
