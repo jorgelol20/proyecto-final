@@ -162,13 +162,13 @@ const MatchProvider = (props) => {
                 const randomEffectIndex = Math.floor(Math.random() * negativeCardEffectList.length);
                 appliedEffect = { ...negativeCardEffectList[randomEffectIndex] };
             }
-
             return {
                 ...card,
                 x: 200,
                 y: 0,
                 key: crypto.randomUUID(),
-                effect: appliedEffect // Guardamos el efecto (o null si no le tocó)
+                especial: appliedEffect !== null ? true : false,
+                efectos: appliedEffect // Guardamos el efecto (o null si no le tocó)
             };
         });
 

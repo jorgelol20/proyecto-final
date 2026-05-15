@@ -41,7 +41,7 @@ class Cartas extends Seeder
                     $idCarta = "{$num}-{$palo}";
                     $arrayEfectos = match ($idCarta) {
                         '11-Corazon' => [['name' => 'restore_ability', 'value' => true, 'description' => 'Restaura la habilidad de tu personaje pero no te cura nada.'], ['name' => 'heal', 'value' => 0]],
-                        '12-Corazon' => [['name' => 'progresive_heal', 'value' => 5, 'description' => 'Te cura 10 de daño y te cura 3 de vida cada ronda durante 3 rondas.'], ['name'=>'progresive_heal_turns', 'value'=>3]],
+                        '12-Corazon' => [['name' => 'progresive_heal', 'value' => 3, 'description' => 'Te cura 10 de daño y te cura 3 de vida cada ronda durante 3 rondas.'], ['name'=>'progresive_heal_turns', 'value'=>3]],
                         '13-Corazon' => [['name' => 'dmg_reduction', 'value' => 10, 'description' => 'Reduce en 10 el siguiente ataque que fueras a sufrir.']],
                         '14-Corazon' => [['name' => 'heal_roulete', 'value' => true, 'description' => 'Te cura 100 de vida, pero hay una probabilidad del 25% de hacer el efecto contrario.']],
 
