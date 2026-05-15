@@ -20,6 +20,8 @@ Route::get('/user', function (Request $request) {
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/perfil', [AuthController::class, 'me']);
+    Route::post('/usuarios/ping', [UsuarioApiController::class, 'ping']);
+    Route::get('/jugadores-activos', [UsuarioApiController::class, 'activeCount']);
 });
 
 //Controlador Usuarios.

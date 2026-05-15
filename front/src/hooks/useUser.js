@@ -1,11 +1,13 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import api from '../api/api.js';
+import { useEffect, useState } from 'react';
 
 export const useUser = () => {
     const queryClient = useQueryClient();
     const navigate = useNavigate();
 
+    const [activePlayers, setActivePlayers] = useState(0);
     /**
      * Busca el token en localStorage.
      */
@@ -42,6 +44,7 @@ export const useUser = () => {
      * Si consigue logearse correctamente, guarda la información de este usuario y
      * lo reenvia a la página de su perfil.
      */
+    
     const login = useMutation({
         mutationFn: async (form) => {
             const { data } = await api.post('/login', form);
@@ -58,6 +61,43 @@ export const useUser = () => {
         },
         
     });
+
+    useEffect(() => {
+        if (isLoading || !user) {
+            setActivePlayers(0);
+            return;
+        }
+
+        const enviarPing = async () => {
+            try {
+                await api.post('/usuarios/ping');
+            } catch (error) {
+                console.error("Error al enviar ping de actividad:", error.response?.data?.message);
+            }
+        };
+
+        const obtenerContadorActivos = async () => {
+            try {
+                const response = await api.get('/jugadores-activos');
+                setActivePlayers(response.data.active_users || 0);
+            } catch (error) {
+                console.error("Error al obtener usuarios activos:", error.response?.data?.message);
+            }
+        };
+
+        // Ejecuciones inmediatas al iniciar
+        enviarPing();
+        obtenerContadorActivos();
+
+        // Intervalo de avisos de presencia (30s) y recarga del contador (45s)
+        const pingInterval = setInterval(enviarPing, 30000);
+        const countInterval = setInterval(obtenerContadorActivos, 45000);
+
+        return () => {
+            clearInterval(pingInterval);
+            clearInterval(countInterval);
+        };
+    }, [user, isLoading]);
 
     /**
      * Función para cerrar sesión.
@@ -202,6 +242,7 @@ export const useUser = () => {
         user,
         isLoading,
         error,
+        activePlayers,
         update: update.mutate,
         updateError: update.error,
         isUpdating: update.isPending,

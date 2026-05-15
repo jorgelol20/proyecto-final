@@ -12,7 +12,7 @@ import FPSCounter from "./FPSCounter.jsx";
 import UserShow from "../UserShow.jsx"; 
 
 const Navbar = () => {
-    const { user, searchUsuario, isLoading } = useUser();
+    const { user, searchUsuario, isLoading, activePlayers } = useUser();
     const { showFPS } = useContext(settingsContext);
     const [userAvatar, setUserAvatar] = useState('');
     const [userColor, setUserColor] = useState('');
@@ -52,6 +52,12 @@ const Navbar = () => {
             <nav>
                 {showFPS && <FPSCounter />}
                 <div className="navbar-items">
+                    {!isLoading && user && (
+                        <div className="navbar-active-players" style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#aaa', fontSize: '14px' }}>
+                            <span style={{ width: '8px', height: '8px', backgroundColor: '#2ecc71', borderRadius: '50%' }}></span>
+                            {activePlayers} activos
+                        </div>
+                    )}
                     {!isLoading && user && (
                         <div className="search">
                             <input 
