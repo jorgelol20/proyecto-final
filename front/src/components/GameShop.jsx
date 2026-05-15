@@ -46,7 +46,7 @@ const GameShop = ({ gold, setGold, setShopAvailable, health, maxHealth, formated
 
         // Agregar armas
         weps.forEach((wep, index) => {
-            items.push({ id: `wep-${index}`, type: 'card', data: wep, price: Math.max(5, (index < 9?wep.valor * 5:((wep.valor - 4) * 5) + (10 * (wep.valor - 8)))), isBought: false });
+            items.push({ id: `wep-${index}`, type: 'card', data: wep, price: Math.max(5, (index < 9?wep.valor * 5:((wep.valor - 4) * 5) + (card.valor === 14 ? 25 : 10 * (wep.valor - 8)))), isBought: false });
         });
 
         // Agregar cura

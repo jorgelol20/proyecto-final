@@ -55,12 +55,31 @@ const GamePage = () => {
     const [defaultImage] = useImage(DefaultCardImage);
 
 
+    //Estados que almacenan si el juego ha empezado y si el juego está en GameOver
+    const [gameOn, setGameOn] = useState(false);
+    const [gameOver, setGameOver] = useState(false);
+    const [gameWin, setGameWin] = useState(false);
+    const [continuedGame, setContinuedGame] = useState(false)
+    const [restart, setRestart] = useState(false);
+
+    // State de número de ronda
+    const [rounds, setRounds] = useState(0);
+    const [maxRounds, setMaxRounds] = useState(10)
+
+    const totalEarnedGold = useRef(0);
+    const healedLife = useRef(0);
+    const enemysDefeated = useRef(0)
+
+
+    const logsRef = useRef([]);
+
+
     useEffect(() => {
         const gestionarSalidaForzada = () => {
             endGame(
                 user.id,
                 timeRef.current,
-                false,
+                gameWin,
                 rounds,
                 totalEarnedGold.current,
                 healedLife.current,
@@ -68,13 +87,41 @@ const GamePage = () => {
             );
         };
         window.addEventListener('interrumpirPartida', gestionarSalidaForzada);
-
         return () => {
             window.removeEventListener('interrumpirPartida', gestionarSalidaForzada);
         };
-    }, [user]);
+    }, [user, gameWin, rounds]);
 
+    useEffect(() => {
+        // Forzamos un estado en el historial para poder interceptar el botón Atrás
+        window.history.pushState(null, null, window.location.pathname);
 
+        const handlePopState = () => {
+            const proceder = window.confirm(
+                "¿Estás seguro de que quieres salir de la partida? Tu progreso actual se guardará."
+            );
+
+            if (proceder) {
+                guardarYTerminarPartida(); // <--- Ejecuta tu función de guardado
+                navigate('/'); // Lo mandamos al inicio
+            } else {
+                // Si cancela, volvemos a bloquear el historial para mantenerlo en la partida
+                window.history.pushState(null, null, window.location.pathname);
+            }
+        };
+
+        window.addEventListener('popstate', handlePopState);
+
+        return () => {
+            window.removeEventListener('popstate', handlePopState);
+        };
+    }, [navigate, user, gameWin, rounds]);
+
+    /**
+     * 4. CAPTURAR SALIDA EXTERNA (Cerrar pestaña o F5)
+     * Nota: Esto solo mostrará el aviso del navegador. Como mencionamos,
+     * los navegadores bloquean peticiones HTTP pesadas aquí, pero el aviso evitará descuidos.
+     */
     useEffect(() => {
         const handleBeforeUnload = (e) => {
             e.preventDefault();
@@ -86,57 +133,9 @@ const GamePage = () => {
         return () => window.removeEventListener('beforeunload', handleBeforeUnload);
     }, []);
 
-    useEffect(() => {
-        // Aseguramos un estado en el historial para capturar el evento 'Atrás'
-        window.history.pushState(null, null, window.location.pathname);
-
-        const handlePopState = () => {
-            const proceder = window.confirm("¿Estás seguro de que quieres salir de la partida? Perderás tu progreso.");
-
-            if (proceder) {
-                // CORRECCIÓN: 'endGame' ahora solo se ejecuta SI el usuario confirma que quiere salir
-                endGame(
-                    user.id,
-                    timeRef.current,
-                    false,
-                    rounds,
-                    totalEarnedGold.current,
-                    healedLife.current,
-                    enemysDefeated.current
-                );
-                navigate('/');
-            } else {
-                // Si cancela, volvemos a meter el estado en el historial para mantenerlo bloqueado
-                window.history.pushState(null, null, window.location.pathname);
-            }
-        };
-
-        window.addEventListener('popstate', handlePopState);
-
-        return () => {
-            window.removeEventListener('popstate', handlePopState);
-        };
-        // CORRECCIÓN: Añadidas las dependencias necesarias para que 'endGame' 
-        // lea los valores reales y actualizados del estado del juego
-    }, [navigate, user]);
-
-
-    //Estados que almacenan si el juego ha empezado y si el juego está en GameOver
-    const [gameOn, setGameOn] = useState(false);
-    const [gameOver, setGameOver] = useState(false);
-    const [gameWin, setGameWin] = useState(false);
-    const [restart, setRestart] = useState(false);
-
-    const totalEarnedGold = useRef(0);
-    const healedLife = useRef(0);
-    const enemysDefeated = useRef(0)
-
-
-    const logsRef = useRef([]);
-
     const continueFunction = () => {
         setGameOn(true)
-        setGameWin(false)
+        setContinuedGame(true)
         startNewRound(true)
     }
 
@@ -207,9 +206,7 @@ const GamePage = () => {
         }
     }, [character]);
 
-    // State de número de ronda
-    const [rounds, setRounds] = useState(0);
-    const [maxRounds, setMaxRounds] = useState(10)
+
 
     //State de tiempo
     const formatedTimeRef = useRef(null)
@@ -218,7 +215,6 @@ const GamePage = () => {
     useEffect(() => {
         if (gameOn) {
             stopTimer();
-
             intervalRef.current = setInterval(() => {
                 timeRef.current += 1;
                 const mins = Math.floor(timeRef.current / 60);
@@ -229,7 +225,7 @@ const GamePage = () => {
             }, 1000);
         } else if (user !== undefined) {
             stopTimer();
-            if (gameWin) {
+            if (continuedGame) {
                 updateActualGame(user.id, timeRef.current, gameWin, rounds, totalEarnedGold.current, healedLife.current, enemysDefeated.current)
             } else {
                 endGame(user.id, timeRef.current, gameWin, rounds, totalEarnedGold.current, healedLife.current, enemysDefeated.current)
@@ -676,10 +672,17 @@ const GamePage = () => {
         });
         if (poison.current > 0) {
             poison.current -= 1
+            damageAnimation(1)
             setHealth(prev => prev - 1)
         }
         if (antiheal.current) {
             antiheal.current = false;
+        }
+        if (progresive_heal_turns.current > 0) {
+            setHealth(prev => Math.min(maxHealth, prev + progresive_heal.current));
+            healAnimation(progresive_heal.current)
+            healedLife.current += progresive_heal.current;
+            progresive_heal_turns.current -= 1;
         }
     }, [room.length, dungeon]); // Ahora depende de dungeon para tener los datos frescos
 
@@ -728,13 +731,15 @@ const GamePage = () => {
         setDungeon(shuffled);
     };
     const startNewRound = async (continueMatch = false) => {
-        if (rounds !== 10 || continueMatch) {
+        if (rounds === maxRounds && !continuedGame) {
+            setGameOn(false)
+            setGameWin(true)
+        }
+        else if (rounds !== 10 || continuedGame) {
             setSelectModifier(true)
             await addEnemys(5)
             if (rounds >= 1 && gameOn) {
                 setShopAvailable(true)
-
-
             } else {
                 setShopAvailable(false)
             }
@@ -744,9 +749,6 @@ const GamePage = () => {
             shuffleDeck(matchDeck);
             setDiscardPile([]);
             setAvailableAbility(true)
-        } else if (rounds === 10) {
-            setGameOn(false)
-            setGameWin(true)
         }
         cardRefs.current = []
     }
@@ -897,10 +899,13 @@ const GamePage = () => {
             moveCardToDiscard([weapon], true)
             logsRef.current.push((logsRef.current.length + 1) + " - " + "El enemigo ha roto tu arma.")
             cleanWeaponEffects();
-            setTimeout(() => {
-                setWeapon(card);
-                deleteFromRoom(card);
-            }, 100);
+            setWeapon(null)
+            if (slainMonsters.length > 0) {
+                moveCardToDiscard([...slainMonsters], true)
+                setTimeout(() => {
+                    setSlainMonsters([]);
+                }, 200);
+            }
 
         }
     }
@@ -944,7 +949,7 @@ const GamePage = () => {
                 break;
             case 'health_steal':
                 weapon_health_steal.current = true;
-                weapon_health_steal_quantity.current = effect.value
+                weapon_health_steal_quantity.current = effect.value;
                 break;
             case 'antiheal':
                 antiheal.current = true;
@@ -962,7 +967,7 @@ const GamePage = () => {
     }
 
     const handleCardEffect = (card) => {
-        const cardEffects = card.efectos[0]
+        const cardEffects = card.efectos;
         const effectsList = Array.isArray(cardEffects) ? cardEffects : [cardEffects];
         effectsList.forEach((effect) => {
             applyCardEffect(effect)
@@ -1070,6 +1075,9 @@ const GamePage = () => {
                 healAnimation(heal)
                 setHealth(prev => Math.min(maxHealth, prev + heal));
             }
+            if(weapon_health_steal.current){
+                setHealth(prev => Math.min(maxHealth, prev + weapon_health_steal_quantity));
+            }
             setSlainMonsters([...slainMonsters, card]);
             deleteFromRoom(card)
             setActualStreak(prev => prev + 1);
@@ -1117,12 +1125,6 @@ const GamePage = () => {
         if (validMove) {
             if (character?.habilidad_personaje?.id === 1) {
                 setAvailableAbility(false)
-            }
-            if (progresive_heal_turns.current > 0) {
-                setHealth(prev => Math.min(maxHealth, prev + progresive_heal));
-                healAnimation(progresive_heal.current)
-                healedLife.current += progresive_heal.current;
-                progresive_heal_turns.current -= 1;
             }
             canScape.current = false
             totalCardsUsed.current += 1;
@@ -1209,7 +1211,7 @@ const GamePage = () => {
                             <button onClick={(event) => { startButtonSound(event); setRestart(true); navigate('/') }}>INICIO</button>
                             <button onClick={(event) => { startButtonSound(event); setRestart(true); navigate(`/perfil/${user ? user.nick : ''}`) }}>PERFIL</button>
                             <div className="final-match-info">
-                                <p>{formatedTimeRef.current.textContent}</p>
+                                <p>{formatedTimeRef?.current?.textContent ?? ""}</p>
                                 <p>Rondas: {rounds}</p>
                                 <p>Cartas restantes en esta ronda: {dungeon.length + room.length}</p>
                                 <p>Total de cartas jugadas: {totalCardsUsed.current}</p>

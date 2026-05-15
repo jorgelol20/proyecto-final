@@ -29,8 +29,8 @@ const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = tru
     const [image] = useImage(cardInfo?.imagen);
     const [suit] = useImage(cardSuit);
     const selectEffectImage = () => {
-        if (cardInfo.effect) {
-            switch (cardInfo.effect['name']) {
+        if (cardInfo.efectos) {
+            switch (cardInfo.efectos['name']) {
                 case 'antiheal':
                     return AntihealIcon
                     break;
@@ -77,7 +77,7 @@ const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = tru
                 cardInfo.valor = 10;
             }
         }
-        setHasEffect(cardInfo.effect ? true : false)
+        setHasEffect(cardInfo.efectos ? true : false)
         colorRef.current = cardInfo.especial ? '#D4AF37' : cardInfo.palo === 'Corazon' ? '#1E5128' : cardInfo.palo === 'Diamante' ? '#F77F00' : '#0C0C0C';
 
     }, [])

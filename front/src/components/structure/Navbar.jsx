@@ -25,12 +25,18 @@ const Navbar = () => {
     const navigate = useNavigate()
 
     const handleNavClick = (e, to) => {
-        if (location.pathname === '/juego') {
-            e.preventDefault();
+        // Cambia '/juego' por la URL exacta de tu pantalla de juego
+        if (location.pathname === '/jugar') {
+            e.preventDefault(); // Frena la navegación inmediata
+
             const proceder = window.confirm("¿Estás seguro de que quieres salir de la partida? Tu progreso actual se guardará y la partida finalizará.");
+
             if (proceder) {
+                // 1. Despachamos un evento global para que la pantalla de juego reaccione
                 const eventoSalir = new CustomEvent('interrumpirPartida');
                 window.dispatchEvent(eventoSalir);
+
+                // 2. Redirigimos al usuario a donde quería ir originalmente
                 navigate(to);
             }
         }
