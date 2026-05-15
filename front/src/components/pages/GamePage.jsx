@@ -719,9 +719,11 @@ const GamePage = () => {
 
     }
     const addEnemys = async () => {
-        const quantity = Math.min(5, (rounds % 3 * 5))
-        await addEnemysToMatchDeck(quantity,rounds)
-    }
+
+    const quantity = 5 + Math.floor((rounds - 1) * 2);
+    
+    await addEnemysToMatchDeck(quantity, rounds);
+};
 
     const shuffleDeck = (deck) => {
         const shuffled = lodash.shuffle(deck).map((card) => ({
