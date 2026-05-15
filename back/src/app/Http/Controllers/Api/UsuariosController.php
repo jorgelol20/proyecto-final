@@ -183,21 +183,21 @@ class UsuariosController extends Controller
 
     public function ping(Request $request)
     {
-        // Actualizamos la última vez que se vio al usuario
-        $request->user()->update([
-            'ultima_vez_listo' => now()
-        ]);
+        $user = $request->user();
 
-        return response()->json(['status' => true, 'user'=>$request->user()]);
+        $user->ultima_vez_visto = now();
+        $user->save();
+
+        return response()->json([
+            'status' => 'alive',
+            'fecha_guardada' => $user->ultima_vez_visto
+        ]);
     }
 
     public function activeCount()
     {
-        // Consideramos "activo" a cualquiera que haya hecho una petición en los últimos 60 segundos
-        $umbral = now()->subSeconds(60);
-
+        $umbral = now()->subSeconds(60)->toDateTimeString();
         $conteo = Usuarios::where('ultima_vez_visto', '>=', $umbral)->count();
-
         return response()->json(['active_users' => $conteo]);
     }
 }
