@@ -29,7 +29,7 @@ import DamageAnimation from '/images/animations/DamageAnimation.webp'
 
 import { set } from "lodash";
 import SelectCharacter from "../SelectCharacter.jsx";
-import { useNavigate } from "react-router-dom";
+import { useBlocker, useLocation, useNavigate } from "react-router-dom";
 import SelectModifier from "../SelectModifier.jsx";
 import Modifier from "../Modifier.jsx";
 import Loading from "../Loading.jsx";
@@ -41,6 +41,7 @@ import useImage from "use-image";
 
 const GamePage = () => {
     const navigate = useNavigate();
+    const location = useLocation();
     const { startButtonSound, showLogs } = useContext(settingsContext)
     const { matchDeck, character, activeModifiers: modifiers, setNewDeck, setNewCharacter, startNewGame, addCardToMatchDeck, gameLoading, availableCharacters, getWeapon, endGame, updateActualGame, setCharacter, setActiveModifiers, setGameLoading, addEnemysToMatchDeck, addModifierToMatch } = useContext(matchContext);
     const { user, isLoading } = useUser();
@@ -52,6 +53,72 @@ const GamePage = () => {
 
     // Imagen por defecto
     const [defaultImage] = useImage(DefaultCardImage);
+
+
+    useEffect(() => {
+        const gestionarSalidaForzada = () => {
+            endGame(
+                user.id,
+                timeRef.current,
+                false,
+                rounds,
+                totalEarnedGold.current,
+                healedLife.current,
+                enemysDefeated.current
+            );
+        };
+        window.addEventListener('interrumpirPartida', gestionarSalidaForzada);
+
+        return () => {
+            window.removeEventListener('interrumpirPartida', gestionarSalidaForzada);
+        };
+    }, [user]);
+
+
+    useEffect(() => {
+        const handleBeforeUnload = (e) => {
+            e.preventDefault();
+            e.returnValue = '¿Seguro que quieres salir del juego?';
+            return e.returnValue;
+        };
+
+        window.addEventListener('beforeunload', handleBeforeUnload);
+        return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+    }, []);
+
+    useEffect(() => {
+        // Aseguramos un estado en el historial para capturar el evento 'Atrás'
+        window.history.pushState(null, null, window.location.pathname);
+
+        const handlePopState = () => {
+            const proceder = window.confirm("¿Estás seguro de que quieres salir de la partida? Perderás tu progreso.");
+
+            if (proceder) {
+                // CORRECCIÓN: 'endGame' ahora solo se ejecuta SI el usuario confirma que quiere salir
+                endGame(
+                    user.id,
+                    timeRef.current,
+                    false,
+                    rounds,
+                    totalEarnedGold.current,
+                    healedLife.current,
+                    enemysDefeated.current
+                );
+                navigate('/');
+            } else {
+                // Si cancela, volvemos a meter el estado en el historial para mantenerlo bloqueado
+                window.history.pushState(null, null, window.location.pathname);
+            }
+        };
+
+        window.addEventListener('popstate', handlePopState);
+
+        return () => {
+            window.removeEventListener('popstate', handlePopState);
+        };
+        // CORRECCIÓN: Añadidas las dependencias necesarias para que 'endGame' 
+        // lea los valores reales y actualizados del estado del juego
+    }, [navigate, user]);
 
 
     //Estados que almacenan si el juego ha empezado y si el juego está en GameOver
@@ -228,7 +295,7 @@ const GamePage = () => {
     // State de oro
     const [gold, setGold] = useState(0);
 
-    const [shopAvailable, setShopAvailable] = useState(true);
+    const [shopAvailable, setShopAvailable] = useState(false);
 
     useEffect(() => {
         if (!shopAvailable) {
@@ -607,11 +674,11 @@ const GamePage = () => {
             );
             return [...prevRoom, ...uniqueNewCards];
         });
-        if(poison.current > 0){
+        if (poison.current > 0) {
             poison.current -= 1
             setHealth(prev => prev - 1)
         }
-        if(antiheal.current){
+        if (antiheal.current) {
             antiheal.current = false;
         }
     }, [room.length, dungeon]); // Ahora depende de dungeon para tener los datos frescos
@@ -834,7 +901,7 @@ const GamePage = () => {
                 setWeapon(card);
                 deleteFromRoom(card);
             }, 100);
-            
+
         }
     }
 
@@ -966,7 +1033,7 @@ const GamePage = () => {
         if (invincibility_turns.current > 0) {
             damageAnimation(0)
             if (weapon) {
-                const earnedGold = 5 * goldMultiplier.current;
+                const earnedGold = Math.floor(5 * goldMultiplier.current)
                 setGold(prev => prev + earnedGold);
                 coinAnimation(earnedGold)
                 totalEarnedGold.current += earnedGold;
@@ -987,7 +1054,7 @@ const GamePage = () => {
 
             const final_dmg = Math.max(0, final_enemy_dmg - final_user_dmg);
             damageAnimation(final_dmg)
-            const earnedGold = 5 * goldMultiplier.current;
+            const earnedGold = Math.floor(5 * goldMultiplier.current)
             coinAnimation(earnedGold)
             setGold(prev => prev + earnedGold);
             totalEarnedGold.current += earnedGold;

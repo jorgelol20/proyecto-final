@@ -29,7 +29,6 @@ const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = tru
     const [image] = useImage(cardInfo?.imagen);
     const [suit] = useImage(cardSuit);
     const selectEffectImage = () => {
-        console.log(cardInfo.effect)
         if (cardInfo.effect) {
             switch (cardInfo.effect['name']) {
                 case 'antiheal':
