@@ -15,7 +15,7 @@ class Usuarios extends Authenticatable
    
     public $timestamps = true;
     protected $table = 'usuarios';
-    protected $fillable = ['nick','es_admin','password','email','avatar','color'];
+    protected $fillable = ['nick','es_admin','password','email','avatar','color', 'ultima_vez_visto'];
 
      /**
      * The attributes that should be hidden for serialization.

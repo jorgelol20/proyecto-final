@@ -908,7 +908,7 @@ const GamePage = () => {
         if (card.especial) {
             handleCardEffect(card)
         }
-        if (!healedRef.current && !antiheal) {
+        if (!healedRef.current && !antiheal.current) {
             setHealth(prev => Math.min(maxHealth, prev + currentHeal.current));
             healAnimation(currentHeal.current)
             healedLife.current += currentHeal.current;
