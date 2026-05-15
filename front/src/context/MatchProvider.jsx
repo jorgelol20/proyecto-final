@@ -168,7 +168,7 @@ const MatchProvider = (props) => {
                 y: 0,
                 key: crypto.randomUUID(),
                 especial: appliedEffect !== null ? true : false,
-                efectos: appliedEffect // Guardamos el efecto (o null si no le tocó)
+                efectos: appliedEffect
             };
         });
 

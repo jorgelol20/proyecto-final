@@ -718,8 +718,9 @@ const GamePage = () => {
     const addEnemy = async (value, randomModifier = false) => {
 
     }
-    const addEnemys = async (quantity) => {
-        await addEnemysToMatchDeck(quantity, rounds)
+    const addEnemys = async () => {
+        const quantity = Math.min(5, (rounds % 3 * 5))
+        await addEnemysToMatchDeck(quantity,rounds)
     }
 
     const shuffleDeck = (deck) => {
@@ -737,7 +738,7 @@ const GamePage = () => {
         }
         else if (rounds !== 10 || continuedGame) {
             setSelectModifier(true)
-            await addEnemys(5)
+            await addEnemys()
             if (rounds >= 1 && gameOn) {
                 setShopAvailable(true)
             } else {
