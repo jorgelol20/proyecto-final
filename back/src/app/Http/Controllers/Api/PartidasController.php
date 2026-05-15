@@ -60,6 +60,7 @@ class PartidasController extends Controller
             'enemigos_enfrentados'
         )
             ->orderBy('rondas', 'desc')
+            ->orderBy('enemigos_enfrentados', 'desc')
             ->limit(10)
             ->get();
 

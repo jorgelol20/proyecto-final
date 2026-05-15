@@ -29,6 +29,7 @@ const MatchProvider = (props) => {
     const [availableModifiers, setAvailableModifiers] = useState([])
     const [activeModifiers, setActiveModifiers] = useState([]);
 
+
     const load = () => {
         const modifiersList = modifiers.map(item => ({
             ...item,
@@ -133,6 +134,12 @@ const MatchProvider = (props) => {
         }
     };
 
+    const negativeCardEffectList = [
+        { 'name': 'poison', 'value': 3 },
+        { 'name': 'antiheal', 'value': 1 },
+        { 'name': 'weapon_breaker', 'value': true },
+    ]
+    
     const addEnemysToMatchDeck = (quantity, round) => {
         const minPower = Math.max(2, round);
         const maxPower = Math.min(round + 5, 14);
@@ -146,13 +153,24 @@ const MatchProvider = (props) => {
         const shuffled = lodash.shuffle(candidates);
         const selectedEnemys = shuffled.slice(0, quantity);
 
-        // Mapeamos a objetos NUEVOS para evitar que dos enemigos iguales compartan key
-        const newEnemys = selectedEnemys.map((card) => ({
-            ...card,
-            x: 200,
-            y: 0,
-            key: crypto.randomUUID()
-        }));
+        const effectProbability = Math.min(5 + (round - 1) * 2.5, 30);
+
+        const newEnemys = selectedEnemys.map((card) => {
+            const roll = Math.random() * 100;
+            let appliedEffect = null;
+            if (roll < effectProbability) {
+                const randomEffectIndex = Math.floor(Math.random() * negativeCardEffectList.length);
+                appliedEffect = { ...negativeCardEffectList[randomEffectIndex] };
+            }
+
+            return {
+                ...card,
+                x: 200,
+                y: 0,
+                key: crypto.randomUUID(),
+                effect: appliedEffect // Guardamos el efecto (o null si no le tocó)
+            };
+        });
 
         setMatchDeck(prevDeck => [...prevDeck, ...newEnemys]);
     };

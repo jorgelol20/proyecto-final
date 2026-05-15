@@ -124,6 +124,7 @@ const GamePage = () => {
         // Reiniciar efectos cartas
         cleanHealEffects()
         cleanWeaponEffects()
+        cleanEnemyEffects()
 
     }
 
@@ -606,6 +607,13 @@ const GamePage = () => {
             );
             return [...prevRoom, ...uniqueNewCards];
         });
+        if(poison.current > 0){
+            poison.current -= 1
+            setHealth(prev => prev - 1)
+        }
+        if(antiheal.current){
+            antiheal.current = false;
+        }
     }, [room.length, dungeon]); // Ahora depende de dungeon para tener los datos frescos
 
     const isDrawingRef = useRef(false); // Nueva referencia al inicio del componente
@@ -655,9 +663,10 @@ const GamePage = () => {
     const startNewRound = async (continueMatch = false) => {
         if (rounds !== 10 || continueMatch) {
             setSelectModifier(true)
+            await addEnemys(5)
             if (rounds >= 1 && gameOn) {
                 setShopAvailable(true)
-                await addEnemys(5)
+
 
             } else {
                 setShopAvailable(false)
@@ -810,6 +819,30 @@ const GamePage = () => {
         weapon_health_steal_quantity.current = 0
     }
 
+    //Efectos enemigos
+
+    const poison = useRef(0);
+
+    const antiheal = useRef(false);
+
+    const weaponBreaker = () => {
+        if (weapon) {
+            moveCardToDiscard([weapon], true)
+            logsRef.current.push((logsRef.current.length + 1) + " - " + "El enemigo ha roto tu arma.")
+            cleanWeaponEffects();
+            setTimeout(() => {
+                setWeapon(card);
+                deleteFromRoom(card);
+            }, 100);
+            
+        }
+    }
+
+    const cleanEnemyEffects = () => {
+        poison.current = 0;
+        antiheal.current = 0;
+    }
+
 
 
     const applyCardEffect = (effect) => {
@@ -846,6 +879,15 @@ const GamePage = () => {
                 weapon_health_steal.current = true;
                 weapon_health_steal_quantity.current = effect.value
                 break;
+            case 'antiheal':
+                antiheal.current = true;
+                break;
+            case 'weapon_breaker':
+                weaponBreaker()
+                break;
+            case 'poison':
+                poison.current = effect.value;
+                break;
             default:
                 return false;
         }
@@ -866,7 +908,7 @@ const GamePage = () => {
         if (card.especial) {
             handleCardEffect(card)
         }
-        if (!healedRef.current) {
+        if (!healedRef.current && !antiheal) {
             setHealth(prev => Math.min(maxHealth, prev + currentHeal.current));
             healAnimation(currentHeal.current)
             healedLife.current += currentHeal.current;
@@ -938,7 +980,7 @@ const GamePage = () => {
         }
 
         // ATAQUE CON ARMA
-        else if (weapon && ((slainMonsters.length === 0 || card.valor < (slainMonsters[slainMonsters.length - 1]?.valor || 99))||(ricochet.current && card.valor === (slainMonsters[slainMonsters.length - 1]?.valor || 99)))) {
+        else if (weapon && ((slainMonsters.length === 0 || card.valor < (slainMonsters[slainMonsters.length - 1]?.valor || 99)) || (ricochet.current && card.valor === (slainMonsters[slainMonsters.length - 1]?.valor || 99)))) {
 
             const final_user_dmg = weapon_dmg.current + (card.palo == 'Pica' ? spadesExtraTakedDmg.current : clubsExtraTakedDmg.current);
             const final_enemy_dmg = enemy_dmg - pentakill;
@@ -949,11 +991,11 @@ const GamePage = () => {
             coinAnimation(earnedGold)
             setGold(prev => prev + earnedGold);
             totalEarnedGold.current += earnedGold;
-            if(health - final_dmg <= 0 && revive.current){
+            if (health - final_dmg <= 0 && revive.current) {
                 setHealth(revive_health.current)
                 revive.current = false;
                 revive_health.current = 0;
-            }else{
+            } else {
                 setHealth(prev => Math.max(0, prev - final_dmg));
             }
             if (healthSteal.current && card.valor < weapon_dmg.current) {
@@ -973,11 +1015,11 @@ const GamePage = () => {
             const final_dmg = Math.max(0, enemy_dmg - final_user_dmg);
             moveCardToDiscard([card])
             damageAnimation(final_dmg, true)
-            if(health - final_dmg <= 0 && revive.current){
+            if (health - final_dmg <= 0 && revive.current) {
                 setHealth(revive_health.current)
                 revive.current = false;
                 revive_health.current = 0;
-            }else{
+            } else {
                 setHealth(prev => Math.max(0, prev - final_dmg));
             }
             setActualStreak(prev => prev + 1);
