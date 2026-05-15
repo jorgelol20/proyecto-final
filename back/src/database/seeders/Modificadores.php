@@ -129,7 +129,7 @@ class Modificadores extends Seeder
                 'imagen' => "/storage/modificadores/GatoDeLaSuerte.webp",
                 'nivel' => 1,
                 'efectos' => json_encode([
-                    ['name' => 'gold_multiplier', 'value' => 2],
+                    ['name' => 'gold_multiplier', 'value' => 1.2],
                 ])
             ],
             [

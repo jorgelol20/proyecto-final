@@ -62,6 +62,8 @@ export const useUser = () => {
         
     });
 
+
+    // Intervalo para obtener los jugadores activos
     useEffect(() => {
         if (isLoading || !user) {
             setActivePlayers(0);

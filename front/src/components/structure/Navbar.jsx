@@ -2,14 +2,14 @@ import React, { Fragment, useContext, useEffect, useRef, useState } from "react"
 import './Navbar.css';
 import { useUser } from '../../hooks/useUser.js';
 import Placeholder from './../../images/placeholder.webp'
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 
 import { matchContext } from "../../context/MatchProvider.jsx";
 
 import { settingsContext } from "../../context/SettingsProvider.jsx";
 
 import FPSCounter from "./FPSCounter.jsx";
-import UserShow from "../UserShow.jsx"; 
+import UserShow from "../UserShow.jsx";
 
 const Navbar = () => {
     const { user, searchUsuario, isLoading, activePlayers } = useUser();
@@ -18,9 +18,23 @@ const Navbar = () => {
     const [userColor, setUserColor] = useState('');
 
     const [userList, setUserList] = useState([]);
-    // 1. Usamos estado para que la UI se actualice
-    const [isActiveSearch, setIsActiveSearch] = useState(false); 
+    const [isActiveSearch, setIsActiveSearch] = useState(false);
     const searchRef = useRef(null);
+
+    const location = useLocation()
+    const navigate = useNavigate()
+
+    const handleNavClick = (e, to) => {
+        if (location.pathname === '/juego') {
+            e.preventDefault();
+            const proceder = window.confirm("¿Estás seguro de que quieres salir de la partida? Tu progreso actual se guardará y la partida finalizará.");
+            if (proceder) {
+                const eventoSalir = new CustomEvent('interrumpirPartida');
+                window.dispatchEvent(eventoSalir);
+                navigate(to);
+            }
+        }
+    };
 
     useEffect(() => {
         if (!isLoading && user) {
@@ -40,10 +54,10 @@ const Navbar = () => {
 
     // Función para resetear todo tras el clic
     const handleResultClick = () => {
-        setIsActiveSearch(false); 
+        setIsActiveSearch(false);
         setUserList([]);
         if (searchRef.current) {
-            searchRef.current.value = ""; 
+            searchRef.current.value = "";
         }
     };
 
@@ -60,23 +74,26 @@ const Navbar = () => {
                     )}
                     {!isLoading && user && (
                         <div className="search">
-                            <input 
+                            <input
                                 ref={searchRef}
-                                type="search" 
-                                className="search-input" 
-                                placeholder="Buscar usuario" 
+                                type="search"
+                                className="search-input"
+                                placeholder="Buscar usuario"
                                 onFocus={() => setIsActiveSearch(true)}
-                                onChange={(e) => handleSearchUser(e.target.value)} 
+                                onChange={(e) => handleSearchUser(e.target.value)}
                             />
-                            
+
                             {/* 2. Ahora React sí reaccionará a este cambio */}
                             {isActiveSearch && userList.length > 0 && (
                                 <div className="searc-list">
                                     {userList.map((userInfo) => (
-                                        <NavLink 
-                                            key={userInfo.nick} 
-                                            to={`/perfil/${userInfo.nick}`} 
-                                            onClick={handleResultClick}
+                                        <NavLink
+                                            key={userInfo.nick}
+                                            to={`/perfil/${userInfo.nick}`}
+                                            onClick={(e) => {
+                                                handleNavClick(e, `/perfil/${userInfo.nick}`);
+                                                if (!e.defaultPrevented) handleResultClick();
+                                            }}
                                         >
                                             <UserShow userInfo={userInfo} />
                                         </NavLink>
@@ -85,22 +102,30 @@ const Navbar = () => {
                             )}
                         </div>
                     )}
-                    
-                    <NavLink to="/" className={({ isActive }) => isActive ? 'menu_link menu_link--active' : 'menu_link'}>
+
+                    <NavLink
+                        to="/"
+                        className={({ isActive }) => isActive ? 'menu_link menu_link--active' : 'menu_link'}
+                        onClick={(e) => handleNavClick(e, '/')}
+                    >
                         Inicio
                     </NavLink>
 
                     {!isLoading ? (
                         user ? (
-                            <NavLink to={`/perfil/${user.nick}`} className={({ isActive }) => isActive ? 'menu_link menu_link--active' : 'menu_link'}>
-                                <img 
-                                    className="navbar-avatar" 
-                                    src={userAvatar || Placeholder} 
-                                    alt="avatar" 
+                            <NavLink
+                                onClick={(e) => handleNavClick(e, `/perfil/${user.nick}`)}
+                                to={`/perfil/${user.nick}`}
+                                className={({ isActive }) => isActive ? 'menu_link menu_link--active' : 'menu_link'}
+                            >
+                                <img
+                                    className="navbar-avatar"
+                                    src={userAvatar || Placeholder}
+                                    alt="avatar"
                                     style={{ borderColor: userColor }}
                                     onError={(e) => {
                                         e.currentTarget.src = Placeholder;
-                                    }} 
+                                    }}
                                 />
                             </NavLink>
                         ) : (
