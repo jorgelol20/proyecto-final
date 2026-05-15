@@ -35,11 +35,15 @@
         margin-left: 0.5cqw;
         margin-right: 0.5cqw;
         color: var(--main-white);
+        text-wrap-mode: wrap;
+        text-wrap-style: pretty;
     }
 
     img {
-        width: 2.5em;
+        width: 2em;
         height: 2em;
+        min-width: 2em;
+        max-width: 2em;
         border-width: 5px;
         border-style: solid;
         border-radius: 5px;
