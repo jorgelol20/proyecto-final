@@ -73,37 +73,66 @@ const GamePage = () => {
 
     const logsRef = useRef([]);
 
-
     useEffect(() => {
-        const gestionarSalidaForzada = () => {
-            endGame(
-                user.id,
-                timeRef.current,
-                gameWin,
-                rounds,
-                totalEarnedGold.current,
-                healedLife.current,
-                enemysDefeated.current
-            );
+        const gestionarSalidaNavbar = async (e) => {
+            const rutaDestino = e.detail.destino; // Recuperamos a dónde quería ir el usuario
+
+            try {
+                await endGame(
+                    user?.id,
+                    timeRef.current,
+                    false,
+                    rounds,
+                    totalEarnedGold.current,
+                    healedLife.current,
+                    enemysDefeated.current
+                );
+            } catch (error) {
+                console.error("Error al guardar la partida desde el Navbar:", error);
+            } finally {
+                navigate(rutaDestino);
+            }
         };
-        window.addEventListener('interrumpirPartida', gestionarSalidaForzada);
+
+        window.addEventListener('interrumpirPartida', gestionarSalidaNavbar);
+
         return () => {
-            window.removeEventListener('interrumpirPartida', gestionarSalidaForzada);
+            window.removeEventListener('interrumpirPartida', gestionarSalidaNavbar);
         };
-    }, [user, gameWin, rounds]);
+    }, [navigate, user, gameWin, rounds, endGame]);
+
+    //CAPTURAR EL BOTÓN "ATRÁS" DEL NAVEGADOR
+
+    const guardarYTerminarPartida = async () => {
+        await endGame(
+            user.id,
+            timeRef.current,
+            gameWin,
+            rounds,
+            totalEarnedGold.current,
+            healedLife.current,
+            enemysDefeated.current
+        );
+    };
 
     useEffect(() => {
-        // Forzamos un estado en el historial para poder interceptar el botón Atrás
+        // Aseguramos un estado en el historial para capturar el evento 'Atrás'
         window.history.pushState(null, null, window.location.pathname);
 
-        const handlePopState = () => {
-            const proceder = window.confirm(
-                "¿Estás seguro de que quieres salir de la partida? Tu progreso actual se guardará."
-            );
+        const handlePopState = async () => {
+            const proceder = window.confirm("Si sales, la partida contará como derrota.");
 
             if (proceder) {
-                guardarYTerminarPartida(); // <--- Ejecuta tu función de guardado
-                navigate('/'); // Lo mandamos al inicio
+                try {
+                    // Ahora que es un mutateAsync, el await SÍ va a congelar la ejecución 
+                    // hasta que Laravel responda con un 200/201 OK
+                    endGame(user.id, timeRef.current, gameWin, rounds, totalEarnedGold.current, healedLife.current, enemysDefeated.current)
+                } catch (error) {
+                    console.error("Error al guardar la partida de forma forzada:", error);
+                } finally {
+                    // Solo cuando la BD ha respondido (bien o mal), nos vamos
+                    navigate('/');
+                }
             } else {
                 // Si cancela, volvemos a bloquear el historial para mantenerlo en la partida
                 window.history.pushState(null, null, window.location.pathname);
@@ -115,13 +144,10 @@ const GamePage = () => {
         return () => {
             window.removeEventListener('popstate', handlePopState);
         };
-    }, [navigate, user, gameWin, rounds]);
+        // IMPORTANTE: Añade 'endGame' aquí para que React tenga la referencia limpia
+    }, [navigate, user, gameWin, rounds, endGame]);
 
-    /**
-     * 4. CAPTURAR SALIDA EXTERNA (Cerrar pestaña o F5)
-     * Nota: Esto solo mostrará el aviso del navegador. Como mencionamos,
-     * los navegadores bloquean peticiones HTTP pesadas aquí, pero el aviso evitará descuidos.
-     */
+
     useEffect(() => {
         const handleBeforeUnload = (e) => {
             e.preventDefault();
@@ -720,10 +746,10 @@ const GamePage = () => {
     }
     const addEnemys = async () => {
 
-    const quantity = 5 + Math.floor((rounds - 1) * 2);
-    
-    await addEnemysToMatchDeck(quantity, rounds);
-};
+        const quantity = 5 + Math.floor((rounds - 1) * 2);
+
+        await addEnemysToMatchDeck(quantity, rounds);
+    };
 
     const shuffleDeck = (deck) => {
         const shuffled = lodash.shuffle(deck).map((card) => ({
@@ -1078,7 +1104,7 @@ const GamePage = () => {
                 healAnimation(heal)
                 setHealth(prev => Math.min(maxHealth, prev + heal));
             }
-            if(weapon_health_steal.current){
+            if (weapon_health_steal.current) {
                 setHealth(prev => Math.min(maxHealth, prev + weapon_health_steal_quantity));
             }
             setSlainMonsters([...slainMonsters, card]);

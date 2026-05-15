@@ -21,6 +21,10 @@ export const useMatch = () => {
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['matches'] });
+            return true
+        },
+        onError: () => {
+            return false
         }
     });
 
