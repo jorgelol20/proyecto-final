@@ -65,7 +65,6 @@ const UserRanking = () => {
                 <h1 id={`num-${index + 1}`}>#{index + 1}</h1>
                 <img style={{ borderColor: userInfo.color }} src={userInfo.avatar} alt="" />
                 <h1 className={userInfo.es_admin ? 'admin' : 'user'}>{userInfo.nick}</h1>
-                <h1>Total: <strong style={{ color: 'var(--main-white)' }}>{userInfo.tiene_jugadas_count}</strong></h1>
                 <h1>Record Rondas: <strong style={{ color: 'var(--main-gold)' }}>{userInfo.record_rondas}</strong></h1>
             </div>
         )
