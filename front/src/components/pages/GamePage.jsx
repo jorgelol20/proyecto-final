@@ -1100,7 +1100,7 @@ const GamePage = () => {
                 setHealth(prev => Math.min(maxHealth, prev + heal));
             }
             if (weapon_health_steal.current) {
-                setHealth(prev => Math.min(maxHealth, prev + weapon_health_steal_quantity));
+                setHealth(prev => Math.min(maxHealth, prev + weapon_health_steal_quantity.current));
             }
             setSlainMonsters([...slainMonsters, card]);
             deleteFromRoom(card)
