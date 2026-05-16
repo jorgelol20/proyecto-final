@@ -16,7 +16,7 @@ const MainPage = () => {
     const { user, isLoading, getRanking } = useUser()
     const { matches } = useMatch();
     const { startMusic, startButtonSound } = useContext(settingsContext)
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
     
     if (isLoading) {
@@ -32,7 +32,7 @@ const MainPage = () => {
                 <img className="banner-menu" src="/images/banner_menu.webp" />
                 <div className="main-menu">
                     <button onClick={(event) => { startButtonSound(event); user ? navigate(`/jugar`) : navigate('/login') }}>JUGAR</button>
-                    <button disabled={true} onClick={(event) => { startButtonSound(event); user ? navigate(`/jugar/tutorial`) : navigate('/login') }}>CÓMO JUGAR</button>
+                    <button onClick={(event) => { startButtonSound(event); user ? navigate(`/jugar/tutorial`) : navigate('/login') }}>CÓMO JUGAR</button>
                     <button onClick={(event) => { startButtonSound(event); navigate('/ajustes') }}>AJUSTES</button>
                     <button onClick={(event) => { startButtonSound(event); user ? navigate(`/perfil/${user ? user.nick : ''}`) : navigate('/login') }}>PERFIL</button>
                     {

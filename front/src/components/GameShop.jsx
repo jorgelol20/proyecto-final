@@ -9,7 +9,8 @@ import { Stage, Layer, Group, Label, Tag, Text, Rect } from 'react-konva';
 import ShopMan from '/images/ShopMan.webp'
 import Dialogs from './../assets/database/dialogs.json'
 import lodash from 'lodash';
-
+import HeartIcon from '/images/suit_heart.webp';
+import DiamonIcon from '/images/suit_diamond.webp';
 
 const GameShop = ({ gold, setGold, setShopAvailable, health, maxHealth, formatedTimeRef, healthIcon, character, round }) => {
     const { user } = useUser();
@@ -46,7 +47,7 @@ const GameShop = ({ gold, setGold, setShopAvailable, health, maxHealth, formated
 
         // Agregar armas
         weps.forEach((wep, index) => {
-            items.push({ id: `wep-${index}`, type: 'card', data: wep, price: Math.max(5, (index < 9?wep.valor * 5:((wep.valor - 4) * 5) + ((wep.valor >= 14 ? 25 : 10) * (wep.valor - 8)))), isBought: false });
+            items.push({ id: `wep-${index}`, type: 'card', data: wep, price: Math.max(20, (index < 9?wep.valor * 5:((wep.valor - 4) * 5) + ((wep.valor >= 14 ? 15 : 10) * (wep.valor - 8)))), isBought: false });
         });
 
         // Agregar cura
@@ -130,6 +131,7 @@ const GameShop = ({ gold, setGold, setShopAvailable, health, maxHealth, formated
                                                             x={55}
                                                             y={0}
                                                             isDraggable={false}
+                                                            cardSuit={item.palo == "Diamante" ? DiamonIcon : HeartIcon}
                                                         />
                                                     
 

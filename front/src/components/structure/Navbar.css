@@ -2,16 +2,20 @@ nav {
     display: flex;
     justify-content: end;
     align-items: center;
-    /*image-rendering: pixelated; Chrome/Edge/Safari */
-    /* image-rendering: crisp-edges; Firefox */
-    /* Esto crea las "rayas" del grano */
-    border: 2px solid #3e27233f;
-    padding: 10px 20px;
+    position: sticky;
+    top: 0;
+    border: 0.3cqw solid #4C3E3E;
     border-radius: 4px;
+    padding: 10px 20px;
+    padding-left: 20%;
+    
     height: 2cqh;
     max-height: 2em;
     min-height: 2em;
     color: white;
+    background-color: #4C3E3E;
+    background-size: 50px 50px;
+    z-index: 100;
 }
 
 .navbar-avatar {
@@ -64,7 +68,7 @@ nav {
     border-bottom: 1px solid #5a4e4ec0;
     border-right: 1px solid #5a4e4ecc ;
     min-width: 20em;
-    width: 20em;
+    width: 25cqw;
     max-height: 1em;
     height: 1em;
 }
@@ -82,9 +86,11 @@ nav {
     font-size: 0.7cqw;
     border: 2px solid var(--main-black);
     width: 100%;
-    height: 1em;
-    min-height: 2em;
-    font-size: 1cqw;
+    height: 1cqw;
+    min-height: 2cqh;
+    font-size: 1cqh;
+    margin-left: 1cqw;
+    margin-bottom: 1cqh;
 }
 .searc-list{
     position: absolute;

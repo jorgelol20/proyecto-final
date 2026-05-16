@@ -38,12 +38,19 @@ class Personajes extends Seeder
                 'descripcion' => 'Estudioso de los grimorios antiguos desde su juventud y consagrado a descifrar los misterios de la magia arcana permitiendole anticiparse a los eventos futuros.',
                 'habilidad_id' => 4
             ],
+            [
+                'id' => 5,
+                'nombre' => 'Apostador',
+                'descripcion' => 'Ciego de fé (y las cataratas) este clérigo pasa sus días apostando en la tasca. No siempre sale bien parado...',
+                'habilidad_id' => 5
+            ],
+            
         ];
 
         foreach ($personajesData as $data) {
-            ModelPersonajes::factory()
-                ->create([
-                    'nombre' => $data['nombre'],
+            ModelPersonajes::updateOrCreate(
+                ['nombre' => $data['nombre']],
+                [
                     'descripcion' => $data['descripcion'],
                     'imagen' => config('app.backend_url')."/storage/personajes/{$data['nombre']}.webp",
                     'activo' => true,

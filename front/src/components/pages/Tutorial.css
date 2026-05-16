@@ -3,6 +3,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+
     .tutorial-carousel {
         position: relative;
         width: 60%;
@@ -21,13 +22,14 @@
             cursor: pointer;
             z-index: 10;
         }
-        button:hover{
+
+        button:hover {
             opacity: 1;
         }
     }
 }
 
-.slide-1{
+.slide-1 {
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -37,16 +39,94 @@
     align-items: center;
     padding-top: 5cqh;
     color: var(--main-white);
-    img{
+
+    img {
         background: none;
         width: 30cqw;
     }
-    p{
+
+    p {
         font-size: 1cqw;
     }
-    
+
 }
 
+.slide-2 {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--second-color);
+    min-height: 50cqh;
+    justify-content: start;
+    align-items: center;
+    padding-top: 5cqh;
+    color: var(--main-white);
+    text-align: center;
+    .container{
+        width: 80%;
+    }
+    img {
+        background: none;
+        width: 30cqw;
+    }
+
+    p {
+        font-size: 1cqw;
+        margin: 0;
+    }
+    span{
+        color: var(--main-orange);
+    }
+    strong{
+        color: var(--main-red);
+    }
+
+}
+
+.slide-3 {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--second-color);
+    min-height: 50cqh;
+    justify-content: center;
+    align-items: center;
+    padding-top: 5cqh;
+    color: var(--main-white);
+    .slide-3-info{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    h1{
+        font-size: 2cqw;
+    }
+    img {
+        background: none;
+        width: 3cqw;
+    }
+
+    p {
+        font-size: 1cqw;
+    }
+    span{
+        color: var(--main-orange);
+    }
+
+    .card-stage {
+        width: 100%;
+        height: 12cqh;
+        padding-top: 3cqh;
+        background-color: var(--main-color);
+        border: 0.2cqw inset var(--second-color-dark);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 1cqh;
+    }
+
+}
 
 .btn-prev {
     position: absolute;
