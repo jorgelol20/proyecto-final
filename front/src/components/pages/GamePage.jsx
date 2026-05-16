@@ -506,11 +506,13 @@ const GamePage = () => {
             //Modificar daño
             const randomDmg = Math.floor(Math.random() * 7) - 3;
             userExtraDmg.current = randomDmg;
+            setLastGamblerEffect(`${randomDmg} de daño extra en la siguiente acción.`)
         }else if (roll <= 40){
             //Curación/Daño
             const randomHeal = Math.floor(Math.random() * 7) - 3;
             healAnimation(randomHeal)
-            setHealth(prev => Math.min(0, prev + randomHeal));
+            setHealth(prev => Math.min(maxHealth, Math.max(0, prev + randomHeal)));
+            setLastGamblerEffect(`${randomHeal} de curación.`)
         }else if(roll <= 60){
             //Añadir arma
             const randomPower = Math.floor(Math.random()*(rounds+3))
@@ -518,16 +520,22 @@ const GamePage = () => {
             const weaponPower = Math.min(filter,13)
             const newWeapon = await getWeapon(weaponPower);
             addCardToMatchDeck(newWeapon);
+            setLastGamblerEffect(`Añadida una nueva arma con valor ${newWeapon.valor}`)
+            setDungeon(prev => [newWeapon,...prev])
         }else if(roll <= 80){
             //Añadir curación
             const randomPower = Math.floor(Math.random()*(rounds+3))
             const filter = Math.max(2,randomPower)
             const healPower = Math.min(filter,13)
-            const newWeapon = await getHealItem(healPower);
-            addCardToMatchDeck(newWeapon);
+            const newHeal = await getHealItem(healPower);
+            addCardToMatchDeck(newHeal);
+            setLastGamblerEffect(`Añadida una nueva curación con valor ${newHeal.valor}`)
+            setDungeon(prev => [newHeal,...prev])
         }else if(roll <= 100){
             //Añadir enemigo
-            addEnemy()
+            const newEnemy = await addEnemy();
+            setLastGamblerEffect(`Añadido un nuevo enemigo con valor ${newEnemy.valor}`)
+            setDungeon(prev => [newEnemy,...prev])
         }
     }
 
@@ -555,7 +563,7 @@ const GamePage = () => {
                 case 5: //Apostador
                     gambler();
                     coinAnimation(-50);
-                    setGold(prev => Math.min(0,prev - 50));
+                    setGold(prev => Math.max(0,prev - 50));
             }
 
         }
@@ -580,7 +588,7 @@ const GamePage = () => {
             }else if(character?.habilidad_personaje?.id === 5) {
                 setIsGambler(true);
                 coinAnimation(50);
-                setGold(50);
+                setGold(prev => prev + 50);
             }
         }
     }, [character])
@@ -599,7 +607,7 @@ const GamePage = () => {
     const userExtraDmg = useRef(0);
 
     // Daño enemigos
-    const enemyDmgMultiplier = useRef(0);
+    const enemyDmgMultiplier = useRef(1);
     const enemyExtraDmg = useRef(0)
     const spadesExtraTakedDmg = useRef(0);
     const clubsExtraTakedDmg = useRef(0);
@@ -703,7 +711,7 @@ const GamePage = () => {
         actualScapes.current = 1;
         healthSteal.current = false;
         ricochet.current = false
-        enemyDmgMultiplier.current = (0);
+        enemyDmgMultiplier.current = (1);
         enemyExtraDmg.current = (0)
         spadesExtraTakedDmg.current = (0);
         clubsExtraTakedDmg.current = (0);
@@ -793,7 +801,8 @@ const GamePage = () => {
     }, [room.length, dungeon.length]);
 
     const addEnemy = async () => {
-        await addEnemysToMatchDeck(1, rounds);
+        const newEnemy = await addEnemysToMatchDeck(1, rounds);
+        return newEnemy[0];
     }
     const addEnemys = async () => {
         const quantity = 5 + Math.floor((rounds - 1) * 2);
@@ -1165,7 +1174,7 @@ const GamePage = () => {
 
         // ATAQUE CON ARMA
         else if (weapon && ((slainMonsters.length === 0 || card.valor < (slainMonsters[slainMonsters.length - 1]?.valor)) || (ricochet.current && card.valor <= (slainMonsters[slainMonsters.length - 1]?.valor)))) {
-            const final_user_dmg = weapon_dmg.current + (card.palo == 'Pica' ? spadesExtraTakedDmg.current : clubsExtraTakedDmg.current);
+            const final_user_dmg = weapon_dmg.current + (card.palo == 'Pica' ? spadesExtraTakedDmg.current : clubsExtraTakedDmg.current) + userExtraDmg.current;
             const final_enemy_dmg = enemy_dmg - pentakill;
 
             const final_dmg = Math.max(0, final_enemy_dmg - final_user_dmg);
@@ -1198,7 +1207,7 @@ const GamePage = () => {
 
         // ATAQUE SIN ARMA
         else {
-            const final_user_dmg = pentakill + (card.palo == 'Pica' ? spadesExtraTakedDmg.current : clubsExtraTakedDmg.current)
+            const final_user_dmg = pentakill + (card.palo == 'Pica' ? spadesExtraTakedDmg.current : clubsExtraTakedDmg.current) + userExtraDmg.current;
             const final_dmg = Math.max(0, enemy_dmg - final_user_dmg);
             moveCardToDiscard([card])
             damageAnimation(final_dmg, true)
@@ -1233,6 +1242,9 @@ const GamePage = () => {
         else if (card.palo === 'Pica' || card.palo === 'Trebol') {
             validMove = handleCombat(card)
             validMove ? enemysDefeated.current += 1 : null;
+        }
+        if(userExtraDmg.current != 0){
+            userExtraDmg.current = 0;
         }
         if (validMove) {
             if (character?.habilidad_personaje?.id === 1) {
@@ -1343,6 +1355,7 @@ const GamePage = () => {
                             {gameOn && gameWin ? <h1>Sin límite</h1> : <h1>RONDA {rounds}/{maxRounds}</h1>}
                             <h2 ref={formatedTimeRef}>Tiempo: 00:00</h2>
                             <p>{dungeon.length} cartas restantes</p>
+                            {isGambler ? lastGamblerEffect !== null ? <p style={{fontSize:'1cqw',borderTop:'1cqw'}}>{lastGamblerEffect}</p> : <p>Aún no has apostado.</p> : <></>}
                         </div>
                         <div className="game-character">
                             <img className="character-avatar" style={{ borderColor: user.color }} src={character?.imagen} alt={character?.nombre} />
