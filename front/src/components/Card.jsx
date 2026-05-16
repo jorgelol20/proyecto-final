@@ -13,6 +13,9 @@ import HealRouleteIcon from '/images/cardEffects/HealRoulete.webp';
 import InvincibilityIcon from '/images/cardEffects/Invincibility.webp';
 import ReviveIcon from '/images/cardEffects/Revive.webp';
 import HealthStealIcon from '/images/cardEffects/HealthSteal.webp';
+import ThornyIcon from '/images/cardEffects/Thorny.webp';
+import PlunderIcon from '/images/cardEffects/Plunder.webp';
+import ExtraGoldIcon from '/images/cardEffects/ExtraGold.webp';
 
 
 const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = true, onDeck = false, isWizard = false, setOverDungeonZone, canBeClicked, cardSuit, defaultImage }, ref) => {
@@ -69,6 +72,15 @@ const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = tru
                     break;
                 case 'health_steal':
                     return HealthStealIcon;
+                    break;
+                case 'thorny':
+                    return ThornyIcon;
+                    break;
+                case 'plunder':
+                    return PlunderIcon;
+                    break;
+                case 'extra_gold':
+                    return ExtraGoldIcon;
                     break;
                 default:
                     return null
