@@ -59,8 +59,21 @@ export const useUser = () => {
             queryClient.setQueryData(['authUser'], data.usuario);
             navigate(`/`);
         },
-
     });
+
+    const enviarPing = async () => {
+        try {
+            await api.post('/usuarios/ping');
+        } catch (error) {
+
+        }
+    };
+
+    const obtenerContadorActivos = async () => {
+
+        const response = await api.get('/jugadores-activos');
+        setActivePlayers(response.data.active_users || 0);
+    };
 
 
     // Intervalo para obtener los jugadores activos
@@ -69,34 +82,16 @@ export const useUser = () => {
             setActivePlayers(0);
             return;
         }
-
-        const enviarPing = async () => {
-            try {
-                await api.post('/usuarios/ping');
-            } catch (error) {
-                console.error("Error al enviar ping de actividad:", error.response?.data?.message);
-            }
-        };
-
-        const obtenerContadorActivos = async () => {
-            try {
-                const response = await api.get('/jugadores-activos');
-                setActivePlayers(response.data.active_users || 0);
-            } catch (error) {
-                console.error("Error al obtener usuarios activos:", error.response?.data?.message);
-            }
-        };
-
         enviarPing();
         obtenerContadorActivos();
-        const pingInterval = setInterval(enviarPing, 30000); // 30s
-        const countInterval = setInterval(obtenerContadorActivos, 45000); //45s
+        const pingInterval = setInterval(enviarPing, 15000); // 30s
+        const countInterval = setInterval(obtenerContadorActivos, 30000); //45s
 
         return () => {
             clearInterval(pingInterval);
             clearInterval(countInterval);
         };
-    }, [user, isLoading]);
+    }, [user, isLoading, error]);
 
     /**
      * Función para cerrar sesión.
@@ -147,10 +142,15 @@ export const useUser = () => {
             return data;
         },
         onSuccess: (data) => {
-            localStorage.setItem('auth_token', data.token);
-            api.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
+            api.defaults.headers.common['Authorization'] = `Bearer ${data.access_token}`;
+            localStorage.setItem('auth_token', data.access_token);
             queryClient.setQueryData(['authUser'], data.usuario);
+            enviarPing()
+            obtenerContadorActivos()
             navigate(`/perfil/${data.usuario.nick}`);
+        },
+        onError: (error) => {
+
         }
     });
 
