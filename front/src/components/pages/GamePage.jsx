@@ -1355,7 +1355,7 @@ const GamePage = () => {
                             {gameOn && gameWin ? <h1>Sin límite</h1> : <h1>RONDA {rounds}/{maxRounds}</h1>}
                             <h2 ref={formatedTimeRef}>Tiempo: 00:00</h2>
                             <p>{dungeon.length} cartas restantes</p>
-                            {isGambler ? lastGamblerEffect !== null ? <p style={{fontSize:'1cqw',borderTop:'1cqw'}}>{lastGamblerEffect}</p> : <p>Aún no has apostado.</p> : <></>}
+                            {isGambler ? lastGamblerEffect !== null ? <p style={{fontSize:'1cqw',borderTop:'1cqw'}}>Última apuesta: {lastGamblerEffect}</p> : <p>Aún no has apostado.</p> : <></>}
                         </div>
                         <div className="game-character">
                             <img className="character-avatar" style={{ borderColor: user.color }} src={character?.imagen} alt={character?.nombre} />
