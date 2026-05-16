@@ -175,6 +175,7 @@ const MatchProvider = (props) => {
         });
 
         setMatchDeck(prevDeck => [...prevDeck, ...newEnemys]);
+        return newEnemys;
     };
 
     const addModifierToMatch = (modifier) => {
