@@ -1,41 +1,45 @@
 import React, { act, Fragment, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { Stage, Layer, Text, Group, Rect, Image } from 'react-konva';
-// Importaciones de imágenes (mantenidas igual)
-import ClubIcon from '/images/suit_club.webp'
-import HeartIcon from '/images/suit_heart.webp'
-import DiamonIcon from '/images/suit_diamond.webp'
-import SpadeIcon from '/images/suit_spade.webp'
-import DefaultCardImage from '/images/default_card.webp'
+// 1. Librerías externas (React, React Router, Lodash, etc.)
+import { useBlocker, useLocation, useNavigate } from "react-router-dom";
+import lodash, { fill, forEach, invert, round, toInteger, set } from 'lodash';
+import useImage from "use-image";
 
-
-import lodash, { fill, forEach, invert, round, toInteger } from 'lodash';
-
+// 2. Contextos y Hooks propios
 import { matchContext } from "../../context/MatchProvider.jsx";
+import { settingsContext } from "../../context/SettingsProvider.jsx";
 import { useUser } from "../../hooks/useUser.js";
 
-import './GamePage.css';
+// 3. Componentes de tu aplicación
 import Banner from "../structure/Banner";
 import Card from "../Card";
-
-import GoldIcon from '/images/gold.webp'
-import FullHealthIcon from '/images/full_health.png'
-import MidHealthIcon from '/images/mid_health.png'
-import NoHealthIcon from '/images/no_health.png'
-
-import HealAnimation from '/images/animations/HealAnimation.webp'
-import GoldAnimation from '/images/gold.webp'
-import AllDamageAnimation from '/images/animations/AllDamageAnimation.webp'
-import DamageAnimation from '/images/animations/DamageAnimation.webp'
-
-import { set } from "lodash";
 import SelectCharacter from "../SelectCharacter.jsx";
-import { useBlocker, useLocation, useNavigate } from "react-router-dom";
 import SelectModifier from "../SelectModifier.jsx";
 import Modifier from "../Modifier.jsx";
 import Loading from "../Loading.jsx";
-import { settingsContext } from "../../context/SettingsProvider.jsx";
 import GameShop from "../GameShop.jsx";
-import useImage from "use-image";
+
+// 4. Estilos CSS
+import './GamePage.css';
+
+// 5. Archivos estáticos / Imágenes (Iconos de cartas)
+import ClubIcon from '/images/suit_club.webp';
+import HeartIcon from '/images/suit_heart.webp';
+import DiamonIcon from '/images/suit_diamond.webp';
+import SpadeIcon from '/images/suit_spade.webp';
+import DefaultCardImage from '/images/default_card.webp';
+
+// 6. Archivos estáticos / Imágenes (Interfaz del juego)
+import GoldIcon from '/images/gold.webp';
+import FullHealthIcon from '/images/full_health.png';
+import MidHealthIcon from '/images/mid_health.png';
+import NoHealthIcon from '/images/no_health.png';
+
+// 7. Archivos estáticos / Imágenes (Animaciones)
+import HealAnimation from '/images/animations/HealAnimation.webp';
+import GoldAnimation from '/images/gold.webp';
+import AllDamageAnimation from '/images/animations/AllDamageAnimation.webp';
+import DamageAnimation from '/images/animations/DamageAnimation.webp';
 
 
 
