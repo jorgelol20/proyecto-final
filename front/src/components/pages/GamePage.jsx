@@ -577,7 +577,7 @@ const GamePage = () => {
                 setHealth(health + 5)
             } else if (character?.habilidad_personaje?.id === 4) {
                 setIsWizard(true)
-            }else if(character?.habilidad_personaje=.id === 5) {
+            }else if(character?.habilidad_personaje?.id === 5) {
                 setIsGambler(true);
                 coinAnimation(50);
                 setGold(50);
