@@ -39,7 +39,7 @@ const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = tru
     const selectEffectImage = () => {
         if (cardInfo?.efectos) {
             const effectsList = Array.isArray(cardInfo.efectos) ? cardInfo.efectos : [cardInfo.efectos];
-            switch (cardInfo.efectos[0].name) {
+            switch (effectsList[0].name) {
                 case 'antiheal':
                     return AntihealIcon
                     break;
