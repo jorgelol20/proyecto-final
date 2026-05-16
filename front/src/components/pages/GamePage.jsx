@@ -186,6 +186,8 @@ const GamePage = () => {
         enemysDefeated.current = 0;
         totalCardsUsed.current = 0
         setIsWizard(false)
+        setIsGambler(false)
+        lastGamblerEffect(null)
 
         // Limpieza de cartas y mazo
         setDungeon([]);
