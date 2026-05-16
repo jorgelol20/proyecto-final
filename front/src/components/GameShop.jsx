@@ -123,6 +123,7 @@ const GameShop = ({ gold, setGold, setShopAvailable, health, maxHealth, formated
                                                     <Group
                                                         onMouseOver={() => item.data.efectos ?setHoveredIndex(index):null}
                                                         onMouseLeave={() => item.data.efectos ?setHoveredIndex(null):null}
+                                                        onTap={() => item.data.efectos ? hoveredIndex != null ? setHoveredIndex(null):setHoveredIndex(index):null}
                                                     >
                                                         <Card
                                                             cardInfo={item?.data}
