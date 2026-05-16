@@ -28,9 +28,9 @@ const Match = ({ match, showUser }) => {
                             <p>Jugada el {new Date(match.created_at).toLocaleDateString('es-ES')}</p>
                         </div>
                         <div className="match-modifiers">
-                            {match.modificadores.length > 0 ? match.modificadores.map((modifierInfo) => {
+                            {match.modificadores?.length > 0 ? match.modificadores.map((modifierInfo) => {
                                 return <Modifier key={crypto.randomUUID()} modifierInfo={modifierInfo} />
-                            }) : <h1>Sin modificadores</h1>}
+                            }) : <></>}
                         </div>
                     </div>
                     {showUser ?

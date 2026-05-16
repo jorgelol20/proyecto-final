@@ -23,6 +23,7 @@
 
         .user-profile {
             background-color: var(--background-profile-color);
+            position: relative;
             padding: 1em;
             display: flex;
             flex-direction: column;
@@ -50,6 +51,24 @@
 
             .user-buttons {
                 display: flex;
+            }
+
+            .delete-button {
+                width: max-content;
+                height: max-content;
+                position: absolute;
+                padding: 5px;
+                padding-bottom: 0;
+                margin: 0;
+                bottom: 0;
+                right:2cqw;
+
+                .delete-icon {
+                    background: none;
+                    border-width: 0px;
+                    width: 1.5cqw;
+                    height: 1.5cqw;
+                }
             }
         }
 
