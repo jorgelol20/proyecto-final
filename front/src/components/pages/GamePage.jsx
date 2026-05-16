@@ -2,7 +2,7 @@ import React, { act, Fragment, useCallback, useContext, useEffect, useRef, useSt
 import { Stage, Layer, Text, Group, Rect, Image } from 'react-konva';
 // 1. Librerías externas (React, React Router, Lodash, etc.)
 import { useBlocker, useLocation, useNavigate } from "react-router-dom";
-import lodash, { fill, forEach, invert, round, toInteger, set } from 'lodash';
+import lodash, { fill, forEach, invert, round, toInteger, set, get } from 'lodash';
 import useImage from "use-image";
 
 // 2. Contextos y Hooks propios
@@ -47,7 +47,7 @@ const GamePage = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const { startButtonSound, showLogs } = useContext(settingsContext)
-    const { matchDeck, character, activeModifiers: modifiers, setNewDeck, setNewCharacter, startNewGame, addCardToMatchDeck, gameLoading, availableCharacters, getWeapon, endGame, updateActualGame, setCharacter, setActiveModifiers, setGameLoading, addEnemysToMatchDeck, addModifierToMatch } = useContext(matchContext);
+    const { matchDeck, character, activeModifiers: modifiers, setNewDeck, setNewCharacter, startNewGame, addCardToMatchDeck, gameLoading, availableCharacters, getWeapon,getHealItem, endGame, updateActualGame, setCharacter, setActiveModifiers, setGameLoading, addEnemysToMatchDeck, addModifierToMatch } = useContext(matchContext);
     const { user, isLoading } = useUser();
     useEffect(() => {
         restartFunction();
@@ -444,6 +444,7 @@ const GamePage = () => {
      */
     // Parámetros de personaje
     const [isWizard, setIsWizard] = useState(false);
+    const [isGambler, setIsGambler] = useState(false);
     const isScapingRef = useRef(false);
     const canScape = useRef(true)
     const [availableAbility, setAvailableAbility] = useState(true)
@@ -498,6 +499,37 @@ const GamePage = () => {
 
         setRoom(newCards);
     }
+    const [lastGamblerEffect, setLastGamblerEffect] = useState(null);
+    const gambler = async () => {
+        const roll = Math.random() * 100;
+        if(roll <= 20){
+            //Modificar daño
+            const randomDmg = Math.floor(Math.random() * 7) - 3;
+            userExtraDmg.current = randomDmg;
+        }else if (roll <= 40){
+            //Curación/Daño
+            const randomHeal = Math.floor(Math.random() * 7) - 3;
+            healAnimation(randomHeal)
+            setHealth(prev => Math.min(0, prev + randomHeal));
+        }else if(roll <= 60){
+            //Añadir arma
+            const randomPower = Math.floor(Math.random()*(rounds+3))
+            const filter = Math.max(2,randomPower)
+            const weaponPower = Math.min(filter,13)
+            const newWeapon = await getWeapon(weaponPower);
+            addCardToMatchDeck(newWeapon);
+        }else if(roll <= 80){
+            //Añadir curación
+            const randomPower = Math.floor(Math.random()*(rounds+3))
+            const filter = Math.max(2,randomPower)
+            const healPower = Math.min(filter,13)
+            const newWeapon = await getHealItem(healPower);
+            addCardToMatchDeck(newWeapon);
+        }else if(roll <= 100){
+            //Añadir enemigo
+            addEnemy()
+        }
+    }
 
     // Función para usar la habilidad
     const handleUseAbility = (id) => {
@@ -520,10 +552,22 @@ const GamePage = () => {
                     shuffleDeck(dungeon)
                     setAvailableAbility(false)
                     break
+                case 5: //Apostador
+                    gambler();
+                    coinAnimation(-50);
+                    setGold(prev => Math.min(0,prev - 50));
             }
 
         }
     }
+
+    useEffect(()=> {
+        if(isGambler && gold >= 50){
+            setAvailableAbility(true);
+        }else if(isGambler && gold < 50){
+            setAvailableAbility(false);
+        }
+    },[gold])
 
     // Manejo de pasivas
     useEffect(() => {
@@ -533,6 +577,10 @@ const GamePage = () => {
                 setHealth(health + 5)
             } else if (character?.habilidad_personaje?.id === 4) {
                 setIsWizard(true)
+            }else if(character?.habilidad_personaje=.id === 5) {
+                setIsGambler(true);
+                coinAnimation(50);
+                setGold(50);
             }
         }
     }, [character])
@@ -547,8 +595,11 @@ const GamePage = () => {
     const [selectModifier, setSelectModifier] = useState(false)
     const [modifiersLoading, setModifiersLoading] = useState(true)
 
+    // Daño usuario
+    const userExtraDmg = useRef(0);
+
     // Daño enemigos
-    const enemyDmgMultiplier = useRef(1);
+    const enemyDmgMultiplier = useRef(0);
     const enemyExtraDmg = useRef(0)
     const spadesExtraTakedDmg = useRef(0);
     const clubsExtraTakedDmg = useRef(0);
@@ -652,13 +703,14 @@ const GamePage = () => {
         actualScapes.current = 1;
         healthSteal.current = false;
         ricochet.current = false
-        enemyDmgMultiplier.current = (1);
+        enemyDmgMultiplier.current = (0);
         enemyExtraDmg.current = (0)
         spadesExtraTakedDmg.current = (0);
         clubsExtraTakedDmg.current = (0);
         ricochet.current = false;
         goldMultiplier.current = (1)
         setMaxScapes(1)
+        userExtraDmg.current = (0)
     }
 
     const handleModifierEvent = () => {
@@ -740,13 +792,11 @@ const GamePage = () => {
         }
     }, [room.length, dungeon.length]);
 
-    const addEnemy = async (value, randomModifier = false) => {
-
+    const addEnemy = async () => {
+        await addEnemysToMatchDeck(1, rounds);
     }
     const addEnemys = async () => {
-
         const quantity = 5 + Math.floor((rounds - 1) * 2);
-
         await addEnemysToMatchDeck(quantity, rounds);
     };
 
@@ -776,7 +826,9 @@ const GamePage = () => {
             }
             shuffleDeck(matchDeck);
             setDiscardPile([]);
-            setAvailableAbility(true)
+            if(!isGambler){
+                setAvailableAbility(true)
+            }
         }
         cardRefs.current = []
     }
@@ -966,7 +1018,9 @@ const GamePage = () => {
     const applyCardEffect = (effect,cardValue) => {
         switch (effect.name) {
             case 'restore_ability':
-                setAvailableAbility(true);
+                if(!isGambler){
+                    setAvailableAbility(true);
+                }
                 currentHeal.current = 0;
                 break
             case 'heal':
@@ -985,8 +1039,10 @@ const GamePage = () => {
                 progresive_heal_turns.current = effect.value
             case 'weapon_dmg':
                 weapon_dmg.current = effect.value
+                break;
             case 'invincibility_turns':
                 invincibility_turns.current = effect.value
+                break;
             case 'revive':
                 revive.current = true;
                 break;
@@ -1087,9 +1143,10 @@ const GamePage = () => {
             user_dmg_reduction = dmg_reduction.current;
             dmg_reduction.current = 0;
         }
-
         const enemy_dmg = Math.ceil((card.valor * enemyDmgMultiplier.current)) + enemyExtraDmg.current - user_dmg_reduction;
         const pentakill = actualStreak >= pentakillTargetNumber ? pentakillDmg : 0
+
+        // INVENCIBLE
         if (invincibility_turns.current > 0) {
             damageAnimation(0)
             if (weapon) {
@@ -1107,8 +1164,7 @@ const GamePage = () => {
         }
 
         // ATAQUE CON ARMA
-        else if (weapon && ((slainMonsters.length === 0 || card.valor < (slainMonsters[slainMonsters.length - 1]?.valor || 99)) || (ricochet.current && card.valor === (slainMonsters[slainMonsters.length - 1]?.valor || 99)))) {
-
+        else if (weapon && ((slainMonsters.length === 0 || card.valor < (slainMonsters[slainMonsters.length - 1]?.valor)) || (ricochet.current && card.valor <= (slainMonsters[slainMonsters.length - 1]?.valor)))) {
             const final_user_dmg = weapon_dmg.current + (card.palo == 'Pica' ? spadesExtraTakedDmg.current : clubsExtraTakedDmg.current);
             const final_enemy_dmg = enemy_dmg - pentakill;
 
@@ -1139,6 +1195,7 @@ const GamePage = () => {
             logsRef.current.push((logsRef.current.length + 1) + " - " + card.valor + " de " + card.palo + " te ha hecho " + final_dmg + " de daño.")
             return true
         }
+
         // ATAQUE SIN ARMA
         else {
             const final_user_dmg = pentakill + (card.palo == 'Pica' ? spadesExtraTakedDmg.current : clubsExtraTakedDmg.current)

@@ -26,7 +26,7 @@ class Habilidades extends Seeder
             ],
             [
                 'nombre' => 'Abrojos',
-                'descripcion' => 'Una vez por turno, puedes bajar el valor en 5 a las dos últimas cartas del frente.',
+                'descripcion' => 'Una vez por ronda, puedes bajar el valor en 5 a las dos últimas cartas del frente.',
                 'icono' => '/storage/habilidades/Abrojos.webp'
             ],
             [
@@ -34,14 +34,21 @@ class Habilidades extends Seeder
                 'descripcion' => 'Permite ver el palo de las 4 siguientes cartas siempre que quieras y barajar el mazo 1 vez por ronda.',
                 'icono' => '/storage/habilidades/VisionArcana.webp'
             ],
+            [
+                'nombre' => 'Apuesta Ciega',
+                'descripcion' => 'Gastas 50 de oro por un efecto aleatorio. Suerte, vas a necesitarla...',
+                'icono' => '/storage/habilidades/ApuestaCiega.webp'
+            ],
         ];
 
         foreach ($habilidadesData as $data) {
-            ModelHabilidad::factory()->create([
-                'nombre' => $data['nombre'],
-                'descripcion' => $data['descripcion'],
-                'icono' => config('app.backend_url') . $data['icono'],
-            ]);
+            ModelHabilidad::updateOrCreate(
+                ['nombre' => $data['nombre']],
+                [
+                    'descripcion' => $data['descripcion'],
+                    'icono' => config('app.backend_url') . $data['icono'],
+                ]
+            );
         }
     }
 }

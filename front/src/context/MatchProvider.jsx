@@ -239,7 +239,8 @@ const MatchProvider = (props) => {
                 x: 200,
                 y: 0,
                 efectos: typeof card.efectos === 'string' ? JSON.parse(card.efectos) : card.efectos,
-                key: crypto.randomUUID() // Key única aunque el jugador saque la misma arma 2 veces
+                // Añadir aquí el crypto hace que NUNCA se repita (otra vez no porfa)
+                key: crypto.randomUUID()
             };
         }
     };
@@ -256,6 +257,20 @@ const MatchProvider = (props) => {
             };
         }
     };
+
+    const getTutorialCards = (tutorialNumber = 1) => {
+        switch(tutorialNumber){
+            case 1:
+                const tempDeck = [...baseDeck]
+                const cards = [tempDeck[0], tempDeck[14], tempDeck[28], tempDeck[42]]
+                return cards;
+                break;
+            case 2:
+                break;
+            default:
+                break;
+        }
+    }
 
     useEffect(() => {
         if (!isLoadingCard && !isLoadingCharacter && !isLoadingModifier) {
@@ -283,7 +298,8 @@ const MatchProvider = (props) => {
         setGameLoading,
         addEnemysToMatchDeck,
         getHealItem,
-        updateActualGame
+        updateActualGame,
+        getTutorialCards
     };
 
 

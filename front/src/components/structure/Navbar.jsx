@@ -1,7 +1,7 @@
 import React, { Fragment, useContext, useEffect, useRef, useState } from "react";
 import './Navbar.css';
 import { useUser } from '../../hooks/useUser.js';
-import Placeholder from './../../images/placeholder.webp'
+import Placeholder from '/images/placeholder.webp'
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 
 import { matchContext } from "../../context/MatchProvider.jsx";
