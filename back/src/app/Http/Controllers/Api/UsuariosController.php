@@ -37,9 +37,15 @@ class UsuariosController extends Controller
 
         if ($request->hasFile('avatar')) {
             $archivoPath = $request->file('avatar')->store('usuarios');
+
+            if (!str_contains($archivoPath, 'googleusercontent.com')) {
+                $archivoPath = Storage::url($archivoPath);
+            }
         }
-        if (!str_contains($archivoPath, 'googleusercontent.com')) {
-            $archivoPath = Storage::url($archivoPath);
+
+
+        if ($archivoPath == null) {
+            $archivoPath = config('app.backend_url') . "/storage/personajes/Guerrero.webp";
         }
         $usuario = Usuarios::create([
             'nick' => $request->nick,
@@ -102,8 +108,31 @@ class UsuariosController extends Controller
         return response()->json($usuario);
     }
 
-    public function destroy($id)
+    public function borrarFotoPerfil(Request $request, $nick)
     {
+        if (!$request->user()->es_admin) {
+            return response()->json([
+                'message' => 'No tienes los permisos necesarios para acceder a este recurso.'
+            ], 403);
+        }
+        $usuario = Usuarios::where('nick', $nick)->firstOrFail();
+        $archivoPath = config('app.backend_url') . "/storage/personajes/Guerrero.webp";
+        $usuario->update(
+            [
+                'avatar' => $archivoPath
+            ]
+        );
+
+    }
+
+    public function destroy(Request $request,$id)
+    {
+
+        if (!$request->user()->es_admin) {
+            return response()->json([
+                'message' => 'No tienes los permisos necesarios para acceder a este recurso.'
+            ], 403);
+        }
         Usuarios::findOrFail($id)->delete();
 
         return response()->json(['message' => 'Usuario eliminado'], 201);
@@ -113,10 +142,7 @@ class UsuariosController extends Controller
     public function storeComentario(Request $request)
     {
         $partida = Partidas::findOrFail($request->partida_id);
-
-        // El ID del usuario que comenta (normalmente el usuario autenticado)
-        $usuarioId = $request->usuario_id;
-
+        $usuarioId = $request->user()->id;
         $partida->comentarios()->attach($usuarioId, [
             'comentario' => $request->comentario,
             'created_at' => now(),
@@ -127,6 +153,11 @@ class UsuariosController extends Controller
     }
     public function updateComentario(Request $request)
     {
+        if ($request->user()->id !== $request->usuario_id) {
+            return response()->json([
+                'message' => 'No tienes los permisos necesarios para acceder a este recurso.'
+            ], 403);
+        }
         $partida = Partidas::findOrFail($request->partida_id);
         $usuarioId = $request->usuario_id;
 
@@ -138,8 +169,13 @@ class UsuariosController extends Controller
 
         return response()->json(['message' => 'Comentario actualizado con éxito']);
     }
-    public function destroyComentario($id)
+    public function destroyComentario(Request $request, $id)
     {
+        if (!$request->user()->es_admin) {
+            return response()->json([
+                'message' => 'No tienes los permisos necesarios para acceder a este recurso.'
+            ], 403);
+        }
         $existe = DB::table('comentarios_usuario_partida')->where('id', $id)->first();
         if (!$existe) {
             return response()->json(['message' => 'El comentario no existe'], 404);
@@ -194,7 +230,7 @@ class UsuariosController extends Controller
         ]);
     }
 
-    public function activeCount()
+    public function cuentaActiva()
     {
         $umbral = now()->subSeconds(60)->toDateTimeString();
         $conteo = Usuarios::where('ultima_vez_visto', '>=', $umbral)->count();

@@ -64,15 +64,19 @@ const MatchPage = () => {
             setIsLoadingComments(true)
             const form = new FormData();
             form.append('comentario', commentRef.current.value)
-            form.append('usuario_id', user.id)
             form.append('partida_id', matchId);
             await comment(form);
-            setTimeout(requestMatch, 5000)
             commentRef.current.value = ""
         } else {
             setIsLoadingComments(false)
         }
     };
+
+    useEffect(()=>{
+        if(!isCommenting){
+            requestMatch()
+        }
+    },[isCommenting])
 
 
     useEffect(() => {
@@ -143,8 +147,8 @@ const MatchPage = () => {
                 <div className="match-comments" ref={scrollRef}>
 
                     <div className="comments">
-                        {comments.map((comentario) => {
-                            return <Comentario comentario={comentario} requestMatch={requestMatch} />
+                        {comments.map((comentario,index) => {
+                            return <Comentario key={index} comentario={comentario} requestMatch={requestMatch} />
                         })}
                     </div>
                 </div>

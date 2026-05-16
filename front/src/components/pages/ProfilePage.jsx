@@ -10,12 +10,13 @@ import Banner from '../structure/Banner.jsx';
 import Loading from '../Loading.jsx';
 import Match from '../Match.jsx';
 import { filter } from 'lodash';
+import DeleteIcon from '/images/delete-icon.svg'
 
 const ProfilePage = () => {
     const navigate = useNavigate();
     const { startButtonSound } = useContext(settingsContext)
 
-    const { user, getUsuario, logout, isLoading, isError, error } = useUser();
+    const { user, getUsuario, logout, isLoading, isError, error, update, deleteProfilePhoto, isDeletingProfilePhoto } = useUser();
     const { nick } = useParams();
     const [canEdit, setEdit] = useState(false);
     const [userInfo, setUserInfo] = useState({});
@@ -39,6 +40,8 @@ const ProfilePage = () => {
     }, [isLoading, nick])
 
 
+
+
     const checking = async () => {
         //Comprueba si es el dueño de este perfil.
         user.nick == nick ? setEdit(true) : setEdit(false)
@@ -48,18 +51,27 @@ const ProfilePage = () => {
             let temp = await getUsuario(nick)
             setUserInfo(temp[0])
             setIsGettingUser(false)
-
         }
-        //Si es undefined, le mandamos a su perfil 
+        //Si nick es undefined, le mandamos a su perfil 
         else if (user !== undefined) {
-            setUserInfo(user)
-            setIsGettingUser(false)
+            navigate(`/perfil/${user.nick}`)
         }
         else {
             navigate('/')
         }
     }
     const [showMatches, setShowMatches] = useState(true)
+
+    const handleDelete = () => {
+        deleteProfilePhoto(nick);
+    }
+    useEffect(() => {
+        if (!isDeletingProfilePhoto) {
+            checking();
+        }
+    }, [isDeletingProfilePhoto])
+
+
     const handleOrderChange = (e) => {
         setShowMatches(false)
         let temp = userMatchs
@@ -103,7 +115,10 @@ const ProfilePage = () => {
                 <div className='user-background'>
                     <div className='userInfo'>
                         <div className='user-profile'>
-                            <img className='user-avatar' style={{ borderColor: userInfo.color }} src={userInfo.avatar !== "" && userInfo.avatar ? userInfo.avatar : Placeholder} alt={`Avatar de ${userInfo.nick}`} />
+                            <div style={{position:'relative'}}>
+                                <img className='user-avatar' style={{ borderColor: userInfo.color }} src={userInfo.avatar !== "" && userInfo.avatar ? userInfo.avatar : Placeholder} alt={`Avatar de ${userInfo.nick}`} />
+                                {user.es_admin ? <button className="delete-button" onClick={() => { confirm("Se eliminará la foto de perfil") ? handleDelete() : null }}><img className="delete-icon" src={DeleteIcon} alt="" /></button> : <></>}
+                            </div>
                             <p>Desde: {new Date(userInfo.created_at).toLocaleDateString('es-ES')}</p>
                             <div className='user-buttons'>
                                 {user.nick === userInfo.nick ?
@@ -117,8 +132,8 @@ const ProfilePage = () => {
                         <div className='user-history'>
                             <h1 className={userInfo.es_admin ? 'admin' : 'user'}>{userInfo.nick}</h1>
                             <section className='match-history'>
-                                {userMatchs && showMatches ?
-                                    userMatchs.map((match, index) => {
+                                {userMatchs?.length > 0 && showMatches ?
+                                    userMatchs?.map((match, index) => {
                                         if (filter === "all") {
                                             return <div key={index + crypto.randomUUID()} onClick={() => { navigate(`/partida/${match.id}`) }}><Match key={index + crypto.randomUUID()} match={match} /></div>
                                         } else if (filter === "victory" && match.victoria == 1) {
@@ -132,8 +147,8 @@ const ProfilePage = () => {
                             <form style={{ display: 'flex', justifyContent: 'start', alignItems: 'center' }}>
                                 <select name="show" id="show" onChange={(e) => { handleFilterChange(e.currentTarget.value) }}>
                                     <option value="all">Todas</option>
-                                    <option style={{color: 'var(--main-gold)'}} value="victory">Victorias</option>
-                                    <option style={{color: 'var(--main-red)'}} value="lose">Derrotas</option>
+                                    <option style={{ color: 'var(--main-gold)' }} value="victory">Victorias</option>
+                                    <option style={{ color: 'var(--main-red)' }} value="lose">Derrotas</option>
                                 </select>
                                 <select defaultValue={0} name="order" id="order" onChange={(e) => { handleOrderChange(e.currentTarget.value) }}>
                                     <option value="1-0">Más reciente a más antigua</option>

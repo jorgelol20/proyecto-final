@@ -20,13 +20,13 @@ export const useUser = () => {
     const { data: user, isLoading, error } = useQuery({
         queryKey: ['authUser'],
         queryFn: async () => {
-            try{
+            try {
                 const response = await api.get('/perfil');
                 return response.data.usuario || response.data;
-            }catch(e){
+            } catch (e) {
                 return null
             }
-            
+
         },
 
         // Si no existe token, ejecuta la función queryFn.
@@ -44,7 +44,7 @@ export const useUser = () => {
      * Si consigue logearse correctamente, guarda la información de este usuario y
      * lo reenvia a la página de su perfil.
      */
-    
+
     const login = useMutation({
         mutationFn: async (form) => {
             const { data } = await api.post('/login', form);
@@ -59,7 +59,7 @@ export const useUser = () => {
             queryClient.setQueryData(['authUser'], data.usuario);
             navigate(`/`);
         },
-        
+
     });
 
 
@@ -87,13 +87,10 @@ export const useUser = () => {
             }
         };
 
-        // Ejecuciones inmediatas al iniciar
         enviarPing();
         obtenerContadorActivos();
-
-        // Intervalo de avisos de presencia (30s) y recarga del contador (45s)
-        const pingInterval = setInterval(enviarPing, 30000);
-        const countInterval = setInterval(obtenerContadorActivos, 45000);
+        const pingInterval = setInterval(enviarPing, 30000); // 30s
+        const countInterval = setInterval(obtenerContadorActivos, 45000); //45s
 
         return () => {
             clearInterval(pingInterval);
@@ -221,6 +218,17 @@ export const useUser = () => {
         }
     });
 
+    const deleteProfilePhoto = useMutation({
+        mutationFn: async (nick) => {
+            // Pasamos el ID directamente en la ruta
+            const { data } = await api.delete(`/usuarios/eliminar-foto/${nick}`);
+            return data;
+        },
+        onSuccess: () => {
+            requestMatch(); // Refrescar lista
+        }
+    });
+
     const getVictoryRanking = async () => {
         try {
             const response = await api.get(`/ranking-victorias`);
@@ -265,5 +273,8 @@ export const useUser = () => {
         isDeletingComment: deleteComment.isPending,
         getVictoryRanking,
         getRoundRanking,
+        deleteProfilePhoto: deleteProfilePhoto.mutate,
+        deleteProfilePhotoError: deleteProfilePhoto.error,
+        isDeletingProfilePhoto: deleteProfilePhoto.isPending
     };
 };
