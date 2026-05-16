@@ -6,6 +6,14 @@ import Default from '/images/default_card.webp'
 import PoisonIcon from '/images/cardEffects/Poison.webp';
 import AntihealIcon from '/images/cardEffects/Antiheal.webp';
 import WeaponBreakerIcon from '/images/cardEffects/WeaponBreaker.webp';
+import RestoreAbilityIcon from '/images/cardEffects/RestoreAbility.webp';
+import DmgReductionIcon from '/images/cardEffects/DmgReduction.webp';
+import ProgresiveHealIcon from '/images/cardEffects/ProgresiveHeal.webp';
+import HealRouleteIcon from '/images/cardEffects/HealRoulete.webp';
+import InvincibilityIcon from '/images/cardEffects/Invincibility.webp';
+import ReviveIcon from '/images/cardEffects/Revive.webp';
+import HealthStealIcon from '/images/cardEffects/HealthSteal.webp';
+
 
 const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = true, onDeck = false, isWizard = false, setOverDungeonZone, canBeClicked, cardSuit, defaultImage }, ref) => {
 
@@ -30,7 +38,8 @@ const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = tru
     const [suit] = useImage(cardSuit);
     const selectEffectImage = () => {
         if (cardInfo.efectos) {
-            switch (cardInfo.efectos['name']) {
+            const effectsList = Array.isArray(cardInfo.efectos) ? cardInfo.efectos : [cardInfo.efectos];
+            switch (cardInfo.efectos[0]['name']) {
                 case 'antiheal':
                     return AntihealIcon
                     break;
@@ -39,6 +48,24 @@ const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = tru
                     break;
                 case 'poison':
                     return PoisonIcon
+                    break;
+                case 'restore_ability':
+                    return RestoreAbilityIcon;
+                    break;
+                case 'heal_roulete':
+                    return HealRouleteIcon;
+                    break;
+                case 'dmg_reduction':
+                    return DmgReductionIcon;
+                    break;
+                case 'revive':
+                    return ReviveIcon;
+                    break;
+                case 'invincibility_turns':
+                    return InvincibilityIcon;
+                    break;
+                case 'health_steal':
+                    return HealthStealIcon;
                     break;
                 default:
                     return null
