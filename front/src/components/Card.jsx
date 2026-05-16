@@ -52,6 +52,9 @@ const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = tru
                 case 'restore_ability':
                     return RestoreAbilityIcon;
                     break;
+                case 'progresive_heal':
+                    return ProgresiveHealIcon;
+                    break;
                 case 'heal_roulete':
                     return HealRouleteIcon;
                     break;
