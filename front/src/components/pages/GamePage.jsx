@@ -706,9 +706,9 @@ const GamePage = () => {
             healedLife.current += progresive_heal.current;
             progresive_heal_turns.current -= 1;
         }
-    }, [room.length, dungeon]); 
+    }, [room.length, dungeon]);
 
-    const isDrawingRef = useRef(false); 
+    const isDrawingRef = useRef(false);
 
     useEffect(() => {
         // Si no hay cartas o ya estamos robando, cancelamos
@@ -918,6 +918,24 @@ const GamePage = () => {
 
     const antiheal = useRef(false);
 
+    const applyThorny = () => {
+        damageAnimation(3,true);
+        setHealth(prev => Math.max(0, prev - 3))
+        logsRef.current.push((logsRef.current.length + 1) + " - " + "El enemigo tenía unas espinas que te han inflingido 3 de daño.")
+    }
+
+    const applyPlunder = (quantity) => {
+        coinAnimation((quantity * -2))
+        setGold(prev => Math.max(0, prev - quantity));
+        logsRef.current.push((logsRef.current.length + 1) + " - " + `¡El enemigo te ha robado ${quantity} de oro!`)
+    }
+
+    const applyExtraGold = (quantity) => {
+        coinAnimation(quantity)
+        setGold(prev => prev + quantity);
+        logsRef.current.push((logsRef.current.length + 1) + " - " + `El enemigo llevaba una bolsita de oro con él. +${quantity} de oro.`)
+    }
+
     const weaponBreaker = () => {
         if (weapon) {
             moveCardToDiscard([weapon], true)
@@ -941,7 +959,7 @@ const GamePage = () => {
 
 
 
-    const applyCardEffect = (effect) => {
+    const applyCardEffect = (effect,cardValue) => {
         switch (effect.name) {
             case 'restore_ability':
                 setAvailableAbility(true);
@@ -984,6 +1002,15 @@ const GamePage = () => {
             case 'poison':
                 poison.current = effect.value;
                 break;
+            case 'thorny':
+                applyThorny()
+                break;
+            case 'plunder':
+                applyPlunder(cardValue)
+                break;
+            case 'extra_gold':
+                applyExtraGold(cardValue);
+                break;
             default:
                 return false;
         }
@@ -994,7 +1021,7 @@ const GamePage = () => {
         const cardEffects = card.efectos;
         const effectsList = Array.isArray(cardEffects) ? cardEffects : [cardEffects];
         effectsList.forEach((effect) => {
-            applyCardEffect(effect)
+            applyCardEffect(effect, card.valor)
         });
     }
 

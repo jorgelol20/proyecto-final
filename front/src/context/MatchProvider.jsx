@@ -138,6 +138,9 @@ const MatchProvider = (props) => {
         { 'name': 'poison', 'value': 3 },
         { 'name': 'antiheal', 'value': 1 },
         { 'name': 'weapon_breaker', 'value': true },
+        { 'name': 'thorny', 'value': true },
+        { 'name': 'plunder', 'value': true },
+        { 'name': 'extra', 'value': true },
     ]
     
     const addEnemysToMatchDeck = (quantity, round) => {
@@ -152,8 +155,7 @@ const MatchProvider = (props) => {
 
         const shuffled = lodash.shuffle(candidates);
         const selectedEnemys = shuffled.slice(0, quantity);
-
-        const effectProbability = Math.min(5 + (round - 1) * 2.5, 30);
+        const effectProbability = Math.min(5 + (round - 1) * 2.5, 50);
 
         const newEnemys = selectedEnemys.map((card) => {
             const roll = Math.random() * 100;
