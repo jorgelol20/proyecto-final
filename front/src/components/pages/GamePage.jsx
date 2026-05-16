@@ -676,20 +676,16 @@ const GamePage = () => {
     const totalCardsUsed = useRef(0)
 
     const fillRoom = useCallback(() => {
-        // 1. Calculamos cuántas cartas necesitamos basándonos en el estado actual de la habitación
         const roomSize = room.length;
         const cardsNeeded = 4 - roomSize;
 
         if (cardsNeeded <= 0 || dungeon.length === 0) return;
 
-        // 2. Identificamos qué cartas vamos a mover (las últimas del mazo)
         const actualToDraw = Math.min(cardsNeeded, dungeon.length);
         const newCards = dungeon.slice(-actualToDraw).reverse();
 
-        // 3. Actualizamos el Dungeon: quitamos esas cartas
         setDungeon(prevDungeon => prevDungeon.slice(0, prevDungeon.length - actualToDraw));
 
-        // 4. Actualizamos la Room: añadimos las cartas asegurando que no haya duplicados por ID
         setRoom(prevRoom => {
             const uniqueNewCards = newCards.filter(
                 newCard => !prevRoom.some(existingCard => existingCard.key === newCard.key)
@@ -710,9 +706,9 @@ const GamePage = () => {
             healedLife.current += progresive_heal.current;
             progresive_heal_turns.current -= 1;
         }
-    }, [room.length, dungeon]); // Ahora depende de dungeon para tener los datos frescos
+    }, [room.length, dungeon]); 
 
-    const isDrawingRef = useRef(false); // Nueva referencia al inicio del componente
+    const isDrawingRef = useRef(false); 
 
     useEffect(() => {
         // Si no hay cartas o ya estamos robando, cancelamos
@@ -734,7 +730,6 @@ const GamePage = () => {
 
             isScapingRef.current = false;
 
-            // Liberamos el bloqueo después de un pequeño delay para que React procese los estados
             setTimeout(() => {
                 isDrawingRef.current = false;
             }, 100);
