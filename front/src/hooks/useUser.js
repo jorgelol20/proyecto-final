@@ -22,6 +22,7 @@ export const useUser = () => {
         queryFn: async () => {
             try {
                 const response = await api.get('/perfil');
+                sendPing()
                 return response.data.usuario || response.data;
             } catch (e) {
                 return null
@@ -61,7 +62,7 @@ export const useUser = () => {
         },
     });
 
-    const enviarPing = async () => {
+    const sendPing = async () => {
         try {
             await api.post('/usuarios/ping');
         } catch (error) {
@@ -69,7 +70,7 @@ export const useUser = () => {
         }
     };
 
-    const obtenerContadorActivos = async () => {
+    const getActivePlayers = async () => {
 
         const response = await api.get('/jugadores-activos');
         setActivePlayers(response.data.active_users || 0);
@@ -82,10 +83,10 @@ export const useUser = () => {
             setActivePlayers(0);
             return;
         }
-        enviarPing();
-        obtenerContadorActivos();
-        const pingInterval = setInterval(enviarPing, 15000); // 30s
-        const countInterval = setInterval(obtenerContadorActivos, 30000); //45s
+        sendPing();
+        getActivePlayers();
+        const pingInterval = setInterval(sendPing, 15000); // 30s
+        const countInterval = setInterval(getActivePlayers, 30000); //45s
 
         return () => {
             clearInterval(pingInterval);
@@ -145,8 +146,8 @@ export const useUser = () => {
             api.defaults.headers.common['Authorization'] = `Bearer ${data.access_token}`;
             localStorage.setItem('auth_token', data.access_token);
             queryClient.setQueryData(['authUser'], data.usuario);
-            enviarPing()
-            obtenerContadorActivos()
+            sendPing()
+            getActivePlayers()
             navigate(`/perfil/${data.usuario.nick}`);
         },
         onError: (error) => {

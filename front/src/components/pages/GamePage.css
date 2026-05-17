@@ -192,7 +192,8 @@
     }
 }
 .logs-container{
-    width: 15cqw;
+    width: 16cqw;
+    max-width: 16cqw;
     display: flex;
     justify-content: center;
     align-items: start;

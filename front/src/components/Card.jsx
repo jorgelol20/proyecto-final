@@ -140,7 +140,7 @@ const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = tru
             <Rect
                 width={120}
                 height={150}
-                fill={onDeck ? !isWizard ? "#000000" : "#7a7a7a" : "white"}
+                fill={onDeck ? !isWizard ? "#000000" : "#ffffffe5" : "white"}
                 cornerRadius={8}
                 stroke={!onDeck ? colorRef.current : '#0C0C0C'}
                 strokeWidth={!onDeck ? strokeWidth : 0}
@@ -246,7 +246,7 @@ const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = tru
                             height={150}
                             x={0}
                             y={0}
-                            opacity={0.5}
+                            opacity={0.2}
                             imageSmoothingEnabled={false}
                             listening={false}
                         />

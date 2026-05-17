@@ -23,7 +23,7 @@ const Match = ({ match, showUser }) => {
                     </div>
                     <img className="character-image" src={character.imagen} alt={character.nombre} />
                     <div className="match-info">
-                        <div style={{ display: 'flex', textAlign: 'end', justifyContent: 'center' }}>
+                        <div style={{ display: 'flex', textAlign: 'center', justifyContent: 'center' }}>
                             <h2 className={match.victoria ? 'win' : 'lose'}>{match.victoria ? 'Victoria' : 'Derrota'}</h2>
                             <p>Jugada el {new Date(match.created_at).toLocaleDateString('es-ES')}</p>
                         </div>
