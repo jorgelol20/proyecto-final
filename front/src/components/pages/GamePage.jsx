@@ -514,7 +514,7 @@ const GamePage = () => {
             const randomHeal = Math.floor(Math.random() * 7) - 3;
             healAnimation(randomHeal)
             setHealth(prev => Math.min(maxHealth, Math.max(0, prev + randomHeal)));
-            setLastGamblerEffect(`${randomHeal} de curación.`)
+            setLastGamblerEffect(`${randomHeal} de vida.`)
         }else if(roll <= 60){
             //Añadir arma
             const randomPower = Math.floor(Math.random()*(rounds+3))
