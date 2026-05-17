@@ -39,6 +39,9 @@ const Tutorial = () => {
     const [defaultImage] = useImage(DefaultCardImage);
     const [hoveredIndex, setHoveredIndex] = useState(null);
 
+    // Escala para react-konva
+    const scale = window.innerWidth / 2560;
+
     // 1. Cambiamos los componentes anidados por simples variables que almacenan JSX
     const slide1 = (
         <Fragment>
@@ -74,7 +77,7 @@ const Tutorial = () => {
                 <div className="card-stage">
                     {/* Carta 2 */}
                     <div key={tutorial1Cards[1]?.key + 3}>
-                        <Stage width={200} height={200}
+                        <Stage width={200} height={200} scaleX={scale} scaleY={scale} y={20}
                             onMouseOver={() => setHoveredIndex(tutorial1Cards[1]?.id)}
                             onMouseLeave={() => setHoveredIndex(null)}
                             onTap={() => item.data.efectos ? hoveredIndex != null ? setHoveredIndex(null) : setHoveredIndex(index) : null}
@@ -105,7 +108,7 @@ const Tutorial = () => {
 
                     {/* Carta 3 */}
                     <div key={tutorial1Cards[2]?.key + 3}>
-                        <Stage width={200} height={200}
+                        <Stage width={200} height={200} scaleX={scale} scaleY={scale} y={20}
                             onMouseOver={() => setHoveredIndex(tutorial1Cards[2]?.id)}
                             onMouseLeave={() => setHoveredIndex(null)}
                             onTap={() => item.data.efectos ? hoveredIndex != null ? setHoveredIndex(null) : setHoveredIndex(index) : null}
@@ -135,7 +138,7 @@ const Tutorial = () => {
 
                     {/* Carta 1 */}
                     <div key={tutorial1Cards[0]?.key + 3}>
-                        <Stage width={200} height={200}
+                        <Stage width={200} height={200} scaleX={scale} scaleY={scale} y={20}
                             onMouseOver={() => setHoveredIndex(tutorial1Cards[0]?.id)}
                             onMouseLeave={() => setHoveredIndex(null)}
                             onTap={() => item.data.efectos ? hoveredIndex != null ? setHoveredIndex(null) : setHoveredIndex(index) : null}
@@ -166,7 +169,7 @@ const Tutorial = () => {
 
                     {/* Carta 4 */}
                     <div key={tutorial1Cards[3]?.key + 3}>
-                        <Stage width={200} height={200}
+                        <Stage width={200} height={200} scaleX={scale} scaleY={scale} y={20}
                             onMouseOver={() => setHoveredIndex(tutorial1Cards[3]?.id)}
                             onMouseLeave={() => setHoveredIndex(null)}
                             onTap={() => item.data.efectos ? hoveredIndex != null ? setHoveredIndex(null) : setHoveredIndex(index) : null}

@@ -40,11 +40,11 @@
     }
 
     img {
-        width: 2em;
-        height: 2em;
-        min-width: 2em;
-        max-width: 2em;
-        border-width: 5px;
+        width: 2cqw;
+        height: 2cqw;
+        min-width: 2cqw;
+        max-width: 2cqw;
+        border-width: 0.5cqw;
         border-style: solid;
         border-radius: 5px;
     }

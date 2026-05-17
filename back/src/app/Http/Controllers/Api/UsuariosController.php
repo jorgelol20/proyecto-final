@@ -17,7 +17,7 @@ class UsuariosController extends Controller
 {
     public function index()
     {
-        $usuarios = Usuarios::select('id', 'nick', 'email', 'avatar', 'color', 'created_at')
+        $usuarios = Usuarios::select('id', 'nick', 'email', 'avatar', 'color', 'created_at', 'ultima_vez_visto')
             ->withCount([
                 'tiene_jugadas as total_victorias' => function ($query) {
                     $query->where('victoria', true);
@@ -65,14 +65,14 @@ class UsuariosController extends Controller
 
     public function show(string $nick)
     {
-        $usuario = Usuarios::select('id', 'nick', 'email', 'es_admin', 'avatar', 'color', 'created_at')->where('nick', '=', $nick)->get();
+        $usuario = Usuarios::select('id', 'nick', 'email', 'es_admin', 'avatar', 'color', 'created_at', 'ultima_vez_visto')->where('nick', '=', $nick)->get();
         $usuario = $usuario->load(['comentarios', 'tiene_jugadas.modificadores']);
         return response()->json(['usuario' => $usuario], 201);
     }
 
     public function search(string $search)
     {
-        $usuarios = Usuarios::select('id', 'nick', 'email', 'es_admin', 'avatar', 'color', 'created_at')->where('nick', 'LIKE', '%' . $search . '%')->limit(3)->get();
+        $usuarios = Usuarios::select('id', 'nick', 'email', 'es_admin', 'avatar', 'color', 'created_at','ultima_vez_visto')->where('nick', 'LIKE', '%' . $search . '%')->limit(3)->get();
         return response()->json(['usuarios' => $usuarios], 201);
     }
 
@@ -188,7 +188,7 @@ class UsuariosController extends Controller
     }
     public function ranking_victorias()
     {
-        $usuarios = Usuarios::select('id', 'nick', 'email', 'avatar', 'color', 'created_at', 'es_admin')
+        $usuarios = Usuarios::select('id', 'nick', 'email', 'avatar', 'color', 'created_at', 'es_admin','ultima_vez_visto')
             ->withCount([
                 'tiene_jugadas as total_victorias' => function ($query) {
                     $query->where('victoria', true);
@@ -205,7 +205,7 @@ class UsuariosController extends Controller
     }
     public function ranking_rondas()
     {
-        $usuarios = Usuarios::select('id', 'nick', 'email', 'avatar', 'color', 'created_at', 'es_admin')
+        $usuarios = Usuarios::select('id', 'nick', 'email', 'avatar', 'color', 'created_at', 'es_admin', 'ultima_vez_visto')
             ->withMax('tiene_jugadas as record_rondas', 'rondas')
             ->withCount([
                 'tiene_jugadas as total_partidas'

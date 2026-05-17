@@ -38,7 +38,7 @@
 
             p {
                 color: white;
-                font-size: 1.2em;
+                font-size: 1cqw;
             }
 
             .user-avatar {
@@ -54,20 +54,20 @@
             }
 
             .delete-button {
-                width: max-content;
-                height: max-content;
+                width: 3em;
+                height: 3em;
                 position: absolute;
                 padding: 5px;
                 padding-bottom: 0;
                 margin: 0;
                 bottom: 0;
-                right:2cqw;
+                right: 2cqw;
 
                 .delete-icon {
                     background: none;
                     border-width: 0px;
-                    width: 1.5cqw;
-                    height: 1.5cqw;
+                    width: 2.5cqw;
+                    height: 2.5cqw;
                 }
             }
         }
@@ -114,10 +114,42 @@
 
 @media (max-width: 1080px) {
 
-
     .user-background {
         .userInfo {
+            flex-direction: column;
+            width: 100%;
+
+            .user-profile {
+                width: 100%;
+                margin-right: 0%;
+                p{
+                     font-size: 2cqw;
+                }
+
+                .delete-button {
+                    width: 5em;
+                    height: 5em;
+                    position: absolute;
+                    padding: 5px;
+                    padding-bottom: 0;
+                    margin: 0;
+                    bottom: 0;
+                    right: 2cqw;
+
+                    .delete-icon {
+                        background: none;
+                        border-width: 0px;
+                        
+                        width: 3em;
+                        height: 3em;
+                    }
+                }
+            }
+
             .user-history {
+                width: 100%;
+                margin-right: 0;
+
                 .match-history {
                     padding-top: 10cqw;
                 }

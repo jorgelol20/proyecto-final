@@ -1,6 +1,6 @@
 .match-row {
-    height: 10cqh;
-    max-height: 10cqw;
+    height: 12cqh;
+    max-height: 11cqw;
     width: 90%;
     display: flex;
     justify-content: start;
@@ -58,57 +58,65 @@
         }
 
     }
-}
 
-.match-info {
-    margin-left: 1em;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width: 60%;
-
-    h2 {
-        margin-top: 0;
-        font-size: 1.5cqw;
-        margin: 0;
-    }
-
-    .win {
-        color: var(--main-gold);
-    }
-
-    .lose {
-        color: var(--main-red);
-
-    }
-
-    p {
-        margin: 0;
-        font-size: 60%;
-        width: 100%;
-    }
-
-
-    .match-modifiers {
-        width: 80%;
-        border: 0.5cqh groove var(--second-color-dark);
-        background-color: var(--second-color);
-        border-radius: 5px;
-        height: 100%;
-        max-height: 3.5cqw;
-        overflow-y: scroll;
+    .match-info {
+        margin-left: 1em;
         display: flex;
-        justify-content: start;
-        align-items: start;
-        flex-wrap: wrap;
-        
-        img {
-            background-color: var(--second-color-dark);
-        }
-    }
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        width: 60%;
 
+        h2 {
+            margin-top: 0;
+            font-size: 2.5cqw;
+            margin: 0;
+            margin-right: 11%;
+            width: 35%;
+        }
+
+        .win {
+            color: var(--main-gold);
+        }
+
+        .lose {
+            color: var(--main-red);
+
+        }
+
+        p {
+            text-align: end;
+            margin-bottom: 0;
+            padding: 0;
+            font-size: 1cqw;
+            width: 60%;
+        }
+
+
+        .match-modifiers {
+            width: 80%;
+            border: 0.5cqh groove var(--second-color-dark);
+            background-color: var(--second-color);
+            border-radius: 5px;
+            height: 100%;
+            max-height: 4cqw;
+            margin-bottom: 1cqw;
+            overflow-y: scroll;
+            display: flex;
+            justify-content: start;
+            align-items: start;
+            flex-wrap: wrap;
+
+            img {
+                background-color: var(--second-color-dark);
+            }
+        }
+
+    }
 }
+
+
 
 article {
     display: flex;
@@ -122,12 +130,19 @@ article {
         font-size: 2cqw;
     }
 }
+
 @media (max-width: 1080) {
-    .match-row{
+    .match-row {
         margin-top: 5%;
         max-height: 5cqw;
+
+        .match-info {
+            height: 10cqh;
+            .match-modifiers {
+                max-height: fit-content;
+            }
+        }
     }
-    .match-modifiers{
-        min-height: 5cqw;
-    }
+
+
 }

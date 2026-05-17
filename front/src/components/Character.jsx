@@ -5,9 +5,31 @@ import {  settingsContext } from "../context/SettingsProvider.jsx";
 
 import './Character.css';
 
-const Character = ({characterInfo}) => {
+const Character = ({characterInfo, fastSelector}) => {
     const {setNewCharacter} = useContext(matchContext)
     const {startButtonSound} = useContext( settingsContext)
+    if(fastSelector){
+        return (
+            <Fragment>
+                <div className="fastSelector-container">
+                    <div className="character-info">
+                        <img className="character-image" src={characterInfo.imagen}/>
+                        <h1>{characterInfo.nombre}</h1>
+                        
+                    </div>
+                    <div>
+                        <div className="character-abilitie">
+                            <img className="abilitie-icon" src={characterInfo.habilidad_personaje.icono}/>
+                            
+                        </div>
+                    </div>
+                    <div>
+                        <button onClick={(event)=>{startButtonSound(event);setNewCharacter(characterInfo)}}>Seleccionar</button>
+                    </div>
+                </div>
+            </Fragment>
+        )
+    }
     return (
         <Fragment>
             <div>

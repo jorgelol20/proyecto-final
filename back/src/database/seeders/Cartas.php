@@ -45,7 +45,7 @@ class Cartas extends Seeder
                         '13-Corazon' => [['name' => 'dmg_reduction', 'value' => 10, 'description' => 'Reduce en 10 el siguiente ataque que fueras a sufrir.']],
                         '14-Corazon' => [['name' => 'heal_roulete', 'value' => true, 'description' => 'Te cura 100 de vida, pero hay una probabilidad del 25% de hacer el efecto contrario.']],
 
-                        '11-Diamante' => [['name' => 'invincibility_turns', 'value' => 1, 'description' => 'El siguiente ataque te hace 0 de daño.']],
+                        '11-Diamante' => [['name' => 'invincibility_turns', 'value' => 1, 'description' => 'El primer ataque que recibes con esta arma te hace 0 de daño.']],
                         '12-Diamante' => [['name' => 'revive', 'value' => true, 'description' => 'Si fueras a atacar a un enemigo y fueras a morir, te deja a 1 de vida.'], ['name' => 'revive_health', 'value' => 1]],
                         '13-Diamante' => [['name' => 'health_steal', 'value' => 1, 'description' => 'Robas 1 de vida a los enemigos derrotados con esta arma.']],
                         '14-Diamante' => [['name' => 'weapon_dmg', 'value' => 14, 'description' => '¡La poderosa excalibur! No hay enemigo que sea rival para esta arma.']],

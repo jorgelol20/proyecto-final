@@ -81,23 +81,69 @@ const ProfilePage = () => {
     }
     const handleFilterChange = (e) => {
         setShowMatches(false)
-        console.log(e)
         setFilter(e)
     }
+
+    // Use effect para que, cada vez que se cambia el estado de "mostrar partidas" vuelva a true y vuelvan a renderizarse
+    // Se hace para que al cambiar el orden de la lista oblique a React a renderizar los cambios.
     useEffect(() => {
         if (!showMatches) {
             setShowMatches(true)
         }
     }, [showMatches])
+
+    // Controlar y formatear la fecha de la última vez que el usuario se conectó.
+    const handleLastTimeConnected = (lastTimeConnected) => {
+
+        if (!lastTimeConnected) return "Desconectado";
+
+        // Convertir la fecha de la BD (ultima_vez_visto) a milisegundos
+        const formatedDate = lastTimeConnected.replace(' ', 'T') + 'Z';
+        const sendedDate = new Date(formatedDate).getTime();
+        const now = Date.now();
+
+        // Pasa la hora a milisegundos y se comprueba la diferencia.
+        const diferenceInSeconds = Math.floor((now - sendedDate) / 1000);
+
+        // Menos de 60 segundos
+        if (diferenceInSeconds < 60) {
+            return "En línea";
+        }
+
+        // Menos de 1 hora
+        const diferenceInMinutes = Math.floor(diferenceInSeconds / 60);
+        if (diferenceInMinutes < 60) {
+            return `Hace ${diferenceInMinutes} ${diferenceInMinutes === 1 ? 'minuto' : 'minutos'}`;
+        }
+
+        // Menos de 24 horas
+        const diferenceInHours = Math.floor(diferenceInMinutes / 60);
+        if (diferenceInHours < 24) {
+            return `Hace ${diferenceInHours} ${diferenceInHours === 1 ? 'hora' : 'horas'}`;
+        }
+
+        // Más de 24 horas
+        const diferenceInDays = Math.floor(diferenceInHours / 24);
+        if (diferenceInDays === 1) {
+            return "Ayer";
+        } else {
+            return `Hace ${diferenceInDays} días`;
+        }
+    };
+
+
+
+    // Si cambia el nick (/perfil/nick) se realiza de nuevo el checking.
     useEffect(() => {
         if (!isLoading) {
             checking()
         }
     }, [isLoading, nick]);
 
+    //Cuando se detecta un cambio en userInfo, se comprueba sus partidas jugadas y se ponen en el historial.
     useEffect(() => {
-        if (userInfo.tiene_jugadas) {
-            setUserMatchs(userInfo.tiene_jugadas.reverse())
+        if (userInfo?.tiene_jugadas) {
+            setUserMatchs(userInfo?.tiene_jugadas.reverse())
         }
     }, [userInfo])
 
@@ -115,11 +161,15 @@ const ProfilePage = () => {
                 <div className='user-background'>
                     <div className='userInfo'>
                         <div className='user-profile'>
-                            <div style={{position:'relative'}}>
-                                <img className='user-avatar' style={{ borderColor: userInfo.color }} src={userInfo.avatar !== "" && userInfo.avatar ? userInfo.avatar : Placeholder} alt={`Avatar de ${userInfo.nick}`} />
+                            <div style={{ position: 'relative' }}>
+                                <img className='user-avatar' style={{ borderColor: userInfo?.color }} src={userInfo?.avatar !== "" && userInfo?.avatar ? userInfo?.avatar : Placeholder} alt={`Avatar de ${userInfo?.nick}`} />
                                 {user.es_admin ? <button className="delete-button" onClick={() => { confirm("Se eliminará la foto de perfil") ? handleDelete() : null }}><img className="delete-icon" src={DeleteIcon} alt="" /></button> : <></>}
                             </div>
-                            <p>Desde: {new Date(userInfo.created_at).toLocaleDateString('es-ES')}</p>
+                            <div>
+                                <p>Desde: {new Date(userInfo.created_at).toLocaleDateString('es-ES')}</p>
+                                <p>Última vez visto: {handleLastTimeConnected(userInfo?.ultima_vez_visto)}</p>
+                                <p>Partidas jugadas: {userInfo?.tiene_jugadas?.length}</p>
+                            </div>
                             <div className='user-buttons'>
                                 {user.nick === userInfo.nick ?
                                     <>
