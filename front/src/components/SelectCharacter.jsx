@@ -1,51 +1,48 @@
-import React, { Fragment, useContext, useEffect, useRef, useState } from "react";
-
+import React, { Fragment, useState } from "react";
 import './SelectCharacter.css';
-
-import { matchContext } from "../context/MatchProvider";
 import Character from "./Character";
 
-const SelectCharacter = ({availableCharacters}) => {
+const SelectCharacter = ({ availableCharacters }) => {
+    const [isFastSelector, setIsFastSelector] = useState(() => {
+        return localStorage.getItem('fastSelector') === 'true';
+    });
 
-    const fastSelector = useRef(false);
 
-    const handleFastSelectorChange = (checked) => {
-        localStorage.setItem('fastSelector', checked);
-        fastSelector.current = (checked);
-        setShowCharacters(false)
-    }
-
-    const [showCharacters, setShowCharacters] = useState(false);
-
-    useEffect(() => {
-        if(!showCharacters){
-            setShowCharacters(true)
-        }
-    },[showCharacters])
-
-    
-
-    useEffect(() => {
-        const savedFastSelector = (localStorage.getItem('fastSelector'))
-        if (savedFastSelector !== null && savedFastSelector !== undefined) fastSelector.current = (savedFastSelector);
-    },[])
+    const handleFastSelectorChange = (e) => {
+        const isChecked = e.target.checked;
+        setIsFastSelector(isChecked); 
+        localStorage.setItem('fastSelector', isChecked);
+    };
 
     return (
         <Fragment>
             <div className="container">
                 <div className="character-selection">
-                    {showCharacters && availableCharacters?.map((characterInfo)=>{
-                        return <Character key={characterInfo.id} characterInfo={characterInfo} fastSelector={fastSelector.current}/>
+                    {availableCharacters?.map((characterInfo) => {
+                        return (
+                            <Character
+                                key={characterInfo.id}
+                                characterInfo={characterInfo}
+                                fastSelector={isFastSelector}
+                            />
+                        )
                     })}
                 </div>
                 <div className="character-menu">
                     <div className="character-menu-input">
                         <label htmlFor="checkbox-setting">Selector rápido</label>
-                        <input className="checkbox-setting" defaultChecked={fastSelector} type="checkbox" onChange={(e) => {handleFastSelectorChange(e.target.checked)}} />
+                        <input
+                            id="checkbox-setting"
+                            className="checkbox-setting"
+                            type="checkbox"
+                            checked={isFastSelector}
+                            onChange={handleFastSelectorChange}
+                        />
                     </div>
                 </div>
             </div>
         </Fragment>
-    )
-}
+    );
+};
+
 export default SelectCharacter;
