@@ -39,6 +39,7 @@
     }
 
     .character-abilitie {
+        position: relative;
         display: flex;
         gap: 1cqw;
         margin-bottom: 1cqw;
@@ -158,6 +159,69 @@
         text-align: center;
         width: 100%;
         max-width: fit-content;
+        position: relative;
+
+        .character-abilitie img {
+            min-width: 10cqw;
+            width: 4cqw;
+            height: 10cqw;
+            border: 0.5cqw groove var(--main-gold);
+            background-color: var(--background-profile-color);
+            /* Asegura que no se deforme */
+            object-fit: cover;
+            right: 1cqw;
+            bottom: -5cqw;
+            position: absolute;
+        }
+
+        .character-image {
+            width: 15cqw;
+            height: 15cqw;
+            border: 5px groove var(--main-gold);
+            background-color: var(--main-black);
+            flex-shrink: 0;
+        }
+
+        .abilitie-text {
+            font-size: 3cqw;
+            height: fit-content;
+        }
+
+        .character-description {
+            display: none;
+        }
+
+        .character-info {
+            h1 {
+                font-size: 4cqw;
+            }
+
+            button {
+                width: 85%;
+            }
+        }
+
+    }
+
+    .fastSelector-container {
+        .character-abilitie img {
+            /* Mantenemos el tamaño fijo */
+            width: 4cqw;
+            height: 4cqw;
+            border: 0.5cqw groove var(--main-gold);
+            background-color: var(--background-profile-color);
+            /* Asegura que no se deforme */
+            object-fit: cover;
+            position: absolute;
+            bottom: 10cqw;
+            right: 1cqw;
+        }
+
+        button {
+            width: 15cqw;
+            width: 15cqw;
+            height: 5cqw;
+        }
     }
 }
 
@@ -169,5 +233,25 @@
         text-align: center;
         width: 100%;
         max-width: fit-content;
+    }
+
+    .fastSelector-container {
+        .character-abilitie img {
+            /* Mantenemos el tamaño fijo */
+            width: 4cqw;
+            height: 4cqw;
+            border: 0.5cqw groove var(--main-gold);
+            background-color: var(--background-profile-color);
+            /* Asegura que no se deforme */
+            object-fit: cover;
+            position: absolute;
+            bottom: 35%;
+            right: 20%;
+        }
+
+        button {
+
+            font-size: 2cqw;
+        }
     }
 }

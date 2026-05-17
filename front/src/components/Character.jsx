@@ -5,7 +5,7 @@ import {  settingsContext } from "../context/SettingsProvider.jsx";
 
 import './Character.css';
 
-const Character = ({characterInfo, fastSelector}) => {
+const Character = ({characterInfo, fastSelector = false}) => {
     const {setNewCharacter} = useContext(matchContext)
     const {startButtonSound} = useContext( settingsContext)
     if(fastSelector){
