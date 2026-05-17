@@ -97,12 +97,18 @@
 }
 
 @media (max-width: 900px) {
+
     .ranking {
         height: 180%;
         top: -2em;
         right: 0;
-        width: 35%;
-        
+        width: 45%;
+
+        h1 {
+            font-size: 3cqw;
+            margin-bottom: 0;
+        }
+
         .ranking-container {
             height: 90%;
         }
@@ -113,7 +119,7 @@
             flex-wrap: wrap;
             background-color: var(--second-color);
             height: 10cqw;
-            width: 95%;
+            width: 99%;
             border-color: var(--second-color-dark);
             border-width: 5px;
             border-style: solid;
@@ -156,7 +162,7 @@
             align-items: end;
 
             .ranking-button {
-                width: 12cqw;
+                width: 15cqw;
                 height: 5cqw;
                 font-size: 2cqw;
                 margin-left: 0em;

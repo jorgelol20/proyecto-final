@@ -1347,12 +1347,12 @@ const GamePage = () => {
                             <button onClick={(event) => { startButtonSound(event); setRestart(true); navigate('/') }}>INICIO</button>
                             <button onClick={(event) => { startButtonSound(event); setRestart(true); navigate(`/perfil/${user ? user.nick : ''}`) }}>PERFIL</button>
                             <div className="final-match-info">
-                                <p>{formatedTimeRef?.current?.textContent ?? ""}</p>
-                                <p>Rondas: {rounds}</p>
-                                <p>Cartas restantes en esta ronda: {dungeon.length + room.length}</p>
-                                <p>Total de cartas jugadas: {totalCardsUsed.current}</p>
-                                <p>Oro obtenido esta partida: {totalEarnedGold.current}</p>
-                                <p>Total enemigos derrotados: {enemysDefeated.current}</p>
+                                <p><span>{formatedTimeRef?.current?.textContent ?? ""}</span></p>
+                                <p>Rondas: <span>{rounds}</span></p>
+                                <p>Cartas restantes en esta ronda: <span>{dungeon.length + room.length}</span></p>
+                                <p>Total de cartas jugadas: <span>{totalCardsUsed.current}</span></p>
+                                <p>Oro obtenido esta partida: <span>{totalEarnedGold.current}</span></p>
+                                <p>Total enemigos derrotados: <span style={{color:'var(--main-red)'}}>{enemysDefeated.current}</span></p>
                             </div>
                         </div> :
                         <></>
