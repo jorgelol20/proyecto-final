@@ -15,7 +15,7 @@ const SelectCharacter = ({availableCharacters}) => {
         setShowCharacters(false)
     }
 
-    const [showCharacters, setShowCharacters] = useState(true);
+    const [showCharacters, setShowCharacters] = useState(false);
 
     useEffect(() => {
         if(!showCharacters){

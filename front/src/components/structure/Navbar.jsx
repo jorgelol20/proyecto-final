@@ -68,7 +68,7 @@ const Navbar = () => {
                 {showFPS && <FPSCounter />}
                 <div className="navbar-items">
                     {!isLoading && user && (
-                        <div className="navbar-active-players" style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#aaa', fontSize: '14px' }}>
+                        <div className="navbar-active-players">
                             <span style={{ width: '8px', height: '8px', backgroundColor: '#2ecc71', borderRadius: '50%' }}></span>
                             {activePlayers} activos
                         </div>
@@ -83,8 +83,6 @@ const Navbar = () => {
                                 onFocus={() => setIsActiveSearch(true)}
                                 onChange={(e) => handleSearchUser(e.target.value)}
                             />
-
-                            {/* 2. Ahora React sí reaccionará a este cambio */}
                             {isActiveSearch && userList.length > 0 && (
                                 <div className="searc-list">
                                     {userList.map((userInfo) => (

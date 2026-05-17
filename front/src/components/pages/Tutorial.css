@@ -62,9 +62,11 @@
     padding-top: 5cqh;
     color: var(--main-white);
     text-align: center;
-    .container{
+
+    .container {
         width: 80%;
     }
+
     img {
         background: none;
         width: 30cqw;
@@ -74,10 +76,12 @@
         font-size: 1cqw;
         margin: 0;
     }
-    span{
+
+    span {
         color: var(--main-orange);
     }
-    strong{
+
+    strong {
         color: var(--main-red);
     }
 
@@ -93,15 +97,18 @@
     align-items: center;
     padding-top: 5cqh;
     color: var(--main-white);
-    .slide-3-info{
+
+    .slide-3-info {
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
     }
-    h1{
+
+    h1 {
         font-size: 2cqw;
     }
+
     img {
         background: none;
         width: 3cqw;
@@ -110,7 +117,8 @@
     p {
         font-size: 1cqw;
     }
-    span{
+
+    span {
         color: var(--main-orange);
     }
 
@@ -136,4 +144,93 @@
 .btn-next {
     position: absolute;
     right: 15cqw;
+}
+
+@media (max-width: 1080px) {
+    .slide-1 {
+        img {
+            background: none;
+            width: 50cqw;
+        }
+
+        h1 {
+            font-size: 6cqw;
+        }
+
+        p {
+            font-size: 3cqw;
+            text-align: center;
+        }
+
+    }
+
+    .slide-2 {
+        p {
+            font-size: 3cqw;
+            margin: 0;
+        }
+
+        span {
+            color: var(--main-orange);
+        }
+
+        strong {
+            color: var(--main-red);
+        }
+    }
+
+    .slide-3 {
+        .slide-3-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        h1 {
+            font-size: 6cqw;
+        }
+
+        img {
+            background: none;
+            width: 3cqw;
+        }
+
+        p {
+            font-size: 2.5cqw;
+            text-align: center;
+        }
+
+        span {
+            color: var(--main-orange);
+        }
+
+        .card-stage {
+            width: 100%;
+            height: 12cqh;
+            padding-top: 3cqh;
+            background-color: var(--main-color);
+            border: 0.2cqw inset var(--second-color-dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 1cqh;
+        }
+
+    }
+}
+
+@media (max-width: 1080px) {
+    .btn-prev {
+        position: absolute;
+        left: 10cqw;
+        width: 10cqw;
+    }
+
+    .btn-next {
+        position: absolute;
+        right: 10cqw;
+        width: 10cqw;
+    }
+
 }

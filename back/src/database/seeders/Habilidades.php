@@ -36,7 +36,7 @@ class Habilidades extends Seeder
             ],
             [
                 'nombre' => 'Apuesta Ciega',
-                'descripcion' => 'Gastas 50 de oro por un efecto aleatorio. Suerte, vas a necesitarla...',
+                'descripcion' => 'Gastas 25 de oro por un efecto aleatorio. Suerte, vas a necesitarla...',
                 'icono' => '/storage/habilidades/ApuestaCiega.webp'
             ],
         ];

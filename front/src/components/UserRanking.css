@@ -12,78 +12,164 @@
     color: var(--main-white);
     text-align: center;
     z-index: 1000;
-    h1 {
-        font-size: 1cqw;
-    }
-    
-}
-
-.user-ranking {
-    display: flex;
-    align-items: center;
-    background-color: var(--second-color);
-    height: 3cqw;
-    width: 95%;
-    border-color: var(--second-color-dark);
-    border-width: 5px;
-    border-style: solid;
-    border-radius: 5px;
-    
 
     h1 {
         font-size: 1cqw;
-        margin-left: 0.5cqw;
-        margin-right: 0.5cqw;
-        color: var(--main-white);
-        text-wrap-mode: wrap;
-        text-wrap-style: pretty;
     }
 
-    img {
-        width: 2cqw;
-        height: 2cqw;
-        min-width: 2cqw;
-        max-width: 2cqw;
-        border-width: 0.5cqw;
+    .user-ranking {
+        display: flex;
+        align-items: center;
+        background-color: var(--second-color);
+        height: 3cqw;
+        width: 95%;
+        border-color: var(--second-color-dark);
+        border-width: 5px;
         border-style: solid;
         border-radius: 5px;
+
+
+        h1 {
+            font-size: 1cqw;
+            margin-left: 0.5cqw;
+            margin-right: 0.5cqw;
+            color: var(--main-white);
+            text-wrap-mode: wrap;
+            text-wrap-style: pretty;
+        }
+
+        img {
+            width: 2cqw;
+            height: 2cqw;
+            min-width: 2cqw;
+            max-width: 2cqw;
+            border-width: 0.5cqw;
+            border-style: solid;
+            border-radius: 5px;
+        }
+
+        .admin {
+            color: var(--main-gold);
+        }
     }
 
-    .admin {
+    .ranking-container {
+        overflow-y: auto;
+        height: 75%;
+        margin: 5px solid var(--main-color);
+        overflow: auto;
+        z-index: 10;
+    }
+
+    .ranking-buttons {
+        position: absolute;
+        right: 0;
+        top: -2.2cqw;
+        z-index: 1;
+        display: flex;
+
+        .ranking-button {
+            width: 6cqw;
+            height: 2cqw;
+            font-size: 0.8cqw;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+            filter: brightness(0.9);
+        }
+
+        .active {
+            filter: brightness(1.2);
+        }
+    }
+
+    #num-1 {
         color: var(--main-gold);
     }
-}
-.ranking-container{
-    overflow-y: auto;
-    height:75%;
-    margin: 5px solid var(--main-color);
-    overflow: auto;
-    z-index: 10;
-}
-.ranking-buttons{
-    position: absolute;
-    right: 0;
-    top: -2.2cqw;
-    z-index: 1;
-    display: flex;
-    .ranking-button{
-        width: 6cqw;
-        height: 2cqw;
-        font-size: 0.8cqw;
-        border-bottom-left-radius: 0;
-        border-bottom-right-radius: 0;
-        filter: brightness(0.9);
+
+    #num-2 {
+        color: var(--main-silver);
     }
-    .active{
-        filter: brightness(1.2);
+
+    #num-3 {
+        color: var(--main-bronze);
     }
+
 }
-#num-1 {
-    color: var(--main-gold);
-}
-#num-2 {
-    color: var(--main-silver);
-}
-#num-3 {
-    color: var(--main-bronze);
+
+@media (max-width: 900px) {
+    .ranking {
+        height: 180%;
+        top: -2em;
+        right: 0;
+        width: 35%;
+        
+        .ranking-container {
+            height: 90%;
+        }
+
+        .user-ranking {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            background-color: var(--second-color);
+            height: 10cqw;
+            width: 95%;
+            border-color: var(--second-color-dark);
+            border-width: 5px;
+            border-style: solid;
+            border-radius: 5px;
+            margin-top: 5%;
+
+
+            h1 {
+                font-size: 2cqw;
+                margin-left: 0.5cqw;
+                margin-right: 0.5cqw;
+                color: var(--main-white);
+                text-wrap-mode: wrap;
+                text-wrap-style: pretty;
+            }
+
+            img {
+                width: 5cqw;
+                height: 5cqw;
+                min-width: 5cqw;
+                max-width: 5cqw;
+                border-width: 0.5cqw;
+                border-style: solid;
+                border-radius: 5px;
+            }
+
+            .admin {
+                color: var(--main-gold);
+            }
+        }
+
+        .ranking-buttons {
+            position: absolute;
+            right: -2%;
+            top: -5cqw;
+            z-index: 1;
+            display: flex;
+            flex-direction: row;
+            justify-content: end;
+            align-items: end;
+
+            .ranking-button {
+                width: 12cqw;
+                height: 5cqw;
+                font-size: 2cqw;
+                margin-left: 0em;
+                margin-bottom: -1em;
+                border-bottom-left-radius: 0;
+                border-bottom-right-radius: 0;
+                filter: brightness(0.9);
+            }
+
+            .active {
+                filter: brightness(1.2);
+                z-index: 10;
+            }
+        }
+    }
 }

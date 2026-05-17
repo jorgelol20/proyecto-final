@@ -29,8 +29,8 @@
     background: none;
     border: none;
     img{
-        width: 100%;
-        height: 100%;
+        width: 2cqw;
+        height: 2cqw;
         background: none;
     }
 }
@@ -133,4 +133,17 @@ input[type="range"]:focus::-webkit-slider-thumb {
 .checkbox-setting:hover, 
 input[type="range"]:hover::-webkit-slider-thumb {
     filter: brightness(1.2);
+}
+@media (max-width: 1080px) {
+    .muteButton{
+    width: 2em;
+    height: 2em;
+    background: none;
+    border: none;
+    img{
+        width: 5cqw;
+        height: 5cqw;
+        background: none;
+    }
+}
 }

@@ -564,17 +564,18 @@ const GamePage = () => {
                     break
                 case 5: //Apostador
                     gambler();
-                    coinAnimation(-50);
-                    setGold(prev => Math.max(0,prev - 50));
+                    coinAnimation(-25);
+                    setGold(prev => Math.max(0,prev - 25));
+                    break;
             }
 
         }
     }
 
     useEffect(()=> {
-        if(isGambler && gold >= 50){
+        if(isGambler && gold >= 25){
             setAvailableAbility(true);
-        }else if(isGambler && gold < 50){
+        }else if(isGambler && gold < 25){
             setAvailableAbility(false);
         }
     },[gold])
@@ -1002,7 +1003,7 @@ const GamePage = () => {
         setGold(prev => prev + quantity);
         logsRef.current.push((logsRef.current.length + 1) + " - " + `El enemigo llevaba una bolsita de oro con él. +${quantity} de oro.`)
     }
-
+    const breakWeapon = useRef(false)
     const weaponBreaker = () => {
         if (weapon) {
             moveCardToDiscard([weapon], true)
@@ -1015,13 +1016,14 @@ const GamePage = () => {
                     setSlainMonsters([]);
                 }, 200);
             }
-
         }
+        breakWeapon.current = false;
     }
 
     const cleanEnemyEffects = () => {
         poison.current = 0;
         antiheal.current = 0;
+        breakWeapon.current = false;
     }
 
 
@@ -1068,7 +1070,7 @@ const GamePage = () => {
                 antiheal.current = true;
                 break;
             case 'weapon_breaker':
-                weaponBreaker()
+                breakWeapon.current = true;
                 break;
             case 'poison':
                 poison.current = effect.value;
@@ -1145,7 +1147,6 @@ const GamePage = () => {
     }
 
     const handleCombat = (card) => {
-
         if (card.especial) {
             handleCardEffect(card)
         }
@@ -1171,6 +1172,9 @@ const GamePage = () => {
             setActualStreak(prev => prev + 1);
             logsRef.current.push((logsRef.current.length + 1) + " - " + card.valor + " de " + card.palo + " te ha hecho " + 0 + " de daño.")
             invincibility_turns.current -= 1;
+            if(breakWeapon.current){
+                weaponBreaker()
+            }
             return true
         }
 
@@ -1204,6 +1208,9 @@ const GamePage = () => {
             deleteFromRoom(card)
             setActualStreak(prev => prev + 1);
             logsRef.current.push((logsRef.current.length + 1) + " - " + card.valor + " de " + card.palo + " te ha hecho " + final_dmg + " de daño.")
+            if(breakWeapon.current){
+                weaponBreaker()
+            }
             return true
         }
 
@@ -1222,6 +1229,9 @@ const GamePage = () => {
             }
             setActualStreak(prev => prev + 1);
             logsRef.current.push((logsRef.current.length + 1) + " - " + card.valor + " de " + card.palo + " te ha hecho " + final_dmg + " de daño.")
+            if(breakWeapon.current){
+                weaponBreaker()
+            }
             return true
         }
     }

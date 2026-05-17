@@ -100,11 +100,19 @@ article {
     }
 }
 
-@media (max-width: 1080px) {
+@media (max-width: 900px) {
     article {
-        top: -5em;
-
+        margin-top: 10cqw;
+        .banner-menu{
+            margin-right: 30%;
+        }
+        .main-menu{
+            width: 30cqw;
+            margin-right: 30%;
+        }
         .last-matches {
+            width: 100cqw;
+            margin-top: 0;
             .match-history {
                 padding-top: 10cqw;
             }
