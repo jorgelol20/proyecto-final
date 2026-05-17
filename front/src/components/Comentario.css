@@ -41,7 +41,7 @@
 
     .comment-info {
         position: relative;
-        width: 10%;
+        width: 15%;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -101,4 +101,22 @@
         margin-left: 5%;
         text-align: left;
     }
+}
+
+@media (max-width: 1080px) {
+    .comment{
+        max-width: 100%;
+        width: 100%;
+    }
+    #owner {
+    .comment-content {
+        margin-right: 10%;
+    }
+}
+
+#user {
+    .comment-content {
+        margin-left: 10%;
+    }
+}
 }

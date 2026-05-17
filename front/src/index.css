@@ -151,6 +151,20 @@ button {
     z-index: 10;
     font-size: 1.2cqw;
 }
+@media (max-width: 980px) {
+    button{
+        width: 20cqw;
+        height: 6cqw;
+        font-size: 2cqw;
+    }
+}
+@media (max-width: 600px) {
+    button{
+        width: 25cqw;
+        height: 9cqw;
+        font-size: 3cqw;
+    }
+}
 button:hover {
     /* cursor: url('/images/suit_heart.webp') 16 16, auto; */
     cursor: url('/images/cursor/Cursor_1.webp') 3 7, auto;

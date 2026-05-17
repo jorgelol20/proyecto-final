@@ -131,15 +131,35 @@ article {
     }
 }
 
-@media (max-width: 1080) {
+@media (max-width: 1080px) {
     .match-row {
         margin-top: 5%;
-        max-height: 5cqw;
+        height: 15cqw;
+        max-height: 15cqw;
+
+        h1 {
+            font-size: 5cqw;
+        }
+
+        .character-image {
+            width: 10cqw;
+            height: 10cqw;
+            border-width: 1cqw;
+            border-color: var(--main-gold);
+            border-style: groove;
+        }
 
         .match-info {
             height: 10cqh;
+            h2{
+                font-size: 5cqw;
+            }
+            p{
+                font-size: 2cqw;
+            }
             .match-modifiers {
                 max-height: fit-content;
+                height: 12cqw;
             }
         }
     }
