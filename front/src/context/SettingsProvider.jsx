@@ -75,13 +75,13 @@ const SettingsProvider = ({ children }) => {
 
     const muteMusic = (event) => {
         if (event) {
-            localStorage.setItem('music_muted', !musicMuted)
+            localStorage['music_muted'] = !musicMuted
             setMusicMuted(!musicMuted)
         }
     }
     const muteEffects = (event) => {
         if (event) {
-            localStorage.setItem('effect_muted', !effectsMuted)
+            localStorage['effect_muted'] = !effectsMuted
             setEffectsMuted(!effectsMuted)
         }
     }
