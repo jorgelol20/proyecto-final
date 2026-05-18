@@ -246,13 +246,12 @@ span {
 }
 
 /* =======================================================
-   ADAPTACIÓN MÓVIL Y TABLET (Se ignora en PC)
+   ADAPTACIÓN MÓVIL Y TABLET 
 ======================================================= */
 @media screen and (max-width: 1024px) {
     .game-container {
         position: relative;
         flex-direction: column;
-        /* Apila el HUD, Tablero y Logs de arriba a abajo */
         align-items: center;
         margin-top: 0;
         padding: 0.5em;
@@ -266,13 +265,10 @@ span {
 
     .game-hud {
         width: 90%;
-        /* Permite que el HUD ocupe el ancho de la pantalla */
         max-width: none;
         margin-right: 0;
         margin-bottom: 1em;
-        /* Separación con el tablero */
         border-width: 2px;
-        /* Borde más fino para móvil */
         height: 20%;
         min-height: 15cqw;
         display: flex;
@@ -288,7 +284,7 @@ span {
         .game-character {
             position: absolute;
             top: 5%;
-            right: 2em;
+            right: 2cqw;
             width: 25%;
 
             .character-ability {
@@ -298,11 +294,10 @@ span {
             }
 
             .character-avatar {
-                width: 16cqw;
-                min-width: 5em;
-                max-width: 5em;
-                max-height: 5em;
-                height: 16cqw;
+                width: 10cqw;
+                min-width: 10cqw;
+                max-height: 10cqw;
+                height: 10cqw;
             }
         }
 
@@ -311,7 +306,8 @@ span {
             min-height: 10cqw;
             padding: 1cqw;
         }
-        .extra{
+
+        .extra {
             display: flex;
             flex-direction: column;
         }
@@ -359,13 +355,17 @@ span {
             }
         }
     }
-    .game-hud-text{
+
+    .game-hud-text {
         width: 30%;
+        margin-right: 1cqw;
     }
-    .gambler-text{
+
+    .gambler-text {
         width: 100%;
         font-size: 1em;
     }
+
     .game-hud h1,
     .game-hud h2 {
         font-size: 1.2rem;
@@ -378,10 +378,12 @@ span {
         margin-top: 0;
         align-items: center;
     }
-    .game-window{
+
+    .game-window {
         height: 30%;
         max-height: 30cqw;
     }
+
     .logs-container {
         width: 90%;
         max-width: none;
@@ -390,9 +392,39 @@ span {
         max-height: 20vh;
         /* Altura fija para no empujar infinito si hay muchos logs */
         padding-left: 1cqw;
-        pre{
+
+        pre {
             font-size: 0.8em;
         }
     }
 
+}
+
+@media (max-width: 500px) {
+    .game-hud {
+        .game-character {
+            position: absolute;
+            top: 5%;
+            right: 3cqw;
+            width: 25%;
+
+            .character-ability {
+                width: 4cqw;
+                height: 4cqw;
+                margin-left: -7cqw;
+            }
+
+            .character-avatar {
+                width: 12cqw;
+                min-width: 12cqw;
+                max-height: 12cqw;
+                height: 12cqw;
+            }
+        }
+
+        .game-hud-text {
+            width: 30%;
+            margin-right: 5cqw;
+        }
+    }
 }
