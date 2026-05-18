@@ -33,12 +33,9 @@
     border-width: 10px;
     border-color: var(--main-gold);
     border-style: groove;
-    min-width: 25cqw;
-    min-height: 25cqw;
-    max-width: 25cqw;
-    max-height: 25cqw;
-    width: 25cqw;
-    height: 25cqw;
+
+    width: 15cqw;
+    height: 15cqw;
     box-sizing: border-box;
 }
 
@@ -97,12 +94,22 @@
     .avatar-preview-container {
         width: 40%;
     }
-    input{
+
+    .avatar-preview {
+        min-width: 25cqw;
+        min-height: 25cqw;
+        max-width: 25cqw;
+        max-height: 25cqw;
+    }
+
+    input {
         width: 40cqw;
     }
-    .custom-file-container{
+
+    .custom-file-container {
         flex-direction: column;
         justify-content: start;
         align-items: start;
+
     }
 }
