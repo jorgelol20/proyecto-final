@@ -15,7 +15,7 @@ nav {
     color: white;
     background-color: #4C3E3E;
     background-size: 50px 50px;
-    z-index: 100;
+    z-index: 1000;
 }
 
 .navbar-avatar {

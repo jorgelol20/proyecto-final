@@ -236,5 +236,17 @@ class UsuariosController extends Controller
         $conteo = Usuarios::where('ultima_vez_visto', '>=', $umbral)->count();
         return response()->json(['active_users' => $conteo]);
     }
+
+    public function registrarLogro(Request $request)
+    {
+        $logro = Partidas::findOrFail($request->logro_id);
+        $usuarioId = $request->user()->id;
+        $logro->obtenido_por()->attach($usuarioId, [
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+
+        return response()->json(['message' => 'Logro registrado.']);
+    }
 }
 

@@ -47,7 +47,7 @@
         display: flex;
         align-items: center;
         color: var(--main-red);
-        font-family: 1em;
+        font-size: 2cqw;
 
         img {
             image-rendering: pixelated;
@@ -62,6 +62,7 @@
         display: flex;
         align-items: center;
         color: var(--main-gold);
+        font-size: 2cqw;
 
         img {
             image-rendering: pixelated;
@@ -147,16 +148,19 @@
         margin-bottom: 1cqw;
     }
 }
-.animation-container{
-    strong{
+
+.animation-container {
+    strong {
         font-size: 0.5em;
         color: var(--main-white);
     }
-    img{
+
+    img {
         height: 0.5em;
         max-width: 0.5em;
     }
 }
+
 .animation {
     /* Asegúrate de que el nombre aquí coincida con el @keyframes */
     animation: cambiarOpacidad 1s ease-out forwards;
@@ -166,12 +170,13 @@
     0% {
         opacity: 1;
     }
+
     100% {
         opacity: 0;
     }
 }
 
-.gameOver-menu{
+.gameOver-menu {
     display: flex;
     background-color: var(--second-color);
     flex-direction: column;
@@ -183,15 +188,17 @@
     justify-content: center;
     align-items: center;
     position: absolute;
-    z-index: 10;
+    z-index: 100;
     top: 20%;
     left: 20%;
-    button{
+
+    button {
         margin-bottom: 1cqh;
         margin-top: 1cqh;
     }
 }
-.logs-container{
+
+.logs-container {
     width: 16cqw;
     max-width: 16cqw;
     display: flex;
@@ -204,19 +211,26 @@
     padding: 1cqw;
     padding-left: 0;
     overflow-y: auto;
-    pre{
+
+    pre {
         color: var(--main-white);
         font-family: 'Romulus';
-        font-size: 0.6cqw;
+        font-size: 1cqw;
+        text-rendering: auto;
+        text-wrap: wrap;
+        margin-left: 1cqw;
     }
 }
-.victory{
+
+.victory {
     color: var(--main-gold);
 }
-.lose{
+
+.lose {
     color: var(--main-red);
 }
-.final-match-info{
+
+.final-match-info {
     border-color: var(--main-color);
     border-width: 5px;
     border-style: solid;
@@ -226,12 +240,159 @@
     background-color: var(--second-color-light);
     margin-bottom: 1em;
 }
-span{
+
+span {
     color: var(--main-orange);
 }
-@media (max-width: 1080px) {
-    .gameOver-menu{
-        width: 60%;
-        left: 20%;
+
+/* =======================================================
+   ADAPTACIÓN MÓVIL Y TABLET (Se ignora en PC)
+======================================================= */
+@media screen and (max-width: 1024px) {
+    .game-container {
+        position: relative;
+        flex-direction: column;
+        /* Apila el HUD, Tablero y Logs de arriba a abajo */
+        align-items: center;
+        margin-top: 0;
+        padding: 0.5em;
+
+        .game-modifiers {
+            height: 100%;
+        }
     }
+
+
+
+    .game-hud {
+        width: 90%;
+        /* Permite que el HUD ocupe el ancho de la pantalla */
+        max-width: none;
+        margin-right: 0;
+        margin-bottom: 1em;
+        /* Separación con el tablero */
+        border-width: 2px;
+        /* Borde más fino para móvil */
+        height: 20%;
+        min-height: 15cqw;
+        display: flex;
+        padding: 1em;
+        flex-direction: row;
+
+        .extras {
+            height: 100%;
+            width: 40%;
+            margin-top: 5%;
+        }
+
+        .game-character {
+            position: absolute;
+            top: 5%;
+            right: 2em;
+            width: 25%;
+
+            .character-ability {
+                width: 4cqw;
+                height: 4cqw;
+                margin-left: -7cqw;
+            }
+
+            .character-avatar {
+                width: 16cqw;
+                min-width: 5em;
+                max-width: 5em;
+                max-height: 5em;
+                height: 16cqw;
+            }
+        }
+
+        .game-modifiers {
+            height: 100%;
+            min-height: 10cqw;
+            padding: 1cqw;
+        }
+        .extra{
+            display: flex;
+            flex-direction: column;
+        }
+
+        p {
+            font-size: 0.7em;
+        }
+
+        .player-health {
+
+            font-size: 1em;
+
+            img {
+                image-rendering: pixelated;
+                image-rendering: crisp-edges;
+                margin-right: 0.5cqw;
+                background: none;
+                width: 1em;
+            }
+        }
+
+        .player-gold {
+            display: flex;
+            align-items: center;
+            color: var(--main-gold);
+            font-size: 1em;
+
+            img {
+                image-rendering: pixelated;
+                image-rendering: crisp-edges;
+                margin-right: 0.5cqw;
+                background: none;
+                width: 1em;
+            }
+        }
+
+        .game-buttons {
+            display: flex;
+
+            button {
+                width: 10cqw;
+                height: 3cqw;
+                font-size: 1.2cqw;
+                margin-bottom: 2cqw;
+            }
+        }
+    }
+    .game-hud-text{
+        width: 30%;
+    }
+    .gambler-text{
+        width: 100%;
+        font-size: 1em;
+    }
+    .game-hud h1,
+    .game-hud h2 {
+        font-size: 1.2rem;
+    }
+
+    .game {
+        width: 100%;
+        height: auto;
+        max-height: 30%;
+        margin-top: 0;
+        align-items: center;
+    }
+    .game-window{
+        height: 30%;
+        max-height: 30cqw;
+    }
+    .logs-container {
+        width: 90%;
+        max-width: none;
+        /* Sobrescribe el max-width: 16cqw de la vista PC */
+        margin-top: 1em;
+        max-height: 20vh;
+        /* Altura fija para no empujar infinito si hay muchos logs */
+        padding-left: 1cqw;
+        pre{
+            font-size: 0.8em;
+        }
+    }
+
 }

@@ -27,7 +27,7 @@
     }
 
 
-    
+
 
     p {
         padding-left: 5%;
@@ -64,9 +64,20 @@
         border-radius: 1%;
     }
 
+    @media (max-width: 1080px) {
+        img {
+            width: 5cqw;
+            height: 5cqw;
+            border-width: 0.5cqw;
+        }
+    }
+
     .modifier-text[popover] {
         /* Tus estilos de color y tamaño intactos */
         width: 15cqw;
+
+
+
         padding: 0.5cqw;
         background-color: var(--main-color);
         border: 4px groove var(--second-color-dark);
@@ -74,21 +85,28 @@
         top: 10%;
         /* CAMBIOS PARA QUE NO SE CORTE */
         position: fixed;
-        position: fixed;
         white-space: normal;
         z-index: 1000;
+
 
         img {
             width: 10cqw;
             height: 10cqw;
             margin-bottom: 0;
             border-width: 1cqw;
+            background-color: var(--second-color-light);
         }
 
+
         p {
+            margin-top: 1cqw;
             color: var(--main-white);
             text-shadow: 1px 0px 0px black;
             font-size: 0.9cqw;
+
+            @media (max-width: 1080px) {
+                font-size: 2cqw;
+            }
         }
 
         h3 {
@@ -105,6 +123,14 @@
     align-items: center;
     justify-content: center;
     border-radius: 5px;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+
+    @media (max-width: 1080px) {
+        width: 25cqw;
+        height: 30cqw;
+    }
 }
 
 .player-info {
@@ -138,4 +164,3 @@
     width: 5cqw;
     height: 5cqw;
 }
-
