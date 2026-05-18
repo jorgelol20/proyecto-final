@@ -47,6 +47,8 @@
                 border-radius: 50%;
                 border-width: 10px;
                 border-style: groove;
+                image-rendering: pixelated;
+                image-rendering: crisp-edges;
             }
 
             .user-buttons {
@@ -122,8 +124,9 @@
             .user-profile {
                 width: 100%;
                 margin-left: -5cqw;
-                p{
-                     font-size: 5cqw;
+
+                p {
+                    font-size: 5cqw;
                 }
 
                 .delete-button {
@@ -139,7 +142,7 @@
                     .delete-icon {
                         background: none;
                         border-width: 0px;
-                        
+
                         width: 3em;
                         height: 3em;
                     }

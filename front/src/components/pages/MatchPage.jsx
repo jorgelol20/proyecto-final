@@ -72,11 +72,11 @@ const MatchPage = () => {
         }
     };
 
-    useEffect(()=>{
-        if(!isCommenting){
+    useEffect(() => {
+        if (!isCommenting) {
             requestMatch()
         }
-    },[isCommenting])
+    }, [isCommenting])
 
 
     useEffect(() => {
@@ -132,22 +132,24 @@ const MatchPage = () => {
                                     <h2><strong>Rondas superadas: {match.rondas}</strong></h2>
                                 </div>
                                 <div className="info extra-info">
-                                    <h2>Oro total obtenido: <span style={{color:'var(--main-gold)'}}>{match.oro_obtenido}<img src={GoldIcon}/></span></h2>
-                                    <h2>Vida total curada: <span style={{color:'var(--main-red)'}}>{match.vida_curada}<img src={FullHealthIcon}/></span></h2>
-                                    <h2>Enemigos enfrentados: <span style={{color:'var(--main-red)'}}>{match.enemigos_enfrentados}<img src={AllDamageAnimation}/></span></h2>
+                                    <h2>Oro total obtenido: <span style={{ color: 'var(--main-gold)' }}>{match.oro_obtenido}<img src={GoldIcon} /></span></h2>
+                                    <h2>Vida total curada: <span style={{ color: 'var(--main-red)' }}>{match.vida_curada}<img src={FullHealthIcon} /></span></h2>
+                                    <h2>Enemigos enfrentados: <span style={{ color: 'var(--main-red)' }}>{match.enemigos_enfrentados}<img src={AllDamageAnimation} /></span></h2>
                                 </div>
                             </div>
                         </div>
                         <div className="player-info">
                             <img className='user-avatar' onClick={() => { navigate(`/perfil/${player.nick}`) }} style={{ borderColor: player.color }} src={player.avatar !== "" && player.avatar ? player.avatar : Placeholder} alt={`Avatar de ${match.jugador.nick}`} />
-                            <h1 className={player.es_admin ? "admin" : "user"}>{player.nick}</h1>
+                            <text className={player.es_admin ? "admin" : "user"} x="100%" y="10" text-anchor="middle" font-family="Romulus" font-weight="bold" fill="#333">
+                                {player.nick}
+                            </text>
                         </div>
                     </div>
                 </div>
                 <div className="match-comments" ref={scrollRef}>
 
                     <div className="comments">
-                        {comments.map((comentario,index) => {
+                        {comments.map((comentario, index) => {
                             return <Comentario key={index} comentario={comentario} requestMatch={requestMatch} />
                         })}
                     </div>

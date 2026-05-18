@@ -29,17 +29,27 @@
     }
 }
 
-.slide-1 {
+.slide {
     width: 100%;
     display: flex;
     flex-direction: column;
     background-color: var(--second-color);
     min-height: 50cqh;
-    justify-content: start;
+    justify-content: center;
     align-items: center;
     padding-top: 5cqh;
     color: var(--main-white);
 
+    span {
+        color: var(--main-orange);
+    }
+
+    strong {
+        color: var(--main-red);
+    }
+}
+
+.slide-1 {
     img {
         background: none;
         width: 30cqw;
@@ -52,17 +62,6 @@
 }
 
 .slide-2 {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    background-color: var(--second-color);
-    min-height: 50cqh;
-    justify-content: start;
-    align-items: center;
-    padding-top: 5cqh;
-    color: var(--main-white);
-    text-align: center;
-
     .container {
         width: 80%;
     }
@@ -72,32 +71,25 @@
         width: 30cqw;
     }
 
+    h1 {
+        margin: 0;
+        text-align: center;
+    }
+
+    h2 {
+        margin: 0;
+    }
+
     p {
         font-size: 1cqw;
         margin: 0;
     }
 
-    span {
-        color: var(--main-orange);
-    }
 
-    strong {
-        color: var(--main-red);
-    }
 
 }
 
 .slide-3 {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    background-color: var(--second-color);
-    min-height: 50cqh;
-    justify-content: center;
-    align-items: center;
-    padding-top: 5cqh;
-    color: var(--main-white);
-
     .slide-3-info {
         display: flex;
         flex-direction: column;
@@ -118,10 +110,6 @@
         font-size: 1cqw;
     }
 
-    span {
-        color: var(--main-orange);
-    }
-
     .card-stage {
         width: 100%;
         height: 12cqh;
@@ -136,6 +124,101 @@
 
 }
 
+.slide-4 {
+    text-align: center;
+    padding-bottom: 1cqw;
+    padding-top: 1cqw;
+
+    .tutorial-modifiers {
+        width: 80%;
+        max-height: 35cqh;
+        overflow: auto;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        background-color: var(--main-color);
+        border: 0.8cqw var(--main-gold) groove;
+        margin-bottom: 1.5em;
+
+        img {
+            width: 4cqw;
+            height: 4cqw;
+        }
+    }
+}
+
+.slide-5 {
+    text-align: center;
+    padding-bottom: 1cqw;
+    padding-top: 1cqw;
+
+    .card-effects {
+        width: 80%;
+        max-height: 35cqh;
+        display: flex;
+        flex-wrap: wrap;
+        overflow: auto;
+
+        .card-effect {
+            width: 10cqw;
+            padding: 4%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border: 0.5em solid var(--second-color-dark);
+
+            .effect-image {
+                width: 100%;
+                height: 30%;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+
+                img {
+                    height: 4cqw;
+                    width: 4cqw;
+                    background: none;
+                    border: 0.5em groove var(--main-gold);
+                }
+
+                p {
+                    font-size: 0.7em;
+                }
+            }
+
+            .effect-text {
+                height: 60%;
+                width: 100%;
+                background-color: var(--main-color);
+                text-align: center;
+                padding: 10%;
+                padding-top: 0;
+                margin-top: 10%;
+
+                .effect-name {
+                    height: 20%;
+                    margin-bottom: 1em;
+                }
+
+                .effect-description {
+                    height: 70%;
+                }
+
+                h1 {
+                    font-size: 1em;
+                    margin-bottom: 0;
+                }
+
+                p {
+                    font-size: 0.85em;
+                }
+            }
+        }
+    }
+}
+
 .btn-prev {
     position: absolute;
     left: 15cqw;
@@ -145,6 +228,7 @@
     position: absolute;
     right: 15cqw;
 }
+
 
 @media (max-width: 1080px) {
     .slide-1 {
@@ -218,9 +302,27 @@
         }
 
     }
-}
+    .slide-5{
+        .card-effects{
+            justify-content: center;
+            .card-effect{
+                width: 15em;
+                .effect-image{
+                    margin-top: 1em;
+                    margin-bottom: 0;
+                    img{
+                        width: 3em;
+                        height: 3em;
+                    }
+                }
+                .effect-text{
+                    margin: 0;
+                    margin-top: 0.5em;
+                }
+            }
+        }
+    }
 
-@media (max-width: 1080px) {
     .btn-prev {
         position: absolute;
         left: 10cqw;
@@ -232,5 +334,4 @@
         right: 10cqw;
         width: 10cqw;
     }
-
 }
