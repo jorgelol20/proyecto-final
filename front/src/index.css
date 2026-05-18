@@ -112,13 +112,18 @@ select:active, option:active {
     justify-content: left;
 
     .seePassword {
-        width: fit-content;
         background: none;
         border: none;
         display: flex;
-
+        justify-content: center;
+        align-items: center;
+        margin-left: 1cqw;
+        border-radius: 50%;
+        width: 2em;
+        height: 2em;
         img {
-            width: 1em;
+            width: 2em;
+            height: 2em;
             background: none;
             margin-bottom: 50%;
         }
