@@ -17,8 +17,10 @@ const Match = ({ match, showUser }) => {
         return (
             <Fragment>
                 <article className="match-row">
-                    <div style={{display:'flex',flexDirection:'column'}}>
-                        <p style={{fontSize:'0.5cqw'}}>ID partida:</p>
+                    <div style={{display:'flex',flexDirection:'column',
+                        alignItems:'center',justifyContent:'center'
+                    }}>
+                        <p>ID partida:</p>
                         <h1 className="match-id">{match.id}</h1>
                     </div>
                     <img className="character-image" src={character.imagen} alt={character.nombre} />

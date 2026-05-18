@@ -14,3 +14,8 @@
     border-width: 0.25cqw;
     border-style: groove;
 }
+@media (max-width: 1080px){
+    .banner{
+        margin-bottom: -35em;
+    }
+}

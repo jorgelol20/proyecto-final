@@ -140,26 +140,55 @@ article {
         h1 {
             font-size: 5cqw;
         }
+        p{
+            font-size: 2cqw;
+        }
 
         .character-image {
             width: 10cqw;
             height: 10cqw;
+            min-width: 10cqw;
+            min-height: 10cqw;
+            max-width: 10cqw;
+            max-height: 10cqw;
             border-width: 1cqw;
             border-color: var(--main-gold);
             border-style: groove;
         }
 
+        .player-info {
+            img {
+                position: relative;
+                border-radius: 50%;
+                border-width: 5px;
+                border-style: groove;
+                margin-bottom: 0;
+                width: 10cqw;
+                height: 10cqw;
+            }
+            
+        }
+
         .match-info {
             height: 10cqh;
-            h2{
+
+            h2 {
                 font-size: 5cqw;
             }
-            p{
+
+            p {
                 font-size: 2cqw;
             }
+
             .match-modifiers {
-                max-height: fit-content;
-                height: 12cqw;
+                max-height: 10cqw;
+                min-height: 10cqw;
+                height: 10cqw;
+
+                img {
+                    width: 5cqw;
+                    height: 5cqw;
+                }
             }
         }
     }

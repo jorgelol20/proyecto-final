@@ -135,7 +135,7 @@ nav {
         max-height: 2em;
         min-height: 2em;
         color: white;
-        z-index: 100;
+        z-index: 1000;
     }
 
     .navbar-avatar {
