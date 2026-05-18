@@ -180,7 +180,7 @@
     display: flex;
     background-color: var(--second-color);
     flex-direction: column;
-    width: 60%;
+    width: 40%;
     border-color: var(--main-color);
     border-width: 5px;
     border-style: solid;
@@ -190,7 +190,7 @@
     position: absolute;
     z-index: 100;
     top: 20%;
-    left: 20%;
+    left: 30%;
 
     button {
         margin-bottom: 1cqh;
@@ -372,7 +372,6 @@ span {
     }
 
     .game {
-        width: 100%;
         height: auto;
         max-height: 30%;
         margin-top: 0;
