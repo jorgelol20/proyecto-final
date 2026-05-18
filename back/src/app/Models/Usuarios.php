@@ -63,4 +63,8 @@ class Usuarios extends Authenticatable
     public function tiene_jugadas(){
         return $this->hasMany(Partidas::class, 'usuario_id');
     }
+
+    public function logros(){
+        return $this->belongsToMany(Logros::class, "usuarios_logros", 'usuario_id', 'logro_id')->withPivot('id', 'created_at', 'updated_at');
+    }
 }

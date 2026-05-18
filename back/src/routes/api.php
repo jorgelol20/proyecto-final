@@ -8,8 +8,9 @@ use App\Http\Controllers\Api\UsuariosController as UsuarioApiController;
 use App\Http\Controllers\Api\PartidasController as PartidasApiController;
 use App\Http\Controllers\Api\ModificadoresController as ModificadoresApiController;
 use App\Http\Controllers\Api\PersonajesController as PersonajesApiController;
+use App\Http\Controllers\Api\LogrosController as LogrosApiController;
 
-#Registro y logeo
+# Registro y logeo
 Route::post('/signup', [UsuarioApiController::class, 'store']);
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -28,29 +29,31 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/usuarios/comentario/{id}', [UsuarioApiController::class, 'updateComentario'])->name('api.usuarios.comentario.actualizar');
 });
 
-//Controlador Usuarios.
+// Controlador Usuarios.
 Route::apiResource('/usuarios', UsuarioApiController::class)->names('api.usuarios');
 Route::get('/usuarios/search/{search}', [UsuarioApiController::class, 'search'])->name('api.usuarios.search');
+Route::post('/usuarios/logro', [UsuarioApiController::class, 'registrarLogro'])->name('api.usuarios.logro');
 
-
-//Rankings
+// Rankings
 Route::get('/ranking-victorias', [UsuarioApiController::class, 'ranking_victorias'])->name('api.usuarios.ranking-victorias');
 Route::get('/ranking-rondas', [UsuarioApiController::class, 'ranking_rondas'])->name('api.usuarios.ranking-rondas');
 Route::get('/ranking-partidas', [PartidasApiController::class, 'ranking_partidas'])->name('api.partidas.ranking-partidas');
 
-//Controlador Partidas.
+// Controlador Partidas.
 Route::apiResource('/partidas', PartidasApiController::class)->names('api.partidas');
 
 
-//Controlador Modificadores.
+// Controlador Modificadores.
 Route::apiResource('/modificadores', ModificadoresApiController::class)->names('api.modificadores');
 
-//Controlador Personajes.
+// Controlador Personajes.
 Route::apiResource('/personajes', PersonajesApiController::class)->names('api.personajes');
 
-//Controlador Cartas.
+// Controlador Cartas.
 Route::apiResource('/cartas', CartaController::class)->names('api.cartas');
 
+// Controlador Logros.
+Route::apiResource('/logros', LogrosApiController::class)->names('api.logros');
 
 //Inicio de sesión con Google
 Route::get('/auth/google/redirect', [AuthController::class, 'redirectToGoogle']);

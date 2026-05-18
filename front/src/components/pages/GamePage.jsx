@@ -47,7 +47,7 @@ const GamePage = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const { startButtonSound, showLogs } = useContext(settingsContext)
-    const { matchDeck, character, activeModifiers: modifiers, setNewDeck, setNewCharacter, startNewGame, addCardToMatchDeck, gameLoading, availableCharacters, getWeapon,getHealItem, endGame, updateActualGame, setCharacter, setActiveModifiers, setGameLoading, addEnemysToMatchDeck, addModifierToMatch } = useContext(matchContext);
+    const { matchDeck, character, activeModifiers: modifiers, setNewDeck, setNewCharacter, startNewGame, addCardToMatchDeck, gameLoading, availableCharacters, getWeapon, getHealItem, endGame, updateActualGame, setCharacter, setActiveModifiers, setGameLoading, addEnemysToMatchDeck, addModifierToMatch } = useContext(matchContext);
     const { user, isLoading } = useUser();
     useEffect(() => {
         restartFunction();
@@ -504,40 +504,40 @@ const GamePage = () => {
     const [lastGamblerEffect, setLastGamblerEffect] = useState(null);
     const gambler = async () => {
         const roll = Math.random() * 100;
-        if(roll <= 20){
+        if (roll <= 20) {
             //Modificar daño
             const randomDmg = Math.floor(Math.random() * 7) - 3;
             userExtraDmg.current = randomDmg;
             setLastGamblerEffect(`${randomDmg} de daño extra en la siguiente acción.`)
-        }else if (roll <= 40){
+        } else if (roll <= 40) {
             //Curación/Daño
             const randomHeal = Math.floor(Math.random() * 7) - 3;
             healAnimation(randomHeal)
             setHealth(prev => Math.min(maxHealth, Math.max(0, prev + randomHeal)));
             setLastGamblerEffect(`${randomHeal} de vida.`)
-        }else if(roll <= 60){
+        } else if (roll <= 60) {
             //Añadir arma
-            const randomPower = Math.floor(Math.random()*(rounds+3))
-            const filter = Math.max(2,randomPower)
-            const weaponPower = Math.min(filter,13)
+            const randomPower = Math.floor(Math.random() * (rounds + 3))
+            const filter = Math.max(2, randomPower)
+            const weaponPower = Math.min(filter, 13)
             const newWeapon = await getWeapon(weaponPower);
             addCardToMatchDeck(newWeapon);
             setLastGamblerEffect(`Añadida una nueva arma con valor ${newWeapon.valor}`)
-            setDungeon(prev => [newWeapon,...prev])
-        }else if(roll <= 80){
+            setDungeon(prev => [newWeapon, ...prev])
+        } else if (roll <= 80) {
             //Añadir curación
-            const randomPower = Math.floor(Math.random()*(rounds+3))
-            const filter = Math.max(2,randomPower)
-            const healPower = Math.min(filter,13)
+            const randomPower = Math.floor(Math.random() * (rounds + 3))
+            const filter = Math.max(2, randomPower)
+            const healPower = Math.min(filter, 13)
             const newHeal = await getHealItem(healPower);
             addCardToMatchDeck(newHeal);
             setLastGamblerEffect(`Añadida una nueva curación con valor ${newHeal.valor}`)
-            setDungeon(prev => [newHeal,...prev])
-        }else if(roll <= 100){
+            setDungeon(prev => [newHeal, ...prev])
+        } else if (roll <= 100) {
             //Añadir enemigo
             const newEnemy = await addEnemy();
             setLastGamblerEffect(`Añadido un nuevo enemigo con valor ${newEnemy.valor}`)
-            setDungeon(prev => [newEnemy,...prev])
+            setDungeon(prev => [newEnemy, ...prev])
         }
     }
 
@@ -565,20 +565,20 @@ const GamePage = () => {
                 case 5: //Apostador
                     gambler();
                     coinAnimation(-25);
-                    setGold(prev => Math.max(0,prev - 25));
+                    setGold(prev => Math.max(0, prev - 25));
                     break;
             }
 
         }
     }
 
-    useEffect(()=> {
-        if(isGambler && gold >= 25){
+    useEffect(() => {
+        if (isGambler && gold >= 25) {
             setAvailableAbility(true);
-        }else if(isGambler && gold < 25){
+        } else if (isGambler && gold < 25) {
             setAvailableAbility(false);
         }
-    },[gold])
+    }, [gold])
 
     // Manejo de pasivas
     useEffect(() => {
@@ -588,7 +588,7 @@ const GamePage = () => {
                 setHealth(health + 5)
             } else if (character?.habilidad_personaje?.id === 4) {
                 setIsWizard(true)
-            }else if(character?.habilidad_personaje?.id === 5) {
+            } else if (character?.habilidad_personaje?.id === 5) {
                 setIsGambler(true);
                 coinAnimation(50);
                 setGold(prev => prev + 50);
@@ -838,7 +838,7 @@ const GamePage = () => {
             }
             shuffleDeck(matchDeck);
             setDiscardPile([]);
-            if(!isGambler){
+            if (!isGambler) {
                 setAvailableAbility(true)
             }
         }
@@ -987,7 +987,7 @@ const GamePage = () => {
     const antiheal = useRef(false);
 
     const applyThorny = () => {
-        damageAnimation(3,true);
+        damageAnimation(3, true);
         setHealth(prev => Math.max(0, prev - 3))
         logsRef.current.push((logsRef.current.length + 1) + " - " + "El enemigo tenía unas espinas que te han inflingido 3 de daño.")
     }
@@ -1028,10 +1028,10 @@ const GamePage = () => {
 
 
 
-    const applyCardEffect = (effect,cardValue) => {
+    const applyCardEffect = (effect, cardValue) => {
         switch (effect.name) {
             case 'restore_ability':
-                if(!isGambler){
+                if (!isGambler) {
                     setAvailableAbility(true);
                 }
                 currentHeal.current = 0;
@@ -1172,7 +1172,7 @@ const GamePage = () => {
             setActualStreak(prev => prev + 1);
             logsRef.current.push((logsRef.current.length + 1) + " - " + card.valor + " de " + card.palo + " te ha hecho " + 0 + " de daño.")
             invincibility_turns.current -= 1;
-            if(breakWeapon.current){
+            if (breakWeapon.current) {
                 weaponBreaker()
             }
             return true
@@ -1208,7 +1208,7 @@ const GamePage = () => {
             deleteFromRoom(card)
             setActualStreak(prev => prev + 1);
             logsRef.current.push((logsRef.current.length + 1) + " - " + card.valor + " de " + card.palo + " te ha hecho " + final_dmg + " de daño.")
-            if(breakWeapon.current){
+            if (breakWeapon.current) {
                 weaponBreaker()
             }
             return true
@@ -1229,7 +1229,7 @@ const GamePage = () => {
             }
             setActualStreak(prev => prev + 1);
             logsRef.current.push((logsRef.current.length + 1) + " - " + card.valor + " de " + card.palo + " te ha hecho " + final_dmg + " de daño.")
-            if(breakWeapon.current){
+            if (breakWeapon.current) {
                 weaponBreaker()
             }
             return true
@@ -1255,7 +1255,7 @@ const GamePage = () => {
             validMove = handleCombat(card)
             validMove ? enemysDefeated.current += 1 : null;
         }
-        if(userExtraDmg.current != 0){
+        if (userExtraDmg.current != 0) {
             userExtraDmg.current = 0;
         }
         if (validMove) {
@@ -1352,7 +1352,7 @@ const GamePage = () => {
                                 <p>Cartas restantes en esta ronda: <span>{dungeon.length + room.length}</span></p>
                                 <p>Total de cartas jugadas: <span>{totalCardsUsed.current}</span></p>
                                 <p>Oro obtenido esta partida: <span>{totalEarnedGold.current}</span></p>
-                                <p>Total enemigos derrotados: <span style={{color:'var(--main-red)'}}>{enemysDefeated.current}</span></p>
+                                <p>Total enemigos derrotados: <span style={{ color: 'var(--main-red)' }}>{enemysDefeated.current}</span></p>
                             </div>
                         </div> :
                         <></>
@@ -1360,38 +1360,40 @@ const GamePage = () => {
                 <div className="game-container">
                     {/* INTERFAZ IZQUIERDA */}
                     <div className="game-hud">
-                        <div>
+                        <div className="game-hud-text">
                             <h1 className="player-health"><img src={healthIcon} />{health}/{maxHealth}{healthAnimation !== null ? <div className="animation-container"><strong className="animation" disabled={healthAnimation}>{healthAnimationValue}</strong><img className="animation" disabled={healthAnimation} src={healthAnimation} /></div> : <></>}</h1>
                             <h1 className="player-gold"><img src={GoldIcon} />{gold}{goldAnimation !== null ? <div className="animation-container"><strong className="animation" disabled={goldAnimation}>{goldAnimationValue}</strong><img className="animation" disabled={goldAnimation} src={goldAnimation} /></div> : <></>}</h1>
                             {!modifiersLoading && pentakillTargetNumber !== 0 ? <h1>Racha <strong>{actualStreak}</strong>/<strong>{pentakillTargetNumber}</strong></h1> : <></>}
                             {gameOn && gameWin ? <h1>Sin límite</h1> : <h1>RONDA {rounds}/{maxRounds}</h1>}
                             <h2 ref={formatedTimeRef}>Tiempo: 00:00</h2>
                             <p>{dungeon.length} cartas restantes</p>
-                            {isGambler ? lastGamblerEffect !== null ? <p style={{fontSize:'1cqw',borderTop:'1cqw'}}>Última apuesta: {lastGamblerEffect}</p> : <p>Aún no has apostado.</p> : <></>}
+                            {isGambler ? lastGamblerEffect !== null ? <p className="gambler-text">Última apuesta: <br/> <span>{lastGamblerEffect}</span></p> : <p>Aún no has apostado.</p> : <></>}
                         </div>
                         <div className="game-character">
                             <img className="character-avatar" style={{ borderColor: user.color }} src={character?.imagen} alt={character?.nombre} />
                             <img className={availableAbility ? "character-ability available" : "character-ability"} src={character?.habilidad_personaje?.icono} style={null} />
                         </div>
-                        <div className="game-modifiers">
-                            {
-                                modifiers.map((modifierInfo) => (
-                                    <Modifier key={crypto.randomUUID()} modifierInfo={modifierInfo} />
-                                ))
-                            }
-                        </div>
-                        <div className="game-buttons">
-                            <button disabled={!canScape.current || !gameOn} onClick={() => {
-                                scape()
-                            }}>HUIR</button>
-                            <button disabled={!availableAbility || !gameOn} onClick={() => {
-                                handleUseAbility(character.habilidad_personaje.id)
-                            }}>HABILIDAD</button>
+                        <div className="extra">
+                            <div className="game-modifiers">
+                                {
+                                    modifiers.map((modifierInfo) => (
+                                        <Modifier key={crypto.randomUUID()} modifierInfo={modifierInfo} />
+                                    ))
+                                }
+                            </div>
+                            <div className="game-buttons">
+                                <button disabled={!canScape.current || !gameOn} onClick={() => {
+                                    scape()
+                                }}>HUIR</button>
+                                <button disabled={!availableAbility || !gameOn} onClick={() => {
+                                    handleUseAbility(character.habilidad_personaje.id)
+                                }}>HABILIDAD</button>
+                            </div>
                         </div>
                     </div>
 
                     {/* VENTANA DE JUEVO */}
-                    <Stage className="game-window" width={stageSize.width * (0.5)} height={stageSize.height / 2} scaleX={scale} scaleY={scale} imageSmoothingEnabled={false}>
+                    <Stage className="game-window" width={stageSize.width * scale * 2} height={stageSize.height / scale} scaleX={scale} scaleY={scale} imageSmoothingEnabled={false}>
                         {/* CAPA ESTÁTICA */}
                         <Layer>
                             {/* ZONA DEL MAZO */}
