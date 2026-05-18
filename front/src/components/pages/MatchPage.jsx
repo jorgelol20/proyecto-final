@@ -117,7 +117,7 @@ const MatchPage = () => {
                                     }) : <h1>Sin modificadores</h1>}
                                 </div>
                             </div>
-                            <div>
+                            <div className="match-text">
                                 <br />
                                 <p>Jugada el {new Date(match.created_at).toLocaleString('es-ES', {
                                     day: '2-digit',
@@ -140,9 +140,9 @@ const MatchPage = () => {
                         </div>
                         <div className="player-info">
                             <img className='user-avatar' onClick={() => { navigate(`/perfil/${player.nick}`) }} style={{ borderColor: player.color }} src={player.avatar !== "" && player.avatar ? player.avatar : Placeholder} alt={`Avatar de ${match.jugador.nick}`} />
-                            <text className={player.es_admin ? "admin" : "user"} x="100%" y="10" text-anchor="middle" font-family="Romulus" font-weight="bold" fill="#333">
+                            <p className={player.es_admin ? "admin" : "user"} x="50%" y="10" textAnchor="middle" fontFamily="Romulus" fontWeight="bold" fill="#333">
                                 {player.nick}
-                            </text>
+                            </p>
                         </div>
                     </div>
                 </div>
