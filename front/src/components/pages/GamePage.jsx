@@ -389,9 +389,6 @@ const GamePage = () => {
     });
     const scale = stageSize.width / 1920;
 
-    const multiplier = window.innerWidth < 600 ? 1.2 : 1
-
-
 
     useEffect(() => {
         if (!user) {
@@ -1383,7 +1380,7 @@ const GamePage = () => {
                     </div>
 
                     {/* VENTANA DE JUEVO */}
-                    <Stage className="game-window" width={stageSize.width * scale * 2 * multiplier} height={stageSize.height / scale * multiplier} scaleX={scale * multiplier} scaleY={scale * multiplier} imageSmoothingEnabled={false} x={0}>
+                    <Stage className="game-window" width={stageSize.width * scale * 2} height={stageSize.height / scale} scaleX={scale} scaleY={scale} imageSmoothingEnabled={false} x={0}>
                         {/* CAPA ESTÁTICA */}
                         <Layer>
                             {/* ZONA DEL MAZO */}
