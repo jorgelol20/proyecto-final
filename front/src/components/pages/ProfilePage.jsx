@@ -150,14 +150,17 @@ const ProfilePage = () => {
             setUserMatchs(userInfo?.tiene_jugadas.reverse())
         }
         if (userInfo?.logros) {
-            console.log(userInfo.logros)
             const tempAchievements = achievements.map((achievement) => {
+                // Buscamos si el usuario tiene este logro específico
+                const userAchievement = userInfo.logros.find((ul) => ul.id === achievement.id);
+
                 return {
                     ...achievement,
-                    obtained: userInfo.logros.some((userAchievement) => userAchievement.id === achievement.id),
-                    pivot: userInfo.logros.map((userAchievement) => {if( userAchievement.id === achievement.id){return userAchievement.pivot}})
+                    obtained: !!userAchievement,
+                    created_at: userAchievement ? userAchievement.pivot?.created_at : null
                 };
             });
+
             setUserAchievements(tempAchievements);
         }
     }, [userInfo])
