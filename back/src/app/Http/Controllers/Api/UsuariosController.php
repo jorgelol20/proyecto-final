@@ -246,9 +246,11 @@ class UsuariosController extends Controller
         ]);
         $logro = Logros::findOrFail($request->logro_id);
         $usuarioId = $request->user()->id;
-        $logro->obtenido_por()->attach($usuarioId, [
-            'created_at' => now(),
-            'updated_at' => now()
+        $logro->obtenido_por()->syncWithoutDetaching([
+            $usuarioId => [
+                'created_at' => now(),
+                'updated_at' => now()
+            ]
         ]);
 
         return response()->json(['message' => 'Logro registrado.']);

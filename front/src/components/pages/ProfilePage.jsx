@@ -150,10 +150,12 @@ const ProfilePage = () => {
             setUserMatchs(userInfo?.tiene_jugadas.reverse())
         }
         if (userInfo?.logros) {
+            console.log(userInfo.logros)
             const tempAchievements = achievements.map((achievement) => {
                 return {
                     ...achievement,
-                    obtained: userInfo.logros.some((userAchievement) => userAchievement.id === achievement.id)
+                    obtained: userInfo.logros.some((userAchievement) => userAchievement.id === achievement.id),
+                    pivot: userInfo.logros.map((userAchievement) => {if( userAchievement.id === achievement.id){return userAchievement.pivot}})
                 };
             });
             setUserAchievements(tempAchievements);
