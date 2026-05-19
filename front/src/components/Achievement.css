@@ -43,6 +43,17 @@
 @media (max-width: 1080px) {
     .achievement {
         display: flex;
+        .achievement-info{
+            text-align: center;
+            border-right: 0.3em groove var(--second-color-dark);
+            border-bottom: 0;
+            width: 15em;
+            margin-right: 1em;
+            p{
+                font-size: 0.5em;
+            }
+        }
+        
     }
 }
 
