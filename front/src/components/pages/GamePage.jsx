@@ -384,12 +384,12 @@ const GamePage = () => {
      */
     // Propiedad para hacer responsive los elementos Canva de Konva
     const [stageSize, setStageSize] = useState({
-        width: window.innerWidth > 1024?window.innerWidth:window.innerWidth * 2,
+        width: window.innerWidth > 1024?window.innerWidth:windowWidth * 2,
         height: window.innerHeight
     });
-    const scale = stageSize.width / 2560;
+    const scale = stageSize.width / 1920;
 
-    const widthMult = window.innerWidth > 600 ? 2 : 3
+    const multiplier = window.innerWidth < 600 ? 1.2 : 1
 
 
 
@@ -1383,7 +1383,7 @@ const GamePage = () => {
                     </div>
 
                     {/* VENTANA DE JUEVO */}
-                    <Stage className="game-window" width={stageSize.width * scale * widthMult} height={stageSize.height / scale * widthMult} scaleX={scale * 1.5} scaleY={scale * 1.5} imageSmoothingEnabled={false} x={0}>
+                    <Stage className="game-window" width={stageSize.width * scale * 2 * multiplier} height={stageSize.height / scale * multiplier} scaleX={scale * multiplier} scaleY={scale * multiplier} imageSmoothingEnabled={false} x={0}>
                         {/* CAPA ESTÁTICA */}
                         <Layer>
                             {/* ZONA DEL MAZO */}
