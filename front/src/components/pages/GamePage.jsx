@@ -394,13 +394,6 @@ const GamePage = () => {
         if (!user) {
             navigate('/')
         }
-        const handleResize = () => {
-            setStageSize({
-                width: window.innerWidth,
-                height: window.innerHeight
-            });
-        };
-        window.addEventListener('resize', handleResize);
         return () => {
             window.removeEventListener('resize', handleResize)
             if (user && character && modifiers.length > 0) {
