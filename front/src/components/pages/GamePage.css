@@ -380,9 +380,9 @@ span {
 
     .game-window {
 
-        
+        height: 100%;
         width: 80%;
-        max-height: 30cqw;
+        max-height: 35cqw;
     }
 
     .logs-container {
