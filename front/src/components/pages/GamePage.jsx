@@ -384,7 +384,7 @@ const GamePage = () => {
      */
     // Propiedad para hacer responsive los elementos Canva de Konva
     const [stageSize, setStageSize] = useState({
-        width: window.innerWidth > 1024?window.innerWidth:windowWidth * 2,
+        width: window.innerWidth > 1024?window.innerWidth:windowWidth * 1.4,
         height: window.innerHeight
     });
     const scale = stageSize.width / 1920;
