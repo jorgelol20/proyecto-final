@@ -47,15 +47,39 @@ const GameShop = ({ gold, setGold, setShopAvailable, health, maxHealth, formated
 
         // Agregar armas
         weps.forEach((wep, index) => {
-            items.push({ id: `wep-${index}`, type: 'card', data: wep, price: Math.max(20, (index < 9?wep.valor * 5:((wep.valor - 4) * 5) + ((wep.valor >= 14 ? 15 : 10) * (wep.valor - 8)))), isBought: false });
+            items.push({ id: `wep-${index}`, type: 'card', data: wep, price: Math.max(20, (index < 9 ? wep.valor * 5 : ((wep.valor - 4) * 5) + ((wep.valor >= 14 ? 15 : 10) * (wep.valor - 8)))), isBought: false });
         });
 
         // Agregar cura
         heal.forEach((heal, index) => {
-            items.push({ id: `heal-${index}`, type: 'card', data: heal, price: Math.max(5, (index < 9?heal.valor * 5:((heal.valor - 4) * 5) + (10 * (heal.valor - 8)))), isBought: false });
+            items.push({ id: `heal-${index}`, type: 'card', data: heal, price: Math.max(5, (index < 9 ? heal.valor * 5 : ((heal.valor - 4) * 5) + (10 * (heal.valor - 8)))), isBought: false });
         });
 
         setShopItems(items);
+    }, []);
+
+    const [scale, setScale] = useState(window.innerWidth / 1920)
+    const [scaleMultiplier, setScaleMultiplier] = useState(1.2)
+
+
+    useEffect(() => {
+        const handleResize = () => {
+            setScale(window.innerWidth / 1920)
+            if (window.innerWidth <= 1080) {
+                setScaleMultiplier(2)
+            } else {
+                setScaleMultiplier(1.2)
+            }
+        };
+        window.addEventListener('resize', handleResize);
+        if (window.innerWidth <= 1080) {
+            setScaleMultiplier(2)
+        } else {
+            setScaleMultiplier(1.2)
+        }
+        return () => {
+            window.removeEventListener('resize', handleResize)
+        };
     }, []);
 
     // Función para manejar la compra
@@ -88,20 +112,25 @@ const GameShop = ({ gold, setGold, setShopAvailable, health, maxHealth, formated
         <Fragment>
             <div className="game-shop">
                 <div className="game-hud">
-                    <h1 className="player-health"><img src={healthIcon} alt="Salud" />{health}/{maxHealth}</h1>
-                    <h1 className="player-gold"><img src={GoldIcon} alt="Oro" />{gold}</h1>
-                    <h2 ref={formatedTimeRef}>Tiempo: 00:00</h2>
+                    <div className="game-hud-text">
+                        <h1 className="player-health"><img src={healthIcon} />{health}/{maxHealth}</h1>
+                        <h1 className="player-gold"><img src={GoldIcon} />{gold}</h1>
+                        <h1>RONDA {round}</h1>
+                        <h2 ref={formatedTimeRef}>Tiempo: 00:00</h2>
+                    </div>
                     <div className="game-character">
                         <img className="character-avatar" style={{ borderColor: user.color }} src={character?.imagen} alt={character?.nombre} />
-                        <img className="character-abilitie" src={character?.habilidad_personaje?.icono} alt="Habilidad" style={null} />
+                        <img className="character-ability available" src={character?.habilidad_personaje?.icono} style={null} />
                     </div>
-                    <div className="game-modifiers">
-                        {
-                            modifiers.length > 0 ? modifiers.map((modifierInfo) => (
-                                <Modifier key={modifierInfo.id + modifierInfo.nombre.charCodeAt(0)} modifierInfo={modifierInfo} />
-                            ))
-                                : <></>
-                        }
+                    <div className="extra">
+                        <div className="game-modifiers">
+                            {
+                                modifiers.map((modifierInfo) => (
+                                    <Modifier key={crypto.randomUUID()} modifierInfo={modifierInfo} />
+                                ))
+                            }
+                        </div>
+
                     </div>
                 </div>
 
@@ -119,12 +148,12 @@ const GameShop = ({ gold, setGold, setShopAvailable, health, maxHealth, formated
                                         {item.type === 'modifier' ? (
                                             <Modifier modifierInfo={item.data} bigger={true} />
                                         ) : (
-                                            <Stage width={250} height={200}>
+                                            <Stage width={250 * scale * scaleMultiplier} height={180 * scale * scaleMultiplier} s scaleX={scale * scaleMultiplier} scaleY={scale * scaleMultiplier}>
                                                 <Layer>
                                                     <Group
-                                                        onMouseOver={() => item.data.efectos ?setHoveredIndex(index):null}
-                                                        onMouseLeave={() => item.data.efectos ?setHoveredIndex(null):null}
-                                                        onTap={() => item.data.efectos ? hoveredIndex != null ? setHoveredIndex(null):setHoveredIndex(index):null}
+                                                        onMouseOver={() => item.data.efectos ? setHoveredIndex(index) : null}
+                                                        onMouseLeave={() => item.data.efectos ? setHoveredIndex(null) : null}
+                                                        onTap={() => item.data.efectos ? hoveredIndex != null ? setHoveredIndex(null) : setHoveredIndex(index) : null}
                                                     >
                                                         <Card
                                                             cardInfo={item?.data}
@@ -133,34 +162,34 @@ const GameShop = ({ gold, setGold, setShopAvailable, health, maxHealth, formated
                                                             isDraggable={false}
                                                             cardSuit={item.palo == "Diamante" ? DiamonIcon : HeartIcon}
                                                         />
-                                                    
 
-                                                    {/* Ventana emergente simple */}
-                                                    {hoveredIndex === index && item.data.efectos && (
-                                                        <Label x={0} y={0}>
 
-                                                            <Rect
-                                                                width={150}
-                                                                height={90}
-                                                                fill="#685a5a"
-                                                                x={40}
-                                                                y={0}
-                                                                cornerRadius={5}
-                                                                stroke={"black"}
-                                                            />
-                                                            <Text
-                                                                text={item.data.efectos[0].description}
-                                                                fill="white"
-                                                                padding={5}
-                                                                fontSize={16}
-                                                                width={150}
-                                                                align="center"
-                                                                fontFamily="Romulus"
-                                                                x={40}
-                                                                y={0}
-                                                            />
-                                                        </Label>
-                                                    )}
+                                                        {/* Ventana emergente simple */}
+                                                        {hoveredIndex === index && item.data.efectos && (
+                                                            <Label x={0} y={0}>
+
+                                                                <Rect
+                                                                    width={150}
+                                                                    height={90}
+                                                                    fill="#685a5a"
+                                                                    x={40}
+                                                                    y={0}
+                                                                    cornerRadius={5}
+                                                                    stroke={"black"}
+                                                                />
+                                                                <Text
+                                                                    text={item.data.efectos[0].description}
+                                                                    fill="white"
+                                                                    padding={5}
+                                                                    fontSize={16}
+                                                                    width={150}
+                                                                    align="center"
+                                                                    fontFamily="Romulus"
+                                                                    x={40}
+                                                                    y={0}
+                                                                />
+                                                            </Label>
+                                                        )}
                                                     </Group>
                                                 </Layer>
                                             </Stage>
