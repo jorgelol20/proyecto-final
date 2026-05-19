@@ -16,6 +16,9 @@
     color: var(--main-orange);
     transition: 200ms linear;
 }
+a{
+    color: #f5e1da;
+}
 footer{
     color: var(--main-white);
     display: flex;
@@ -30,6 +33,10 @@ footer{
     z-index: 100;
     height: 1.5cqw;
     font-size: 1cqw;
+}
+a:hover{
+    color: var(--main-orange);
+    transition: 200ms linear;
 }
 @media (max-width: 1080px){
     footer{

@@ -11,9 +11,10 @@ const GamePage = lazy(() => import('../pages/GamePage.jsx'));
 const SettingsPage = lazy(() => import('../pages/SettingsPage.jsx'));
 const MatchPage = lazy(() => import('../pages/MatchPage.jsx'));
 const Tutorial = lazy(() => import('../pages/Tutorial.jsx'));
-
+const CreditPage = lazy(()=> import("../pages/CreditPage.jsx"));
 
 import GoogleCallback from "./GoogleCallback.jsx";
+
 const AppRoutes = () => {
     return (
         <Fragment>
@@ -35,6 +36,8 @@ const AppRoutes = () => {
                     <Route path='/ajustes' element={<SettingsPage/>}/>
                     
                     <Route path="/*" element={<MainPage/>}/>
+
+                    <Route path="/creditos" element={<CreditPage/>}/>
 
                     <Route path="/auth/callback" element={<GoogleCallback/>}/>
                 </Routes>
