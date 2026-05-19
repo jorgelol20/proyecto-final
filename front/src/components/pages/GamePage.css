@@ -87,7 +87,7 @@
     padding: 1em;
     background-color: var(--second-color);
     width: 50cqw;
-    height: 90%;
+    height: 100%;
     border: 0.5cqw groove var(--second-color-dark);
     /* background-color: aqua; */
 }
@@ -380,7 +380,7 @@ span {
 
     .game-window {
 
-        height: 30%;
+        
         width: 80%;
         max-height: 30cqw;
     }
