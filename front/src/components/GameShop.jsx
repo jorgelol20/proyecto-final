@@ -68,14 +68,14 @@ const GameShop = ({ gold, setGold, setShopAvailable, health, maxHealth, formated
             if (window.innerWidth <= 1080) {
                 setScaleMultiplier(2)
             } else {
-                setScaleMultiplier(1.2)
+                setScaleMultiplier(1)
             }
         };
         window.addEventListener('resize', handleResize);
         if (window.innerWidth <= 1080) {
             setScaleMultiplier(2)
         } else {
-            setScaleMultiplier(1.2)
+            setScaleMultiplier(1)
         }
         return () => {
             window.removeEventListener('resize', handleResize)

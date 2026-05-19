@@ -830,7 +830,7 @@ const GamePage = () => {
             if (rounds >= 1 && gameOn) {
                 setShopAvailable(true)
             } else {
-                setShopAvailable(true)
+                setShopAvailable(false)
             }
             if (gameOn || rounds == 0) {
                 setRounds(rounds + 1)
