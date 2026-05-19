@@ -7,6 +7,8 @@ import { useCard } from "../hooks/useCard.js";
 import { useCharacters } from "../hooks/useCharacter.js";
 import { useModifier } from "../hooks/useModifier.js";
 import { useMatch } from "../hooks/useMatch.js";
+import { useUser } from "../hooks/useUser.js";
+import { useAchievements } from "../hooks/useAchievements.js";
 
 
 
@@ -14,9 +16,12 @@ const matchContext = createContext();
 
 const MatchProvider = (props) => {
     const { cards, isLoading: isLoadingCard, error: cardError, getCard } = useCard();
+    const { newAchievement } = useAchievements();
     const { getCharacterById, characters, isLoading: isLoadingCharacter } = useCharacters();
     const { modifiers, getModificadorById, isLoading: isLoadingModifier, error: modifierError } = useModifier();
+
     const [gameLoading, setGameLoading] = useState(true);
+
 
     const [actualMatchId, setActualMatchId] = useState(null);
 
@@ -66,6 +71,32 @@ const MatchProvider = (props) => {
         setActualMatchId(null);
         setGameLoading(false);
     };
+
+    const loadAchievements = async (victoria) => {
+        if (victoria) {
+            await newAchievement({ logro_id: 3 });
+            switch(character.id){
+                case 1:
+                    await newAchievement({ logro_id: 8 });
+                    break;
+                case 2:
+                    await newAchievement({ logro_id: 7 });
+                    break;
+                case 3:
+                    await newAchievement({ logro_id: 6 });
+                    break;
+                case 4:
+                    await newAchievement({ logro_id: 5 });
+                    break;
+                case 5:
+                    await newAchievement({ logro_id: 4 });
+                    break;
+            }
+        } else {
+            await newAchievement({ logro_id: 2 });
+        }
+        await newAchievement({ logro_id: 1 });
+    }
     const endGame = async (user_id, tiempo, victoria, rondas, earnedGold, healedLife, enemysDefeated) => {
         if (character && activeModifiers.length > 0) {
             const gameModifiers = activeModifiers.map((modifier) => modifier.id);
@@ -82,6 +113,7 @@ const MatchProvider = (props) => {
             };
             const savedMatch = await saveMatch({ form: payload });
             setActualMatchId(savedMatch.id);
+            loadAchievements(victoria);
             return true
         }
     }
@@ -142,7 +174,7 @@ const MatchProvider = (props) => {
         { 'name': 'plunder', 'value': true },
         { 'name': 'extra', 'value': true },
     ]
-    
+
     const addEnemysToMatchDeck = (quantity, round) => {
         const minPower = Math.max(2, round);
         const maxPower = Math.min(round + 5, 14);
@@ -260,7 +292,7 @@ const MatchProvider = (props) => {
     };
 
     const getTutorialCards = (tutorialNumber = 1) => {
-        switch(tutorialNumber){
+        switch (tutorialNumber) {
             case 1:
                 const tempDeck = [...baseDeck]
                 const cards = [tempDeck[0], tempDeck[14], tempDeck[28], tempDeck[42]]
