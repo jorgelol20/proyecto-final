@@ -395,7 +395,6 @@ const GamePage = () => {
             navigate('/')
         }
         return () => {
-            window.removeEventListener('resize', handleResize)
             if (user && character && modifiers.length > 0) {
                 // user_id, tiempo, victoria, rondas, earnedGold, healedLife, enemysDefeated
                 endGame(user.id, timeRef.current, gameWin, rounds, totalEarnedGold.current, healedLife.current, enemysDefeated.current)
