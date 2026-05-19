@@ -31,3 +31,9 @@ footer{
     height: 1.5cqw;
     font-size: 1cqw;
 }
+@media (max-width: 1080px){
+    footer{
+        height: 0.8em;
+        font-size: 0.6em;
+    }
+}

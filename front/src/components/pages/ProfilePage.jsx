@@ -161,9 +161,10 @@ const ProfilePage = () => {
                 <div className='user-background'>
                     <div className='userInfo'>
                         <div className='user-profile'>
-                            <div style={{ position: 'relative' }}>
+                            <div className='user-basic' style={{ position: 'relative' }}>
                                 <img className='user-avatar' style={{ borderColor: userInfo?.color }} src={userInfo?.avatar !== "" && userInfo?.avatar ? userInfo?.avatar : Placeholder} alt={`Avatar de ${userInfo?.nick}`} />
                                 {user.es_admin ? <button className="delete-button" onClick={() => { confirm("Se eliminará la foto de perfil") ? handleDelete() : null }}><img className="delete-icon" src={DeleteIcon} alt="" /></button> : <></>}
+                                <h1 className={userInfo.es_admin ? 'admin' : 'user'}>{userInfo.nick}</h1>
                             </div>
                             <div>
                                 <p>Desde: {new Date(userInfo.created_at).toLocaleDateString('es-ES')}</p>
@@ -180,7 +181,7 @@ const ProfilePage = () => {
                             </div>
                         </div>
                         <div className='user-history'>
-                            <h1 className={userInfo.es_admin ? 'admin' : 'user'}>{userInfo.nick}</h1>
+                            <h1>Historial de partidas</h1>
                             <section className='match-history'>
                                 {userMatchs?.length > 0 && showMatches ?
                                     userMatchs?.map((match, index) => {

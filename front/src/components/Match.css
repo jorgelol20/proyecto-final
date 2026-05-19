@@ -23,6 +23,13 @@
         margin-left: 1em;
         width: 5cqw;
         height: 5cqw;
+        min-width: 5cqw;
+        min-height: 5cqw;
+        max-width: 5cqw;
+        max-height: 5cqw;
+        border-width: 0.5cqw;
+        border-color: var(--main-gold);
+        border-style: groove;
     }
 
     .player-info {
@@ -72,7 +79,8 @@
             margin-top: 0;
             font-size: 2.5cqw;
             margin: 0;
-            margin-right: 11%;
+            margin-right: 1em;
+            margin-left: -1em;
             width: 35%;
         }
 
@@ -140,7 +148,13 @@ article {
         h1 {
             font-size: 5cqw;
         }
-        p{
+
+        .match-id {
+            margin: 0;
+            margin-left: -0.5em;
+        }
+
+        p {
             font-size: 2cqw;
         }
 
@@ -166,7 +180,7 @@ article {
                 width: 10cqw;
                 height: 10cqw;
             }
-            
+
         }
 
         .match-info {

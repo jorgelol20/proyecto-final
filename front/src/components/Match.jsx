@@ -18,7 +18,7 @@ const Match = ({ match, showUser }) => {
             <Fragment>
                 <article className="match-row">
                     <div style={{display:'flex',flexDirection:'column',
-                        alignItems:'center',justifyContent:'center'
+                        alignItems:'center',justifyContent:'center', textAlign:'center'
                     }}>
                         <p>ID partida:</p>
                         <h1 className="match-id">{match.id}</h1>
