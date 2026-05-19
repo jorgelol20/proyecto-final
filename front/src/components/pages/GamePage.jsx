@@ -395,6 +395,7 @@ const GamePage = () => {
             navigate('/')
         }
         return () => {
+            window.removeEventListener('resize', handleResize)
             if (user && character && modifiers.length > 0) {
                 // user_id, tiempo, victoria, rondas, earnedGold, healedLife, enemysDefeated
                 endGame(user.id, timeRef.current, gameWin, rounds, totalEarnedGold.current, healedLife.current, enemysDefeated.current)
@@ -1372,7 +1373,7 @@ const GamePage = () => {
                     </div>
 
                     {/* VENTANA DE JUEVO */}
-                    <Stage className="game-window" width={stageSize.width * scale} height={(stageSize.height / scale) * 2} scaleX={scale} scaleY={scale}  x={0}>
+                    <Stage className="game-window" width={stageSize.width * scale * 2} height={stageSize.height / scale * 1.2} scaleX={scale * 1.2} scaleY={scale * 1.2} imageSmoothingEnabled={false} x={0}>
                         {/* CAPA ESTÁTICA */}
                         <Layer>
                             {/* ZONA DEL MAZO */}
