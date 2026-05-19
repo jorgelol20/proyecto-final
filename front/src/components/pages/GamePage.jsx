@@ -384,7 +384,7 @@ const GamePage = () => {
      */
     // Propiedad para hacer responsive los elementos Canva de Konva
     const [stageSize, setStageSize] = useState({
-        width: window.innerWidth > 1024 ? window.innerWidth : windowWidth * 1.4,
+        width:window.innerWidth,
         height: window.innerHeight
     });
     const scale = stageSize.width / 1920;
@@ -1371,13 +1371,12 @@ const GamePage = () => {
                         </div>
                     </div>
 
-                    {/* VENTANA DE JUEVO */}
                     <Stage
                         className="game-window"
-                        width={stageSize.width}
-                        height={stageSize.height}
-                        scaleX={scale * 1.2}
-                        scaleY={scale * 1.2}
+                        width={window.innerWidth > 1024 ? stageSize.width : window.innerWidth}
+                        height={window.innerHeight}
+                        scaleX={window.innerWidth > 1024 ? scale * 1.2 : (window.innerWidth / (stageSize.width)) * scale * 1.2}
+                        scaleY={window.innerWidth > 1024 ? scale * 1.2 : (window.innerWidth / (stageSize.width)) * scale * 1.2}
                         x={0}
                     >
                         {/* CAPA ESTÁTICA */}
