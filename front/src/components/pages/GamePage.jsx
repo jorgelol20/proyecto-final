@@ -384,11 +384,12 @@ const GamePage = () => {
      */
     // Propiedad para hacer responsive los elementos Canva de Konva
     const [stageSize, setStageSize] = useState({
-        width: window.innerWidth > 1024?window.innerWidth:windowWidth * 1.5,
+        width: window.innerWidth > 1024?window.innerWidth:window.innerWidth * 2,
         height: window.innerHeight
     });
-    const scale = stageSize.width / 1920;
-    const postMult = window.innerWidth > 1024?1:0.8;
+    const scale = stageSize.width / 2560;
+
+    const widthMult = window.innerWidth > 600 ? 2 : 3
 
 
 
@@ -762,11 +763,11 @@ const GamePage = () => {
         if (antiheal.current) {
             antiheal.current = false;
         }
-        if (progresive_heal_turns.current > 0) {
-            setHealth(prev => Math.min(maxHealth, prev + progresive_heal.current));
-            healAnimation(progresive_heal.current)
-            healedLife.current += progresive_heal.current;
-            progresive_heal_turns.current -= 1;
+        if (progresiveHealTurns.current > 0) {
+            setHealth(prev => Math.min(maxHealth, prev + progresiveHeal.current));
+            healAnimation(progresiveHeal.current)
+            healedLife.current += progresiveHeal.current;
+            progresiveHealTurns.current -= 1;
         }
     }, [room.length, dungeon]);
 
@@ -935,9 +936,9 @@ const GamePage = () => {
     // EFECTOS CARTAS
     // Efectos vida
     const currentHeal = useRef(0);
-    const progresive_heal = useRef(0);
-    const progresive_heal_turns = useRef(0);
-    const dmg_reduction = useRef(0);
+    const progresiveHeal = useRef(0);
+    const progresiveHealTurns = useRef(0);
+    const dmgReduction = useRef(0);
 
     const heal_roulete = (execute = false) => {
         if (execute) {
@@ -951,28 +952,28 @@ const GamePage = () => {
 
     const cleanHealEffects = () => {
         currentHeal.current = 0;
-        progresive_heal.current = 0;
-        progresive_heal_turns.current = 0;
-        dmg_reduction.current = 0;
+        progresiveHeal.current = 0;
+        progresiveHealTurns.current = 0;
+        dmgReduction.current = 0;
     }
     // Efectos armas
 
-    const weapon_dmg = useRef(0)
-    const invincibility_turns = useRef(0);
+    const weaponDmg = useRef(0)
+    const invincibilityTurns = useRef(0);
 
     const revive = useRef(false);
-    const revive_health = useRef(0)
+    const reviveHealth = useRef(0)
 
-    const weapon_health_steal = useRef(false)
-    const weapon_health_steal_quantity = useRef(0)
+    const weaponHealthSteal = useRef(false)
+    const weaponHealthStealQuantity = useRef(0)
 
     const cleanWeaponEffects = () => {
-        weapon_dmg.current = 0
-        invincibility_turns.current = 0
+        weaponDmg.current = 0
+        invincibilityTurns.current = 0
         revive.current = false
-        revive_health.current = 0
-        weapon_health_steal.current = false
-        weapon_health_steal_quantity.current = 0
+        reviveHealth.current = 0
+        weaponHealthSteal.current = false
+        weaponHealthStealQuantity.current = 0
     }
 
     //Efectos enemigos
@@ -1035,31 +1036,31 @@ const GamePage = () => {
                 currentHeal.current = effect.value;
                 break;
             case 'dmg_reduction':
-                dmg_reduction.current = effect.value
+                dmgReduction.current = effect.value
                 break;
             case 'heal_roulete':
                 heal_roulete(true)
                 break;
             case 'progresive_heal':
-                progresive_heal.current = effect.value
+                progresiveHeal.current = effect.value
                 break;
             case 'progresive_heal_turns':
-                progresive_heal_turns.current = effect.value
+                progresiveHealTurns.current = effect.value
             case 'weapon_dmg':
-                weapon_dmg.current = effect.value
+                weaponDmg.current = effect.value
                 break;
             case 'invincibility_turns':
-                invincibility_turns.current = effect.value
+                invincibilityTurns.current = effect.value
                 break;
             case 'revive':
                 revive.current = true;
                 break;
             case 'revive_health':
-                revive_health.current = effect.value
+                reviveHealth.current = effect.value
                 break;
             case 'health_steal':
-                weapon_health_steal.current = true;
-                weapon_health_steal_quantity.current = effect.value;
+                weaponHealthSteal.current = true;
+                weaponHealthStealQuantity.current = effect.value;
                 break;
             case 'antiheal':
                 antiheal.current = true;
@@ -1115,7 +1116,7 @@ const GamePage = () => {
 
     const handleWeapon = (card) => {
         cleanWeaponEffects();
-        weapon_dmg.current = card.valor
+        weaponDmg.current = card.valor
         if (card.especial) {
             handleCardEffect(card)
         }
@@ -1145,16 +1146,11 @@ const GamePage = () => {
         if (card.especial) {
             handleCardEffect(card)
         }
-        let user_dmg_reduction = 0;
-        if (dmg_reduction.current !== 0) {
-            user_dmg_reduction = dmg_reduction.current;
-            dmg_reduction.current = 0;
-        }
-        const enemy_dmg = Math.ceil((card.valor * enemyDmgMultiplier.current)) + enemyExtraDmg.current - user_dmg_reduction;
+        const enemyDmg = Math.ceil((card.valor * enemyDmgMultiplier.current)) + enemyExtraDmg.current - dmgReduction.current;
         const pentakill = actualStreak >= pentakillTargetNumber ? pentakillDmg : 0
 
         // INVENCIBLE
-        if (invincibility_turns.current > 0) {
+        if (invincibilityTurns.current > 0) {
             damageAnimation(0)
             if (weapon) {
                 const earnedGold = Math.floor(5 * goldMultiplier.current)
@@ -1166,7 +1162,7 @@ const GamePage = () => {
             deleteFromRoom(card)
             setActualStreak(prev => prev + 1);
             logsRef.current.push((logsRef.current.length + 1) + " - " + card.valor + " de " + card.palo + " te ha hecho " + 0 + " de daño.")
-            invincibility_turns.current -= 1;
+            invincibilityTurns.current -= 1;
             if (breakWeapon.current) {
                 weaponBreaker()
             }
@@ -1175,34 +1171,34 @@ const GamePage = () => {
 
         // ATAQUE CON ARMA
         else if (weapon && ((slainMonsters.length === 0 || card.valor < (slainMonsters[slainMonsters.length - 1]?.valor)) || (ricochet.current && card.valor <= (slainMonsters[slainMonsters.length - 1]?.valor)))) {
-            const final_user_dmg = weapon_dmg.current + (card.palo == 'Pica' ? spadesExtraTakedDmg.current : clubsExtraTakedDmg.current) + userExtraDmg.current;
-            const final_enemy_dmg = enemy_dmg - pentakill;
+            const finalUserDmg = weaponDmg.current + (card.palo == 'Pica' ? spadesExtraTakedDmg.current : clubsExtraTakedDmg.current) + userExtraDmg.current;
+            const finalEnemyDmg = enemyDmg - pentakill;
 
-            const final_dmg = Math.max(0, final_enemy_dmg - final_user_dmg);
-            damageAnimation(final_dmg)
+            const finalDmg = Math.max(0, finalEnemyDmg - finalUserDmg);
+            damageAnimation(finalDmg)
             const earnedGold = Math.floor(5 * goldMultiplier.current)
             coinAnimation(earnedGold)
             setGold(prev => prev + earnedGold);
             totalEarnedGold.current += earnedGold;
-            if (health - final_dmg <= 0 && revive.current) {
-                setHealth(revive_health.current)
+            if (health - finalDmg <= 0 && revive.current) {
+                setHealth(reviveHealth.current)
                 revive.current = false;
-                revive_health.current = 0;
+                reviveHealth.current = 0;
             } else {
-                setHealth(prev => Math.max(0, prev - final_dmg));
+                setHealth(prev => Math.max(0, prev - finalDmg));
             }
-            if (healthSteal.current && card.valor < weapon_dmg.current) {
-                const heal = Math.min(0, card.valor - weapon_dmg.current) > -3 ? Math.min(0, card.valor - weapon_dmg.current) * -1 : 3;
+            if (healthSteal.current && card.valor < weaponDmg.current) {
+                const heal = Math.min(0, card.valor - weaponDmg.current) > -3 ? Math.min(0, card.valor - weaponDmg.current) * -1 : 3;
                 healAnimation(heal)
                 setHealth(prev => Math.min(maxHealth, prev + heal));
             }
-            if (weapon_health_steal.current) {
-                setHealth(prev => Math.min(maxHealth, prev + weapon_health_steal_quantity.current));
+            if (weaponHealthSteal.current) {
+                setHealth(prev => Math.min(maxHealth, prev + weaponHealthStealQuantity.current));
             }
             setSlainMonsters([...slainMonsters, card]);
             deleteFromRoom(card)
             setActualStreak(prev => prev + 1);
-            logsRef.current.push((logsRef.current.length + 1) + " - " + card.valor + " de " + card.palo + " te ha hecho " + final_dmg + " de daño.")
+            logsRef.current.push((logsRef.current.length + 1) + " - " + card.valor + " de " + card.palo + " te ha hecho " + finalDmg + " de daño.")
             if (breakWeapon.current) {
                 weaponBreaker()
             }
@@ -1211,19 +1207,19 @@ const GamePage = () => {
 
         // ATAQUE SIN ARMA
         else {
-            const final_user_dmg = pentakill + (card.palo == 'Pica' ? spadesExtraTakedDmg.current : clubsExtraTakedDmg.current) + userExtraDmg.current;
-            const final_dmg = Math.max(0, enemy_dmg - final_user_dmg);
+            const finalUserDmg = pentakill + (card.palo == 'Pica' ? spadesExtraTakedDmg.current : clubsExtraTakedDmg.current) + userExtraDmg.current;
+            const finalDmg = Math.max(0, enemyDmg - finalUserDmg);
             moveCardToDiscard([card])
-            damageAnimation(final_dmg, true)
-            if (health - final_dmg <= 0 && revive.current) {
-                setHealth(revive_health.current)
+            damageAnimation(finalDmg, true)
+            if (health - finalDmg <= 0 && revive.current) {
+                setHealth(reviveHealth.current)
                 revive.current = false;
-                revive_health.current = 0;
+                reviveHealth.current = 0;
             } else {
-                setHealth(prev => Math.max(0, prev - final_dmg));
+                setHealth(prev => Math.max(0, prev - finalDmg));
             }
             setActualStreak(prev => prev + 1);
-            logsRef.current.push((logsRef.current.length + 1) + " - " + card.valor + " de " + card.palo + " te ha hecho " + final_dmg + " de daño.")
+            logsRef.current.push((logsRef.current.length + 1) + " - " + card.valor + " de " + card.palo + " te ha hecho " + finalDmg + " de daño.")
             if (breakWeapon.current) {
                 weaponBreaker()
             }
@@ -1251,6 +1247,7 @@ const GamePage = () => {
             validMove ? enemysDefeated.current += 1 : null;
         }
         userExtraDmg.current = 0;
+        dmgReduction.current = 0;
         if (validMove) {
             if (character?.habilidad_personaje?.id === 1) {
                 setAvailableAbility(false)
@@ -1386,7 +1383,7 @@ const GamePage = () => {
                     </div>
 
                     {/* VENTANA DE JUEVO */}
-                    <Stage className="game-window" width={stageSize.width * scale * 2} height={stageSize.height / scale} scaleX={scale} scaleY={scale} imageSmoothingEnabled={false} x={0}>
+                    <Stage className="game-window" width={stageSize.width * scale * widthMult} height={stageSize.height / scale * widthMult} scaleX={scale * 1.5} scaleY={scale * 1.5} imageSmoothingEnabled={false} x={0}>
                         {/* CAPA ESTÁTICA */}
                         <Layer>
                             {/* ZONA DEL MAZO */}
