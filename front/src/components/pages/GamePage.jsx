@@ -79,7 +79,7 @@ const GamePage = () => {
 
     useEffect(() => {
         const gestionarSalidaNavbar = async (e) => {
-            const rutaDestino = e.detail.destino; // Recuperamos a dónde quería ir el usuario
+            const rutaDestino = e.detail.destino;
 
             try {
                 await endGame(
@@ -120,7 +120,6 @@ const GamePage = () => {
     };
 
     useEffect(() => {
-        // Aseguramos un estado en el historial para capturar el evento 'Atrás'
         window.history.pushState(null, null, window.location.pathname);
 
         const handlePopState = async () => {
@@ -128,13 +127,10 @@ const GamePage = () => {
 
             if (proceder) {
                 try {
-                    // Ahora que es un mutateAsync, el await SÍ va a congelar la ejecución 
-                    // hasta que Laravel responda con un 200/201 OK
-                    endGame(user.id, timeRef.current, gameWin, rounds, totalEarnedGold.current, healedLife.current, enemysDefeated.current)
+                    await endGame(user.id, timeRef.current, gameWin, rounds, totalEarnedGold.current, healedLife.current, enemysDefeated.current)
                 } catch (error) {
                     console.error("Error al guardar la partida de forma forzada:", error);
                 } finally {
-                    // Solo cuando la BD ha respondido (bien o mal), nos vamos
                     navigate('/');
                 }
             } else {
@@ -148,7 +144,6 @@ const GamePage = () => {
         return () => {
             window.removeEventListener('popstate', handlePopState);
         };
-        // IMPORTANTE: Añade 'endGame' aquí para que React tenga la referencia limpia
     }, [navigate, user, gameWin, rounds, endGame]);
 
 
@@ -170,7 +165,6 @@ const GamePage = () => {
     }
 
     const restartFunction = () => {
-        // Reset de estadísticas de partida
         setRounds(0);
         setGold(0);
         setHealth(20);
@@ -390,10 +384,11 @@ const GamePage = () => {
      */
     // Propiedad para hacer responsive los elementos Canva de Konva
     const [stageSize, setStageSize] = useState({
-        width: window.innerWidth,
+        width: window.innerWidth > 1024?window.innerWidth:windowWidth * 1.5,
         height: window.innerHeight
     });
     const scale = stageSize.width / 1920;
+    const postMult = window.innerWidth > 1024?1:0.8;
 
 
 
@@ -1255,9 +1250,7 @@ const GamePage = () => {
             validMove = handleCombat(card)
             validMove ? enemysDefeated.current += 1 : null;
         }
-        if (userExtraDmg.current != 0) {
-            userExtraDmg.current = 0;
-        }
+        userExtraDmg.current = 0;
         if (validMove) {
             if (character?.habilidad_personaje?.id === 1) {
                 setAvailableAbility(false)
@@ -1393,7 +1386,7 @@ const GamePage = () => {
                     </div>
 
                     {/* VENTANA DE JUEVO */}
-                    <Stage className="game-window" width={stageSize.width * scale * 2} height={stageSize.height / scale} scaleX={scale} scaleY={scale} imageSmoothingEnabled={false}>
+                    <Stage className="game-window" width={stageSize.width * scale * 2} height={stageSize.height / scale} scaleX={scale} scaleY={scale} imageSmoothingEnabled={false} x={0}>
                         {/* CAPA ESTÁTICA */}
                         <Layer>
                             {/* ZONA DEL MAZO */}
@@ -1479,7 +1472,7 @@ const GamePage = () => {
                                     ref={el => cardRefs.current[card.key] = el}
                                     key={card.key}
                                     cardInfo={card}
-                                    x={card.x + (index * 140)}
+                                    x={card.x + (index * (140))}
                                     y={card.y + 10}
                                     onDragEnd={handleDragEnd}
                                     onClick={gameOn ? processCardAction : () => { }}

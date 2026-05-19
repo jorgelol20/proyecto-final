@@ -348,9 +348,9 @@ span {
             display: flex;
 
             button {
-                width: 10cqw;
-                height: 3cqw;
-                font-size: 1.2cqw;
+                width: 6em;
+                height: 6cqw;
+                font-size: 0.5em;
                 margin-bottom: 2cqw;
             }
         }
@@ -379,7 +379,9 @@ span {
     }
 
     .game-window {
+
         height: 30%;
+        width: 80%;
         max-height: 30cqw;
     }
 
