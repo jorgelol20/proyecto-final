@@ -17,87 +17,94 @@ import ThornyIcon from '/images/cardEffects/Thorny.webp';
 import PlunderIcon from '/images/cardEffects/Plunder.webp';
 import ExtraGoldIcon from '/images/cardEffects/ExtraGold.webp';
 
-
 const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = true, onDeck = false, isWizard = false, setOverDungeonZone, canBeClicked, cardSuit, defaultImage }, ref) => {
 
     const groupRef = useRef(null);
     const [strokeWidth, setStrokeWidth] = useState(2);
-    const [hasEffect, setHasEffect] = useState(false)
+    const [hasEffect, setHasEffect] = useState(false);
 
     // Exponemos métodos al padre (GamePage)
     useImperativeHandle(ref, () => ({
         animateTo: (targetX, targetY, duration = 0.3) => {
-            groupRef.current.to({
-                x: targetX,
-                y: targetY,
-                duration: duration,
-                easing: Konva.Easings.EaseInOut,
-            });
+            if (groupRef.current) {
+                groupRef.current.to({
+                    x: targetX,
+                    y: targetY,
+                    duration: duration,
+                    easing: Konva.Easings.EaseInOut,
+                });
+            }
         }
     }));
 
     // Carga de imágenes
     const [image] = useImage(cardInfo?.imagen);
     const [suit] = useImage(cardSuit);
+    
     const selectEffectImage = () => {
         if (cardInfo?.efectos) {
             const effectsList = Array.isArray(cardInfo.efectos) ? cardInfo.efectos : [cardInfo.efectos];
             switch (effectsList[0].name) {
-                case 'antiheal':
-                    return AntihealIcon
-                    break;
-                case 'weapon_breaker':
-                    return WeaponBreakerIcon
-                    break;
-                case 'poison':
-                    return PoisonIcon
-                    break;
-                case 'restore_ability':
-                    return RestoreAbilityIcon;
-                    break;
-                case 'progresive_heal':
-                    return ProgresiveHealIcon;
-                    break;
-                case 'heal_roulete':
-                    return HealRouleteIcon;
-                    break;
-                case 'dmg_reduction':
-                    return DmgReductionIcon;
-                    break;
-                case 'revive':
-                    return ReviveIcon;
-                    break;
-                case 'invincibility_turns':
-                    return InvincibilityIcon;
-                    break;
-                case 'health_steal':
-                    return HealthStealIcon;
-                    break;
-                case 'thorny':
-                    return ThornyIcon;
-                    break;
-                case 'plunder':
-                    return PlunderIcon;
-                    break;
-                case 'extra_gold':
-                    return ExtraGoldIcon;
-                    break;
-                default:
-                    return null
-                    break;
+                case 'antiheal': return AntihealIcon;
+                case 'weapon_breaker': return WeaponBreakerIcon;
+                case 'poison': return PoisonIcon;
+                case 'restore_ability': return RestoreAbilityIcon;
+                case 'progresive_heal': return ProgresiveHealIcon;
+                case 'heal_roulete': return HealRouleteIcon;
+                case 'dmg_reduction': return DmgReductionIcon;
+                case 'revive': return ReviveIcon;
+                case 'invincibility_turns': return InvincibilityIcon;
+                case 'health_steal': return HealthStealIcon;
+                case 'thorny': return ThornyIcon;
+                case 'plunder': return PlunderIcon;
+                case 'extra_gold': return ExtraGoldIcon;
+                default: return null;
             }
         }
-    }
-    const [effectIcon] = useImage(selectEffectImage())
-    
+        return null;
+    };
+    const [effectIcon] = useImage(selectEffectImage());
+
     // Color de la carta
-    const colorRef = useRef('')
+    const colorRef = useRef('');
+
+    // --- SISTEMA DE CACHÉ INTELIGENTE PARA PIXEL ART ---
+    useEffect(() => {
+        const imagesLoaded = image && suit && (!hasEffect || effectIcon);
+        
+        if (imagesLoaded && groupRef.current) {
+            // Un pequeño timeout asegura que Konva ya tenga los textos listos antes de congelar la imagen
+            const timeoutId = setTimeout(() => {
+                if (groupRef.current) {
+                    groupRef.current.clearCache();
+                    groupRef.current.cache({
+                        x: -5,          // Margen para que el stroke (borde) no se corte
+                        y: -5,
+                        width: 130,     // Un poco más ancho que los 120 del Rect
+                        height: 160,    // Un poco más alto que los 150 del Rect
+                        pixelRatio: 2   // Forzamos alta densidad para que fuentes y pixelart se vean nítidos
+                    });
+
+                    // Desactivamos el suavizado de curvas en el canvas interno del caché
+                    const nativeCanvas = groupRef.current._cache?.canvas?._canvas;
+                    if (nativeCanvas) {
+                        const ctx = nativeCanvas.getContext('2d');
+                        if (ctx) ctx.imageSmoothingEnabled = false;
+                    }
+                    
+                    groupRef.current.getLayer()?.batchDraw();
+                }
+            }, 60);
+
+            return () => clearTimeout(timeoutId);
+        }
+    }, [image, suit, effectIcon, hasEffect, cardInfo.valor, strokeWidth, onDeck, isWizard]);
 
     const handleDragEndInternal = (e) => {
         const finalX = e.target.x();
         const finalY = e.target.y();
         const isValidMove = onDragEnd(cardInfo, finalX, finalY);
-        setStrokeWidth(2)
+        setStrokeWidth(2);
 
         if (!isValidMove) {
             groupRef.current.to({
@@ -108,21 +115,17 @@ const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = tru
             });
         }
     };
-    const deckPositionY = useRef(5);
 
     useEffect(() => {
-        const palos = ['Diamante', 'Corazon']
-        if (cardInfo.valor > 10 && palos.indexOf(cardInfo.palo) != -1) {
-            if (cardInfo.valor == 14) {
-                cardInfo.valor = 14;
-            } else {
+        const palos = ['Diamante', 'Corazon'];
+        if (cardInfo.valor > 10 && palos.indexOf(cardInfo.palo) !== -1) {
+            if (cardInfo.valor !== 14) {
                 cardInfo.valor = 10;
             }
         }
-        setHasEffect(cardInfo.efectos ? true : false)
+        setHasEffect(cardInfo.efectos ? true : false);
         colorRef.current = cardInfo.especial ? '#D4AF37' : cardInfo.palo === 'Corazon' ? '#1E5128' : cardInfo.palo === 'Diamante' ? '#F77F00' : '#0C0C0C';
-
-    }, [])
+    }, [cardInfo]);
 
     return (
         <Group
@@ -130,27 +133,34 @@ const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = tru
             x={x}
             y={y}
             draggable={isDraggable}
-            onClick={() => !onDeck ? canBeClicked ? onClick(cardInfo) : null : canBeClicked && setOverDungeonZone ? setOverDungeonZone(prev => !prev) : null}
-            onTap={() => !onDeck ? canBeClicked ? onClick(cardInfo) : null : canBeClicked && setOverDungeonZone ? setOverDungeonZone(prev => !prev) : null}
-            onDragStart={() => { setStrokeWidth(6); document.body.style.cursor = "url('/images/cursor/Cursor_4.webp') 3 7, auto" }}
+            onClick={() => !onDeck ? (canBeClicked ? onClick(cardInfo) : null) : (canBeClicked && setOverDungeonZone ? setOverDungeonZone(prev => !prev) : null)}
+            onTap={() => !onDeck ? (canBeClicked ? onClick(cardInfo) : null) : (canBeClicked && setOverDungeonZone ? setOverDungeonZone(prev => !prev) : null)}
+            onDragStart={() => { 
+                setStrokeWidth(6); 
+                document.body.style.cursor = "url('/images/cursor/Cursor_4.webp') 3 7, auto"; 
+            }}
             onDragEnd={handleDragEndInternal}
-            onMouseEnter={() => { isWizard ? setOverDungeonZone(true) : ""; document.body.style.cursor = isDraggable ? "url('/images/cursor/Cursor_3.webp') 3 7, auto" : "url('/images/cursor/Cursor_5.webp') 3 7, auto"; }}
-            onMouseLeave={() => { isWizard ? setOverDungeonZone(false) : ""; document.body.style.cursor = "url('/images/cursor/Cursor_1.webp') 3 7, auto"; }}
+            onMouseEnter={() => { 
+                if (isWizard && setOverDungeonZone) setOverDungeonZone(true); 
+                document.body.style.cursor = isDraggable ? "url('/images/cursor/Cursor_3.webp') 3 7, auto" : "url('/images/cursor/Cursor_5.webp') 3 7, auto"; 
+            }}
+            onMouseLeave={() => { 
+                if (isWizard && setOverDungeonZone) setOverDungeonZone(false); 
+                document.body.style.cursor = "url('/images/cursor/Cursor_1.webp') 3 7, auto"; 
+            }}
         >
             <Rect
                 width={120}
                 height={150}
-                fill={onDeck ? !isWizard ? "#000000" : "#ffffffe5" : "white"}
+                fill={onDeck ? (!isWizard ? "#000000" : "#ffffffe5") : "white"}
                 cornerRadius={8}
                 stroke={!onDeck ? colorRef.current : '#0C0C0C'}
                 strokeWidth={!onDeck ? strokeWidth : 0}
                 lineJoin="round"
-                onDragMove={null}
             />
 
             {!onDeck && (
-                <>
-                    {/* VALOR SUPERIOR */}
+                <>  
                     <Text
                         text={`${cardInfo.valor}`}
                         fill={colorRef.current}
@@ -160,8 +170,6 @@ const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = tru
                         y={4}
                         listening={false}
                     />
-
-                    {/* PALO SUPERIOR */}
                     <Image
                         image={suit}
                         width={25}
@@ -171,8 +179,6 @@ const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = tru
                         imageSmoothingEnabled={false}
                         listening={false}
                     />
-
-                    {/* IMAGEN CENTRAL */}
                     <Image
                         image={image}
                         width={90}
@@ -182,9 +188,8 @@ const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = tru
                         imageSmoothingEnabled={false}
                         listening={false}
                     />
-                    {/* EFECTO */}
-                    {
-                        hasEffect && <Image
+                    {hasEffect && (
+                        <Image
                             image={effectIcon}
                             width={30}
                             height={30}
@@ -193,9 +198,7 @@ const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = tru
                             imageSmoothingEnabled={false}
                             listening={false}
                         />
-                    }
-
-                    {/* PALO INFERIOR (Rotado) */}
+                    )}
                     <Image
                         image={suit}
                         width={25}
@@ -206,12 +209,6 @@ const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = tru
                         rotation={180}
                         listening={false}
                     />
-                    {/* 
-                        --main-green: #1E5128;
-                        --main-red: #84142D;
-                        --main-orange: #F77F00;
-                    */}
-                    {/* VALOR INFERIOR (Rotado) */}
                     <Text
                         text={`${cardInfo.valor}`}
                         fill={colorRef.current}
@@ -225,8 +222,8 @@ const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = tru
                 </>
             )}
 
-            {onDeck ? !isWizard ? (
-                <>
+            {onDeck && (
+                !isWizard ? (
                     <Image
                         image={defaultImage}
                         width={120}
@@ -236,9 +233,7 @@ const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = tru
                         imageSmoothingEnabled={false}
                         listening={false}
                     />
-                </>
-            )
-                : (
+                ) : (
                     <>
                         <Image
                             image={defaultImage}
@@ -250,7 +245,6 @@ const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = tru
                             imageSmoothingEnabled={false}
                             listening={false}
                         />
-                        {/* VALOR SUPERIOR */}
                         <Text
                             text={`${cardInfo.valor}`}
                             fill={colorRef.current}
@@ -260,8 +254,6 @@ const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = tru
                             y={4}
                             listening={false}
                         />
-
-                        {/* PALO SUPERIOR */}
                         <Image
                             image={suit}
                             width={25}
@@ -271,8 +263,6 @@ const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = tru
                             imageSmoothingEnabled={false}
                             listening={false}
                         />
-
-                        {/* IMAGEN CENTRAL */}
                         <Image
                             image={image}
                             width={90}
@@ -282,8 +272,6 @@ const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = tru
                             imageSmoothingEnabled={false}
                             listening={false}
                         />
-
-                        {/* PALO INFERIOR (Rotado) */}
                         <Image
                             image={suit}
                             width={25}
@@ -294,12 +282,6 @@ const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = tru
                             rotation={180}
                             listening={false}
                         />
-                        {/* 
-                        --main-green: #1E5128;
-                        --main-red: #84142D;
-                        --main-orange: #F77F00;
-                    */}
-                        {/* VALOR INFERIOR (Rotado) */}
                         <Text
                             text={`${cardInfo.valor}`}
                             fill={colorRef.current}
@@ -311,7 +293,8 @@ const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = tru
                             listening={false}
                         />
                     </>
-                ) : <></>}
+                )
+            )}
         </Group>
     );
 });

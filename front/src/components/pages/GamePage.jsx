@@ -384,7 +384,7 @@ const GamePage = () => {
      */
     // Propiedad para hacer responsive los elementos Canva de Konva
     const [stageSize, setStageSize] = useState({
-        width: window.innerWidth > 1024?window.innerWidth:windowWidth * 1.4,
+        width: window.innerWidth > 1024 ? window.innerWidth : windowWidth * 1.4,
         height: window.innerHeight
     });
     const scale = stageSize.width / 1920;
@@ -1346,7 +1346,7 @@ const GamePage = () => {
                             {gameOn && gameWin ? <h1>Sin límite</h1> : <h1>RONDA {rounds}/{maxRounds}</h1>}
                             <h2 ref={formatedTimeRef}>Tiempo: 00:00</h2>
                             <p>{dungeon.length} cartas restantes</p>
-                            {isGambler ? lastGamblerEffect !== null ? <p className="gambler-text">Última apuesta: <br/> <span>{lastGamblerEffect}</span></p> : <p>Aún no has apostado.</p> : <></>}
+                            {isGambler ? lastGamblerEffect !== null ? <p className="gambler-text">Última apuesta: <br /> <span>{lastGamblerEffect}</span></p> : <p>Aún no has apostado.</p> : <></>}
                         </div>
                         <div className="game-character">
                             <img className="character-avatar" style={{ borderColor: user.color }} src={character?.imagen} alt={character?.nombre} />
@@ -1372,7 +1372,14 @@ const GamePage = () => {
                     </div>
 
                     {/* VENTANA DE JUEVO */}
-                    <Stage className="game-window" width={stageSize.width * scale * 2 * 1.2} height={(stageSize.height / scale) * 2} scaleX={scale * 1.2} scaleY={scale * 1.2} x={0}>
+                    <Stage
+                        className="game-window"
+                        width={stageSize.width}
+                        height={stageSize.height}
+                        scaleX={scale * 1.2}
+                        scaleY={scale * 1.2}
+                        x={0}
+                    >
                         {/* CAPA ESTÁTICA */}
                         <Layer>
                             {/* ZONA DEL MAZO */}
