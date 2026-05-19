@@ -46,7 +46,18 @@ const Tutorial = () => {
     const modificadores = modifiers;
 
     // Escala para react-konva
-    const [scale, setScale] = useState((window.innerWidth > window.innerHeight ? window.innerWidth : window.innerHeight) / 2560);
+    const [scale, setScale] = useState(window.innerWidth / 1920)
+    
+    
+        useEffect(() => {
+            const handleResize = () => {
+                setScale(window.innerWidth / 1920)
+            };
+            window.addEventListener('resize', handleResize);
+            return () => {
+                window.removeEventListener('resize', handleResize)
+            };
+        }, []);
 
     const slide1 = (
         <Fragment>
