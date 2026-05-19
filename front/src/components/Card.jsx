@@ -89,42 +89,7 @@ const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = tru
         }
     }
     const [effectIcon] = useImage(selectEffectImage())
-
-    //Cachear la carta para mejorar el rendimiento
-    useEffect(() => {
-        const allImagesLoaded = image && suit && defaultImage && (!hasEffect || effectIcon);
-
-        if (allImagesLoaded && groupRef.current) {
-            const timeoutId = setTimeout(() => {
-                if (groupRef.current) {
-                    groupRef.current.cache({
-                        x: 0,
-                        y: 0,
-                        width: 120, // El ancho de tu Rect base
-                        height: 150, // El alto de tu Rect base
-                        pixelRatio: 2 // Evita que el texto y el pixel art se difuminen
-                    });
-
-                    // CRUCIAL PARA PIXEL ART: 
-                    // Al cachear, Konva crea un canvas interno. Le decimos que no suavice los píxeles.
-                    const canvas = groupRef.current._cache.canvas._canvas;
-                    const ctx = canvas.getContext('2d');
-                    ctx.imageSmoothingEnabled = false;
-
-                    // Forzamos a la capa a dibujar el cambio
-                    groupRef.current.getLayer()?.batchDraw();
-                }
-            }, 100);
-
-            return () => clearTimeout(timeoutId);
-        }
-
-        return () => {
-            if (groupRef.current) {
-                groupRef.current.clearCache();
-            }
-        };
-    }, [image, suit, effectIcon, defaultImage, strokeWidth, hasEffect, cardInfo]);
+    
     // Color de la carta
     const colorRef = useRef('')
 
