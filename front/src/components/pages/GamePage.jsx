@@ -1381,7 +1381,8 @@ const GamePage = () => {
                     </div>
 
                     {/* VENTANA DE JUEVO */}
-                    <Stage className="game-window" width={stageSize.width * scale * 2} height={stageSize.height / scale * 1.2} scaleX={scale * 1.2} scaleY={scale * 1.2} imageSmoothingEnabled={false} x={0}>
+                    {console.log(scale)}
+                    <Stage className="game-window" width={stageSize.width * scale * 2} height={stageSize.height * scale} scaleX={scale * 1.2} scaleY={scale * 1.2} imageSmoothingEnabled={false} x={0}>
                         {/* CAPA ESTÁTICA */}
                         <Layer>
                             {/* ZONA DEL MAZO */}
