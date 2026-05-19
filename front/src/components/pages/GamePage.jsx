@@ -384,16 +384,24 @@ const GamePage = () => {
      */
     // Propiedad para hacer responsive los elementos Canva de Konva
     const [stageSize, setStageSize] = useState({
-        width: window.innerWidth > 1024?window.innerWidth:windowWidth * 1.4,
+        width: window.innerWidth > 1024 ? window.innerWidth : windowWidth * 1.4,
         height: window.innerHeight
     });
-    const scale = stageSize.width / 1920;
+    const [scale, setScale] = useState(stageSize.width / 1920)
 
 
     useEffect(() => {
         if (!user) {
             navigate('/')
         }
+        const handleResize = () => {
+            setStageSize({
+                width: window.innerWidth > 1024 ? window.innerWidth : windowWidth * 1.4,
+                height: window.innerHeight
+            });
+            setScale(window.innerWidth / 1920)
+        };
+        window.addEventListener('resize', handleResize);
         return () => {
             window.removeEventListener('resize', handleResize)
             if (user && character && modifiers.length > 0) {
@@ -1347,7 +1355,7 @@ const GamePage = () => {
                             {gameOn && gameWin ? <h1>Sin límite</h1> : <h1>RONDA {rounds}/{maxRounds}</h1>}
                             <h2 ref={formatedTimeRef}>Tiempo: 00:00</h2>
                             <p>{dungeon.length} cartas restantes</p>
-                            {isGambler ? lastGamblerEffect !== null ? <p className="gambler-text">Última apuesta: <br/> <span>{lastGamblerEffect}</span></p> : <p>Aún no has apostado.</p> : <></>}
+                            {isGambler ? lastGamblerEffect !== null ? <p className="gambler-text">Última apuesta: <br /> <span>{lastGamblerEffect}</span></p> : <p>Aún no has apostado.</p> : <></>}
                         </div>
                         <div className="game-character">
                             <img className="character-avatar" style={{ borderColor: user.color }} src={character?.imagen} alt={character?.nombre} />
