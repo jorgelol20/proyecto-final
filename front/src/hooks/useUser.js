@@ -249,6 +249,8 @@ export const useUser = () => {
         }
     };
 
+    
+
     return {
         user,
         isLoading,
@@ -276,6 +278,7 @@ export const useUser = () => {
         getRoundRanking,
         deleteProfilePhoto: deleteProfilePhoto.mutate,
         deleteProfilePhotoError: deleteProfilePhoto.error,
-        isDeletingProfilePhoto: deleteProfilePhoto.isPending
+        isDeletingProfilePhoto: deleteProfilePhoto.isPending,
+       
     };
 };

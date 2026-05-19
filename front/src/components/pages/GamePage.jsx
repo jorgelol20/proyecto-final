@@ -40,6 +40,7 @@ import HealAnimation from '/images/animations/HealAnimation.webp';
 import GoldAnimation from '/images/gold.webp';
 import AllDamageAnimation from '/images/animations/AllDamageAnimation.webp';
 import DamageAnimation from '/images/animations/DamageAnimation.webp';
+import { useAchievements } from "../../hooks/useAchievements.js";
 
 
 
@@ -48,6 +49,7 @@ const GamePage = () => {
     const location = useLocation();
     const { startButtonSound, showLogs } = useContext(settingsContext)
     const { matchDeck, character, activeModifiers: modifiers, setNewDeck, setNewCharacter, startNewGame, addCardToMatchDeck, gameLoading, availableCharacters, getWeapon, getHealItem, endGame, updateActualGame, setCharacter, setActiveModifiers, setGameLoading, addEnemysToMatchDeck, addModifierToMatch } = useContext(matchContext);
+    const {newAchievement} = useAchievements();
     const { user, isLoading } = useUser();
     useEffect(() => {
         restartFunction();
@@ -815,6 +817,9 @@ const GamePage = () => {
         setDungeon(shuffled);
     };
     const startNewRound = async (continueMatch = false) => {
+        if(rounds + 1 === 20){
+            newAchievement({ logro_id: 10 });
+        }
         if (rounds === maxRounds && !continuedGame) {
             setGameOn(false)
             setGameWin(true)
@@ -1038,6 +1043,7 @@ const GamePage = () => {
                 break;
             case 'heal_roulete':
                 heal_roulete(true)
+                newAchievement({ logro_id: 9 });
                 break;
             case 'progresive_heal':
                 progresiveHeal.current = effect.value
@@ -1352,7 +1358,7 @@ const GamePage = () => {
                             <h1 className="player-health"><img src={healthIcon} />{health}/{maxHealth}{healthAnimation !== null ? <div className="animation-container"><strong className="animation" disabled={healthAnimation}>{healthAnimationValue}</strong><img className="animation" disabled={healthAnimation} src={healthAnimation} /></div> : <></>}</h1>
                             <h1 className="player-gold"><img src={GoldIcon} />{gold}{goldAnimation !== null ? <div className="animation-container"><strong className="animation" disabled={goldAnimation}>{goldAnimationValue}</strong><img className="animation" disabled={goldAnimation} src={goldAnimation} /></div> : <></>}</h1>
                             {!modifiersLoading && pentakillTargetNumber !== 0 ? <h1>Racha <strong>{actualStreak}</strong>/<strong>{pentakillTargetNumber}</strong></h1> : <></>}
-                            {gameOn && gameWin ? <h1>Sin límite</h1> : <h1>RONDA {rounds}/{maxRounds}</h1>}
+                            {gameOn && gameWin ? <h1>RONDA {rounds}/Sin límite</h1> : <h1>RONDA {rounds}/{maxRounds}</h1>}
                             <h2 ref={formatedTimeRef}>Tiempo: 00:00</h2>
                             <p>{dungeon.length} cartas restantes</p>
                             {isGambler ? lastGamblerEffect !== null ? <p className="gambler-text">Última apuesta: <br /> <span>{lastGamblerEffect}</span></p> : <p>Aún no has apostado.</p> : <></>}

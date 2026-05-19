@@ -11,17 +11,21 @@ import Loading from '../Loading.jsx';
 import Match from '../Match.jsx';
 import { filter } from 'lodash';
 import DeleteIcon from '/images/delete-icon.svg'
+import { useAchievements } from '../../hooks/useAchievements.js';
+import Achievement from '../Achievement.jsx';
 
 const ProfilePage = () => {
     const navigate = useNavigate();
     const { startButtonSound } = useContext(settingsContext)
 
     const { user, getUsuario, logout, isLoading, isError, error, update, deleteProfilePhoto, isDeletingProfilePhoto } = useUser();
+    const { achievements } = useAchievements();
     const { nick } = useParams();
     const [canEdit, setEdit] = useState(false);
     const [userInfo, setUserInfo] = useState({});
     const [isGettingUser, setIsGettingUser] = useState(true)
     const [userMatchs, setUserMatchs] = useState([]);
+    const [userAchievements, setUserAchievements] = useState([])
 
     const [filter, setFilter] = useState('all');
 
@@ -44,7 +48,7 @@ const ProfilePage = () => {
 
     const checking = async () => {
         //Comprueba si es el dueño de este perfil.
-        user.nick == nick ? setEdit(true) : setEdit(false)
+        user?.nick == nick ? setEdit(true) : setEdit(false)
 
         //Comprobamos si el nick de los parámetros es distintos de `undefined`.
         if (nick !== undefined) {
@@ -145,6 +149,15 @@ const ProfilePage = () => {
         if (userInfo?.tiene_jugadas) {
             setUserMatchs(userInfo?.tiene_jugadas.reverse())
         }
+        if (userInfo?.logros) {
+            const tempAchievements = achievements.map((achievement) => {
+                return {
+                    ...achievement,
+                    obtained: userInfo.logros.some((userAchievement) => userAchievement.id === achievement.id)
+                };
+            });
+            setUserAchievements(tempAchievements);
+        }
     }, [userInfo])
 
     if (isLoading | isGettingUser) {
@@ -204,9 +217,14 @@ const ProfilePage = () => {
                                 <select defaultValue={0} name="order" id="order" onChange={(e) => { handleOrderChange(e.currentTarget.value) }}>
                                     <option value="1-0">Más reciente a más antigua</option>
                                     <option value="0-1">Más antigua a más reciente</option>
-
                                 </select>
                             </form>
+                        </div>
+                        <div className='achievements'>
+                            <h1>Logros</h1>
+                            <div className='user-achievements'>
+                                {userAchievements.map(achievement => <Achievement key={achievement.nombre} achievementInfo={achievement} obtained={achievement.obtained} />)}
+                            </div>
                         </div>
                     </div>
                 </div>

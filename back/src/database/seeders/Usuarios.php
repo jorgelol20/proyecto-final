@@ -14,19 +14,24 @@ class Usuarios extends Seeder
      */
     public function run(): void
     {
-        ModelUsuarios::factory()->create([
-            'nick' => 'admin',
-            'email' => 'admin@scoundrels-quest.com',
-            'password' => Hash::make('HZnQ_1705'),
-            'es_admin' => true,
-            'avatar' => null,
-        ]);
-         ModelUsuarios::factory()->create([
-            'nick' => 'jorge',
-            'email' => 'jorgejorgemonovar@gmail.com',
-            'password' => Hash::make('HZnQ_1705'),
-            'es_admin' => true,
-            'avatar' => null,
-        ]);
+        $usuario1 = ModelUsuarios::updateOrCreate(
+            ['nick' => 'admin',],
+            [
+                'email' => 'admin@scoundrels-quest.com',
+                'password' => Hash::make('HZnQ_1705'),
+                'es_admin' => true,
+                'avatar' => null,
+            ]
+        );
+        $usuario1->logros()->attach([1]);
+        ModelUsuarios::updateOrCreate(
+            ['nick' => 'jorge'],
+            [
+                'email' => 'jorgejorgemonovar@gmail.com',
+                'password' => Hash::make('HZnQ_1705'),
+                'es_admin' => true,
+                'avatar' => null,
+            ]
+        );
     }
 }

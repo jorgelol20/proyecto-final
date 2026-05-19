@@ -7,6 +7,7 @@ use App\Models\Partidas;
 use App\Models\Usuarios;
 use App\Http\Requests\Usuarios\StoreUsuarioRequest;
 use App\Http\Requests\Usuarios\UpdateUsuarioRequest;
+use App\Models\Logros;
 use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -27,7 +28,7 @@ class UsuariosController extends Controller
                 }
             ])
             ->get();
-        $usuarios = $usuarios->load(['comentarios', 'tiene_jugadas.modificadores']);
+        $usuarios = $usuarios->load(['comentarios', 'tiene_jugadas.modificadores', 'logros']);
         return response()->json(['usuario' => $usuarios]);
     }
 
@@ -66,13 +67,13 @@ class UsuariosController extends Controller
     public function show(string $nick)
     {
         $usuario = Usuarios::select('id', 'nick', 'email', 'es_admin', 'avatar', 'color', 'created_at', 'ultima_vez_visto')->where('nick', '=', $nick)->get();
-        $usuario = $usuario->load(['comentarios', 'tiene_jugadas.modificadores']);
+        $usuario = $usuario->load(['comentarios', 'tiene_jugadas.modificadores', 'logros']);
         return response()->json(['usuario' => $usuario], 201);
     }
 
     public function search(string $search)
     {
-        $usuarios = Usuarios::select('id', 'nick', 'email', 'es_admin', 'avatar', 'color', 'created_at','ultima_vez_visto')->where('nick', 'LIKE', '%' . $search . '%')->limit(3)->get();
+        $usuarios = Usuarios::select('id', 'nick', 'email', 'es_admin', 'avatar', 'color', 'created_at', 'ultima_vez_visto')->where('nick', 'LIKE', '%' . $search . '%')->limit(3)->get();
         return response()->json(['usuarios' => $usuarios], 201);
     }
 
@@ -125,7 +126,7 @@ class UsuariosController extends Controller
 
     }
 
-    public function destroy(Request $request,$id)
+    public function destroy(Request $request, $id)
     {
 
         if (!$request->user()->es_admin) {
@@ -188,7 +189,7 @@ class UsuariosController extends Controller
     }
     public function ranking_victorias()
     {
-        $usuarios = Usuarios::select('id', 'nick', 'email', 'avatar', 'color', 'created_at', 'es_admin','ultima_vez_visto')
+        $usuarios = Usuarios::select('id', 'nick', 'email', 'avatar', 'color', 'created_at', 'es_admin', 'ultima_vez_visto')
             ->withCount([
                 'tiene_jugadas as total_victorias' => function ($query) {
                     $query->where('victoria', true);
@@ -239,7 +240,11 @@ class UsuariosController extends Controller
 
     public function registrarLogro(Request $request)
     {
-        $logro = Partidas::findOrFail($request->logro_id);
+
+        $request->validate([
+            'logro_id' => 'required|integer|exists:logros,id'
+        ]);
+        $logro = Logros::findOrFail($request->logro_id);
         $usuarioId = $request->user()->id;
         $logro->obtenido_por()->attach($usuarioId, [
             'created_at' => now(),

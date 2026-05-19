@@ -49,7 +49,8 @@
                 color: white;
                 font-size: 1em;
             }
-            .user-basic{
+
+            .user-basic {
                 display: flex;
                 flex-direction: column;
                 align-items: center;
@@ -101,6 +102,7 @@
             border-style: solid;
             color: var(--main-gold);
             text-align: center;
+
             .match-history {
                 position: relative;
                 display: flex;
@@ -115,7 +117,45 @@
                 overflow-y: scroll;
             }
 
+
         }
+
+        .achievements {
+            border-radius: 15px;
+            border-color: var(--main-black);
+            border-width: 5px;
+            border-style: solid;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: var(--background-profile-color);
+            width: 30%;
+            h1 {
+                text-align: center;
+                color: var(--main-gold);
+            }
+
+            .user-achievements {
+                overflow: auto;
+                overflow-x:hidden;
+                position: relative;
+                background-color: var(--background-profile-color);
+                padding: 0px 1em;
+                margin-right: 0%;
+                border-radius: 15px;
+                border-color: var(--main-black);
+                border-width: 5px;
+                border-style: solid;
+                color: var(--main-gold);
+                display: flex;
+                flex-direction: column;
+                height: 80%;
+            }
+        }
+
+
+
     }
 }
 
@@ -126,7 +166,7 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        
+
         .userInfo {
             flex-direction: column;
             width: 80%;
@@ -138,12 +178,13 @@
                 width: 100%;
                 margin-left: -5cqw;
 
-                .user-basic{
+                .user-basic {
                     display: flex;
                     flex-direction: column;
                     align-items: center;
                     justify-content: center;
-                    h1{
+
+                    h1 {
                         font-size: 1em;
                     }
                 }
@@ -182,13 +223,30 @@
                 width: 100%;
                 margin-left: -5cqw;
                 font-size: 1em;
-                
+
                 .match-history {
                     padding: 0;
                     padding-top: 10cqw;
 
                 }
+
+
             }
+
+            .achievements {
+                width: 100%;
+                margin-left: -2cqw;
+
+                h1 {
+                    margin: 0;
+                }
+
+                .user-achievements {
+                    width: 80%;
+                    min-height: 5em;
+                }
+            }
+
         }
     }
 }

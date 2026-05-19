@@ -1,0 +1,55 @@
+.achievement-info {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    border-bottom: 0.3em groove var(--second-color-dark);
+    padding-bottom: 0.5em;
+
+    h1 {
+        font-size: 0.6em;
+        margin-right: 1em;
+        color: var(--main-gold);
+    }
+
+    img {
+        width: 2em;
+        height: 2em;
+        margin-right: 1cqw;
+        border: 0.3em groove var(--main-gold);
+    }
+}
+
+.achievement {
+    width: 90%;
+    height: 8cqw;
+    background-color: var(--second-color-light);
+    border-radius: 5px;
+    margin-bottom: 0.5em;
+    margin-top: 0.5em;
+    margin-left: -0.7em;
+    padding: 1cqw;
+    border: 0.3em groove var(--second-color-dark);
+}
+
+.achievement-description {
+    width: 100%;
+
+    p {
+        font-size: 1cqw;
+        color: var(--main-white);
+    }
+}
+
+@media (max-width: 1080px) {
+    .achievement {
+        display: flex;
+    }
+}
+
+.false {
+    filter: grayscale(1);
+
+    p {
+        color: grey;
+    }
+}
