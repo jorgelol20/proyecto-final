@@ -41,10 +41,9 @@
     .character-abilitie {
         position: relative;
         display: flex;
+        align-items: center;
         gap: 1cqw;
         margin-bottom: 1cqw;
-        /* Esto asegura que ambos elementos hijos tengan la misma altura */
-        align-items: stretch;
     }
 
     .character-abilitie img {
@@ -60,7 +59,7 @@
 
     .abilitie-text {
         /* Forzamos la misma altura que la imagen */
-        height: 5em;
+        height: 8em;
         /* Usamos flexbox para centrar el texto verticalmente dentro de esta altura fija */
         display: flex;
         align-items: center;
@@ -152,7 +151,7 @@
 }
 
 /* Regla para pantallas pequeñas */
-@media (max-width: 1080px) {
+@media (max-width: 1200px) {
     .character-container {
         flex-direction: row;
         align-items: center;
