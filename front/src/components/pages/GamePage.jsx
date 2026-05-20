@@ -47,7 +47,7 @@ const GamePage = () => {
     const location = useLocation();
     const { startButtonSound, showLogs } = useContext(settingsContext)
     const { matchDeck, character, activeModifiers: modifiers, setNewDeck, setNewCharacter, startNewGame, addCardToMatchDeck, gameLoading, availableCharacters, getWeapon, getHealItem, endGame, updateActualGame, setCharacter, setActiveModifiers, setGameLoading, addEnemysToMatchDeck, addModifierToMatch } = useContext(matchContext);
-    const {newAchievement} = useAchievements();
+    const { newAchievement } = useAchievements();
     const { user, isLoading } = useUser();
     useEffect(() => {
         restartFunction();
@@ -388,7 +388,7 @@ const GamePage = () => {
         // En móvil/vertical mide el 100% de la pantalla para aprovechar todo el ancho disponible
         const physicalWidth = isDesktop ? window.innerWidth / 2 : window.innerWidth / 1.5;
         const physicalHeight = window.innerHeight;
-        
+
         return {
             width: physicalWidth,
             height: physicalHeight,
@@ -473,13 +473,13 @@ const GamePage = () => {
         canScape.current ? setAvailableAbility(true) : setAvailableAbility(false)
     }
 
-    useEffect(()=>{
-        if(isWarrior && health <= (maxHealth/2)){
+    useEffect(() => {
+        if (isWarrior && health <= (maxHealth / 2)) {
             userDmgMultiplier.current = 1.5;
-        }else{
+        } else {
             userDmgMultiplier.current = 1;
         }
-    },[isWarrior, health])
+    }, [isWarrior, health])
 
     // Habilidad del elfo
     const elf = () => {
@@ -553,7 +553,6 @@ const GamePage = () => {
             switch (id) {
                 case 1: // Guerrero
                     warrior()
-                    setIsWarrior(true);
                     break
                 case 2: // Paladín (1 vez por ronda)
                     setHealth(prev => Math.min(maxHealth, prev + 5));
@@ -564,7 +563,6 @@ const GamePage = () => {
                 case 3: // Elfo
                     elf()
                     setAvailableAbility(false)
-                    setMaxScapes(prev => prev + 1)
                     break
                 case 4: // Mago (1 vez por ronda)
                     shuffleDeck(dungeon)
@@ -591,10 +589,19 @@ const GamePage = () => {
     // Manejo de pasivas
     useEffect(() => {
         if (character) {
-            if (character?.habilidad_personaje?.id === 2) {
+            if (character?.habilidad_personaje?.id === 1) {
+                setIsWarrior(true);
+            }
+            else if (character?.habilidad_personaje?.id === 2) {
                 setMaxHealth(maxHealth + 5)
                 setHealth(health + 5)
-            } else if (character?.habilidad_personaje?.id === 4) {
+            }
+            else if (character?.habilidad_personaje?.id === 3) {
+                setMaxScapes(prev => prev + 1)
+                actualScapes.current += 1;
+
+            }
+            else if (character?.habilidad_personaje?.id === 4) {
                 setIsWizard(true)
             } else if (character?.habilidad_personaje?.id === 5) {
                 setIsGambler(true);
@@ -831,7 +838,7 @@ const GamePage = () => {
         setDungeon(shuffled);
     };
     const startNewRound = async (continueMatch = false) => {
-        if(rounds + 1 === 20){
+        if (rounds + 1 === 20) {
             newAchievement({ logro_id: 10 });
         }
         if (rounds === maxRounds && !continuedGame) {
@@ -1189,7 +1196,7 @@ const GamePage = () => {
 
         // ATAQUE CON ARMA
         else if (weapon && ((slainMonsters.length === 0 || card.valor < (slainMonsters[slainMonsters.length - 1]?.valor)) || (ricochet.current && card.valor <= (slainMonsters[slainMonsters.length - 1]?.valor)))) {
-            const finalUserDmg = (weaponDmg.current + (card.palo == 'Pica' ? spadesExtraTakedDmg.current : clubsExtraTakedDmg.current) + userExtraDmg.current) * userDmgMultiplier.current;
+            const finalUserDmg = Math.floor((weaponDmg.current + (card.palo == 'Pica' ? spadesExtraTakedDmg.current : clubsExtraTakedDmg.current) + userExtraDmg.current) * userDmgMultiplier.current + 0.5);
             const finalEnemyDmg = enemyDmg - pentakill;
 
             const finalDmg = Math.max(0, finalEnemyDmg - finalUserDmg);
