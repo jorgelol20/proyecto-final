@@ -1241,7 +1241,7 @@ const GamePage = () => {
 
         // ATAQUE SIN ARMA
         else {
-            const finalUserDmg = (pentakill + (card.palo == 'Pica' ? spadesExtraTakedDmg.current : clubsExtraTakedDmg.current) + userExtraDmg.current) * userDmgMultiplier.current;
+            const finalUserDmg = Math.floor((pentakill + (card.palo == 'Pica' ? spadesExtraTakedDmg.current : clubsExtraTakedDmg.current) + userExtraDmg.current) * userDmgMultiplier.current +0.5);
             const finalDmg = Math.max(0, enemyDmg - finalUserDmg);
             moveCardToDiscard([card])
             damageAnimation(finalDmg, true)
