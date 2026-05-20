@@ -42,8 +42,6 @@ import AllDamageAnimation from '/images/animations/AllDamageAnimation.webp';
 import DamageAnimation from '/images/animations/DamageAnimation.webp';
 import { useAchievements } from "../../hooks/useAchievements.js";
 
-
-
 const GamePage = () => {
     const navigate = useNavigate();
     const location = useLocation();
@@ -273,7 +271,7 @@ const GamePage = () => {
 
     /**
      * ===================================
-     *              VIDA
+     * VIDA
      * ===================================
      */
     // Estado que almacena la vida máxima del jugador
@@ -313,7 +311,7 @@ const GamePage = () => {
 
     /**
      * ===================================
-     *                ORO
+     * ORO
      * ===================================
      */
     // State de oro
@@ -331,7 +329,7 @@ const GamePage = () => {
 
     /**
      * ===================================
-     *  CARTAS Y ZONAS (Elementos Konva)
+     * CARTAS Y ZONAS (Elementos Konva)
      * ===================================
      */
     // Zona principal de Konva
@@ -348,11 +346,6 @@ const GamePage = () => {
         }
     }, [canBeClicked])
 
-
-    const windowWidth = window.innerWidth;
-    const windowHeight = window.innerHeight;
-
-    const vertical = windowHeight > windowWidth ? true : false
 
     // Mapa de referencias de las cartas (Animaciones)
     const cardRefs = useRef({});
@@ -381,33 +374,40 @@ const GamePage = () => {
 
     /**
      * ==========================================
-     *  CARGA INICIAL Y DESACOPLE DEL COMPONENTE
+     * CARGA INICIAL Y RESPONSIVIDAD DEL CANVA
      * ==========================================
      */
-    // Propiedad para hacer responsive los elementos Canva de Konva
-    const [stageSize, setStageSize] = useState({
-        width: window.innerWidth > 1024 ? window.innerWidth : windowWidth * 1.4,
-        height: window.innerHeight
-    });
-    const [scale, setScale] = useState(stageSize.width / 1920)
+    // Ancho virtual total sobre el que diseñaste tu tablero (Zona descarte termina en X: 780)
+    const VIRTUAL_WIDTH = 800;
 
+    const calculateLayout = () => {
+        const isDesktop = window.innerWidth > 1024;
+        // En desktop el canvas mide la mitad de la pantalla (deja espacio al HUD lateral)
+        // En móvil/vertical mide el 100% de la pantalla para aprovechar todo el ancho disponible
+        const physicalWidth = isDesktop ? window.innerWidth / 2 : window.innerWidth / 1.5;
+        const physicalHeight = window.innerHeight;
+        
+        return {
+            width: physicalWidth,
+            height: physicalHeight,
+            // Escala proporcional basada en el ancho disponible real frente al virtual
+            scale: physicalWidth / VIRTUAL_WIDTH
+        };
+    };
+
+    const [layout, setLayout] = useState(calculateLayout());
 
     useEffect(() => {
         if (!user) {
             navigate('/')
         }
         const handleResize = () => {
-            setStageSize({
-                width: window.innerWidth > 1024 ? window.innerWidth : windowWidth * 1.4,
-                height: window.innerHeight
-            });
-            setScale(window.innerWidth / 1920)
+            setLayout(calculateLayout());
         };
         window.addEventListener('resize', handleResize);
         return () => {
             window.removeEventListener('resize', handleResize)
             if (user && character && modifiers.length > 0) {
-                // user_id, tiempo, victoria, rondas, earnedGold, healedLife, enemysDefeated
                 endGame(user.id, timeRef.current, gameWin, rounds, totalEarnedGold.current, healedLife.current, enemysDefeated.current)
             }
             restartFunction()
@@ -418,7 +418,6 @@ const GamePage = () => {
             setNewDeck();
             setNewCharacter(null)
             setGameOn(false)
-
         };
     }, []);
 
@@ -437,7 +436,7 @@ const GamePage = () => {
 
     /**
      * ===================================
-     *            PERSONAJES
+     * PERSONAJES
      * ===================================
      */
     // Parámetros de personaje
@@ -595,7 +594,7 @@ const GamePage = () => {
 
     /**
      * ===================================
-     *           MODIFICADORES
+     * MODIFICADORES
      * ===================================
      */
 
@@ -732,7 +731,7 @@ const GamePage = () => {
 
     /**
      * ===================================
-     *         RELLENAR    MANO
+     * RELLENAR    MANO
      * ===================================
      */
     // Función para rellenar las cartas activas
@@ -863,7 +862,7 @@ const GamePage = () => {
 
     /**
      * ===================================
-     *      ANIMACIONES DE COMBATE
+     * ANIMACIONES DE COMBATE
      * ===================================
      */
     const [healthAnimation, setHealthAnimation] = useState(null)
@@ -903,7 +902,7 @@ const GamePage = () => {
 
     /**
      * ===================================
-     *         JUGAR      CARTAS
+     * JUGAR      CARTAS
      * ===================================
      */
     // Función para eliminar una carta del mazo de ronda.
@@ -1386,9 +1385,8 @@ const GamePage = () => {
                         </div>
                     </div>
 
-                    {/* VENTANA DE JUEVO */}
-                    {console.log(scale)}
-                    <Stage className="game-window" width={stageSize.width * scale * 2} height={stageSize.height * scale} scaleX={scale * 1.2} scaleY={scale * 1.2} imageSmoothingEnabled={false} x={0}>
+                    {/* VENTANA DE JUEGO */}
+                    <Stage className="game-window" width={layout.width} height={layout.height} scaleX={layout.scale} scaleY={layout.scale} imageSmoothingEnabled={false} x={0}>
                         {/* CAPA ESTÁTICA */}
                         <Layer>
                             {/* ZONA DEL MAZO */}
