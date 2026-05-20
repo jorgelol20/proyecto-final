@@ -509,16 +509,25 @@ const GamePage = () => {
     }
     const [lastGamblerEffect, setLastGamblerEffect] = useState(null);
     const gambler = async () => {
-        const roll = Math.random() * 100;
-        if (roll <= 20) {
+        const roll = Math.floor(Math.random() * 100) + 1;
+        if(roll === 100){
+            setGold(prev => prev + 50);
+            setHealth(prev => Math.min(maxHealth, prev + 10));
+            setLastGamblerEffect(`¡JACKTPOT! +50 oro, +10 vida y +10 daño.`)
+            userExtraDmg.current += 10;
+        }else if (roll <= 20) {
             //Modificar daño
             const randomDmg = Math.floor(Math.random() * 7) - 3;
-            userExtraDmg.current = randomDmg;
+            userExtraDmg.current += randomDmg;
             setLastGamblerEffect(`${randomDmg} de daño extra en la siguiente acción.`)
         } else if (roll <= 40) {
             //Curación/Daño
             const randomHeal = Math.floor(Math.random() * 7) - 3;
-            healAnimation(randomHeal)
+            if(randomHeal < 0){
+                damageAnimation(randomHeal)
+            }else{
+                healAnimation(randomHeal)
+            }
             setHealth(prev => Math.min(maxHealth, Math.max(0, prev + randomHeal)));
             setLastGamblerEffect(`${randomHeal} de vida.`)
         } else if (roll <= 60) {
@@ -539,7 +548,7 @@ const GamePage = () => {
             addCardToMatchDeck(newHeal);
             setLastGamblerEffect(`Añadida una nueva curación con valor ${newHeal.valor}`)
             setDungeon(prev => [newHeal, ...prev])
-        } else if (roll <= 100) {
+        } else if (roll < 100) {
             //Añadir enemigo
             const newEnemy = await addEnemy();
             setLastGamblerEffect(`Añadido un nuevo enemigo con valor ${newEnemy.valor}`)
