@@ -16,7 +16,7 @@ class Habilidades extends Seeder
         $habilidadesData = [
             [
                 'nombre' => 'Grito de guerra',
-                'descripcion' => 'Cambias a los 2 primeros enemigos del frente por las 2 siguientes cartas en la baraja. Usar la habilidad cuenta como `Escapar`.',
+                'descripcion' => 'Cambias a los 2 primeros enemigos del frente por las 2 siguientes cartas en la baraja. Además, estás a mitad de vida o menos, obtienes un 50% más de daño. Usar la habilidad cuenta como `Escapar`.',
                 'icono' => '/storage/habilidades/GritoGuerra.webp'
             ],
             [
@@ -26,7 +26,7 @@ class Habilidades extends Seeder
             ],
             [
                 'nombre' => 'Abrojos',
-                'descripcion' => 'Una vez por ronda, puedes bajar el valor en 5 a las dos últimas cartas del frente.',
+                'descripcion' => 'Una vez por ronda, puedes bajar el valor en 5 a las dos últimas cartas del frente. Además, te permite huir 1 más.',
                 'icono' => '/storage/habilidades/Abrojos.webp'
             ],
             [

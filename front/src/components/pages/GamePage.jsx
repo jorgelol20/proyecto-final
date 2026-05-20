@@ -178,10 +178,12 @@ const GamePage = () => {
         healedLife.current = 0;
         totalEarnedGold.current = 0;
         enemysDefeated.current = 0;
-        totalCardsUsed.current = 0
-        setIsWizard(false)
-        setIsGambler(false)
-        setLastGamblerEffect(null)
+        totalCardsUsed.current = 0;
+        setIsWizard(false);
+        setIsGambler(false);
+        setIsWarrior(false);
+        setMaxScapes(1);
+        setLastGamblerEffect(null);
 
         // Limpieza de cartas y mazo
         setDungeon([]);
@@ -442,6 +444,7 @@ const GamePage = () => {
     // Parámetros de personaje
     const [isWizard, setIsWizard] = useState(false);
     const [isGambler, setIsGambler] = useState(false);
+    const [isWarrior, setIsWarrior] = useState(false);
     const isScapingRef = useRef(false);
     const canScape = useRef(true)
     const [availableAbility, setAvailableAbility] = useState(true)
@@ -469,6 +472,14 @@ const GamePage = () => {
             canScape.current = false;
         canScape.current ? setAvailableAbility(true) : setAvailableAbility(false)
     }
+
+    useEffect(()=>{
+        if(isWarrior && health <= (maxHealth/2)){
+            userDmgMultiplier.current = 1.5;
+        }else{
+            userDmgMultiplier.current = 1;
+        }
+    },[isWarrior, health])
 
     // Habilidad del elfo
     const elf = () => {
@@ -542,6 +553,7 @@ const GamePage = () => {
             switch (id) {
                 case 1: // Guerrero
                     warrior()
+                    setIsWarrior(true);
                     break
                 case 2: // Paladín (1 vez por ronda)
                     setHealth(prev => Math.min(maxHealth, prev + 5));
@@ -552,6 +564,7 @@ const GamePage = () => {
                 case 3: // Elfo
                     elf()
                     setAvailableAbility(false)
+                    setMaxScapes(prev => prev + 1)
                     break
                 case 4: // Mago (1 vez por ronda)
                     shuffleDeck(dungeon)
@@ -603,6 +616,7 @@ const GamePage = () => {
 
     // Daño usuario
     const userExtraDmg = useRef(0);
+    const userDmgMultiplier = useRef(1);
 
     // Daño enemigos
     const enemyDmgMultiplier = useRef(1);
@@ -683,7 +697,7 @@ const GamePage = () => {
                 enemyExtraDmg.current = enemyExtraDmg.current + effect.value
                 break
             case "max_scapes":
-                setMaxScapes(effect.value)
+                setMaxScapes(prev => prev + effect.value)
                 actualScapes.current = effect.value
                 break;
             case "max_hp":
@@ -717,6 +731,7 @@ const GamePage = () => {
         goldMultiplier.current = (1)
         setMaxScapes(1)
         userExtraDmg.current = (0)
+        userDmgMultiplier.current = (1);
     }
 
     const handleModifierEvent = () => {
@@ -1174,7 +1189,7 @@ const GamePage = () => {
 
         // ATAQUE CON ARMA
         else if (weapon && ((slainMonsters.length === 0 || card.valor < (slainMonsters[slainMonsters.length - 1]?.valor)) || (ricochet.current && card.valor <= (slainMonsters[slainMonsters.length - 1]?.valor)))) {
-            const finalUserDmg = weaponDmg.current + (card.palo == 'Pica' ? spadesExtraTakedDmg.current : clubsExtraTakedDmg.current) + userExtraDmg.current;
+            const finalUserDmg = (weaponDmg.current + (card.palo == 'Pica' ? spadesExtraTakedDmg.current : clubsExtraTakedDmg.current) + userExtraDmg.current) * userDmgMultiplier.current;
             const finalEnemyDmg = enemyDmg - pentakill;
 
             const finalDmg = Math.max(0, finalEnemyDmg - finalUserDmg);
@@ -1210,7 +1225,7 @@ const GamePage = () => {
 
         // ATAQUE SIN ARMA
         else {
-            const finalUserDmg = pentakill + (card.palo == 'Pica' ? spadesExtraTakedDmg.current : clubsExtraTakedDmg.current) + userExtraDmg.current;
+            const finalUserDmg = (pentakill + (card.palo == 'Pica' ? spadesExtraTakedDmg.current : clubsExtraTakedDmg.current) + userExtraDmg.current) * userDmgMultiplier.current;
             const finalDmg = Math.max(0, enemyDmg - finalUserDmg);
             moveCardToDiscard([card])
             damageAnimation(finalDmg, true)
