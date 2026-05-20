@@ -39,7 +39,7 @@
     width: 100%;
 
     p {
-        font-size: 1cqw;
+        font-size: 0.3em;
         color: var(--main-white);
     }
 }
@@ -54,6 +54,16 @@
             border-bottom: 0;
             width: 15em;
             margin-right: 1em;
+            p{
+                display: none;
+            }
+            h1{
+                font-size: 2.5cqw;
+            }
+            img{
+                width: 1em;
+                height: 1em;
+            }
         }
 
     }
