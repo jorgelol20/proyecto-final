@@ -740,8 +740,8 @@ const GamePage = () => {
                 actualScapes.current = effect.value
                 break;
             case "max_hp":
-                setMaxHealth(maxHealth + effect.value)
-                setHealth(health + effect.value)
+                setMaxHealth(prev => prev + effect.value)
+                setHealth(prev => prev + effect.value)
                 break;
             case "ricochet":
                 ricochet.current = true;
@@ -1341,6 +1341,7 @@ const GamePage = () => {
             validMove = handleWeapon(card)
             if(validMove) {
                 userExtraDmg.current = 0;
+                dmgReduction.current = 0;
             }
         }
         // Lógica de combate
@@ -1349,9 +1350,10 @@ const GamePage = () => {
             validMove ? enemysDefeated.current += 1 : null;
             if(validMove) {
                 userExtraDmg.current = 0;
+                dmgReduction.current = 0;
             }
         }
-        dmgReduction.current = 0;
+        
         if (validMove) {
             if (character?.habilidad_personaje?.id === 1) {
                 setAvailableAbility(false)
