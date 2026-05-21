@@ -678,7 +678,7 @@ const GamePage = () => {
                 extraHealthExpert.current += 1;
             }
         }
-    }, [expert, enemysDefeated])
+    }, [expert, enemysDefeated.current])
 
 
 
