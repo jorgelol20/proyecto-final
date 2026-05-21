@@ -141,6 +141,96 @@ class Modificadores extends Seeder
                     ['name' => 'ricochet', 'value' => true],
                 ])
             ],
+            [
+                'nombre' => 'MMA I',
+                'descripcion' => 'Tras años en clases de Artes Marciales Medievales tus puños duelen como armas. Cuando pegas sin arma, tu daño a enemigos será de 1.',
+                'imagen' => "/storage/modificadores/MMA1.webp",
+                'nivel' => 1,
+                'efectos' => json_encode([
+                    ['name' => 'mma', 'value' => 1],
+                ])
+            ],
+            [
+                'nombre' => 'MMA II',
+                'descripcion' => 'Tras años en clases de Artes Marciales Medievales tus puños duelen como armas. Cuando pegas sin arma, tu daño a enemigos será de 2.',
+                'imagen' => "/storage/modificadores/MMA2.webp",
+                'nivel' => 2,
+                'efectos' => json_encode([
+                    ['name' => 'mma', 'value' => 2],
+                ])
+            ],
+            [
+                'nombre' => 'MMA III',
+                'descripcion' => 'Tras años en clases de Artes Marciales Medievales tus puños duelen como armas. Cuando pegas sin arma, tu daño a enemigos será de 3.',
+                'imagen' => "/storage/modificadores/MMA3.webp",
+                'nivel' => 3,
+                'efectos' => json_encode([
+                    ['name' => 'ricochet', 'value' => true],
+                ])
+            ],
+            [
+                'nombre' => 'Cambio táctico I',
+                'descripcion' => 'Cada vez que cambias de arma, te curas 1 de vida.',
+                'imagen' => "/storage/modificadores/CambioTactico1.webp",
+                'nivel' => 1,
+                'efectos' => json_encode([
+                    ['name' => 'tactical_change', 'value' => 1],
+                ])
+            ],
+            [
+                'nombre' => 'Cambio táctico II',
+                'descripcion' => 'Cada vez que cambias de arma, te curas 2 de vida.',
+                'imagen' => "/storage/modificadores/CambioTactico2.webp",
+                'nivel' => 2,
+                'efectos' => json_encode([
+                    ['name' => 'tactical_change', 'value' => 2],
+                ])
+            ],
+            [
+                'nombre' => 'Cambio táctico III',
+                'descripcion' => 'Cada vez que cambias de arma, te curas 3 de vida.',
+                'imagen' => "/storage/modificadores/CambioTactico3.webp",
+                'nivel' => 3,
+                'efectos' => json_encode([
+                    ['name' => 'tactical_change', 'value' => 3],
+                ])
+            ],
+            [
+                'nombre' => 'Comida de la abuela',
+                'descripcion' => 'La comida ahora te sabe a gloria, aumentando en 1 el daño de la siguiente acción tras curarte.',
+                'imagen' => "/storage/modificadores/ComidaDeLaAbuela.webp",
+                'nivel' => 1,
+                'efectos' => json_encode([
+                    ['name' => 'grandma', 'value' => true],
+                ])
+            ],
+            [
+                'nombre' => 'Crítico I',
+                'descripcion' => 'Tienes un 10% de probabilidad de crítico. El crítico aumenta tu daño en un 50%.',
+                'imagen' => "/storage/modificadores/Critico1.webp",
+                'nivel' => 1,
+                'efectos' => json_encode([
+                    ['name' => 'critical_percentage', 'value' => 10],
+                ])
+            ],
+            [
+                'nombre' => 'Crítico II',
+                'descripcion' => 'Tienes un 30% de probabilidad de crítico. El crítico aumenta tu daño en un 50%.',
+                'imagen' => "/storage/modificadores/Critico2.webp",
+                'nivel' => 2,
+                'efectos' => json_encode([
+                    ['name' => 'critical_percentage', 'value' => 30],
+                ])
+            ],
+            [
+                'nombre' => 'Expero en Supervivencia',
+                'descripcion' => 'Cada 20 enemigos que mates o hayas matado, recibes 1 de vida máxima adicional. (Máximo de 10)',
+                'imagen' => "/storage/modificadores/ExpertoEnSupervivencia.webp",
+                'nivel' => 1,
+                'efectos' => json_encode([
+                    ['name' => 'expert', 'value' => true],
+                ])
+            ],
         ];
 
         foreach ($modificadores as $data) {

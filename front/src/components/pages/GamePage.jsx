@@ -510,12 +510,12 @@ const GamePage = () => {
     const [lastGamblerEffect, setLastGamblerEffect] = useState(null);
     const gambler = async () => {
         const roll = Math.floor(Math.random() * 100) + 1;
-        if(roll === 100){
+        if (roll === 100) {
             setGold(prev => prev + 50);
             setHealth(prev => Math.min(maxHealth, prev + 10));
             setLastGamblerEffect(`¡JACKTPOT! +50 oro, +10 vida y +10 daño.`)
             userExtraDmg.current += 10;
-        }else if (roll <= 20) {
+        } else if (roll <= 20) {
             //Modificar daño
             const randomDmg = Math.floor(Math.random() * 7) - 3;
             userExtraDmg.current += randomDmg;
@@ -523,9 +523,9 @@ const GamePage = () => {
         } else if (roll <= 40) {
             //Curación/Daño
             const randomHeal = Math.floor(Math.random() * 7) - 3;
-            if(randomHeal < 0){
+            if (randomHeal < 0) {
                 damageAnimation(randomHeal)
-            }else{
+            } else {
                 healAnimation(randomHeal)
             }
             setHealth(prev => Math.min(maxHealth, Math.max(0, prev + randomHeal)));
@@ -633,6 +633,7 @@ const GamePage = () => {
     // Daño usuario
     const userExtraDmg = useRef(0);
     const userDmgMultiplier = useRef(1);
+    const mma = useRef(0);
 
     // Daño enemigos
     const enemyDmgMultiplier = useRef(1);
@@ -657,6 +658,28 @@ const GamePage = () => {
 
     // Oro
     const goldMultiplier = useRef(1);
+
+    //Crítico
+    const criticalPercentage = useRef(0);
+
+    // comida de la abuela
+    const [grandma, setGrandma] = useState(false);
+
+    // Cambio táctico
+    const tacticalChange = useRef(0);
+
+    //Experto
+    const expert = useRef(false)
+    const extraHealthExpert = useRef(0);
+    useRef(() => {
+        if (expert.current && extraHealthExpert.current < 10) {
+            if (enemysDefeated.current % 20 == 0) {
+                setMaxHealth(prev => prev + 1);
+                extraHealthExpert.current += 1;
+            }
+        }
+    }, [expert, enemysDefeated])
+
 
 
 
@@ -726,6 +749,28 @@ const GamePage = () => {
             case 'gold_multiplier':
                 goldMultiplier.current = effect.value
                 break;
+            case 'grandma':
+                setGrandma(true);
+                break;
+            case 'mma':
+                if (mma.current < effect.value) {
+                    mma.current = effect.value;
+                }
+                break;
+            case 'critical_percentage':
+                if (criticalPercentage.current < effect.value) {
+                    criticalPercentage.current = effect.value;
+                }
+                break;
+            case 'tactical_change':
+                if (tacticalChange.current < effect.value) {
+                    tacticalChange.current = effect.value;
+                }
+            case 'expert':
+                expert.current = true;
+                extraHealthExpert.current = Math.min(10, Math.floor(enemysDefeated.current / 20));
+                setMaxHealth(prev => prev + extraHealthExpert.current);
+                break;
             default:
                 return false;
         }
@@ -736,18 +781,24 @@ const GamePage = () => {
         setPentakillTargetNumber(0);
         setPentakillDmg(0);
         setActualStreak(0);
-        actualScapes.current = 1;
-        healthSteal.current = false;
-        ricochet.current = false
+        actualScapes.current = (1);
+        healthSteal.current = (false);
+        ricochet.current = (false)
         enemyDmgMultiplier.current = (1);
         enemyExtraDmg.current = (0)
         spadesExtraTakedDmg.current = (0);
         clubsExtraTakedDmg.current = (0);
-        ricochet.current = false;
+        ricochet.current = (false);
         goldMultiplier.current = (1)
         setMaxScapes(1)
         userExtraDmg.current = (0)
         userDmgMultiplier.current = (1);
+        criticalPercentage.current = (0);
+        mma.current = (0);
+        setGrandma(false);
+        tacticalChange.current = (0);
+        expert.current = (false);
+        extraHealthExpert.current = (0)
     }
 
     const handleModifierEvent = () => {
@@ -1154,6 +1205,10 @@ const GamePage = () => {
         if (card.especial) {
             handleCardEffect(card)
         }
+        if(tacticalChange.current != 0){
+            healAnimation(tacticalChange.current);
+            setHealth(prev => Math.min(maxHealth, prev + tacticalChange.current))
+        }
         if (weapon) {
             moveCardToDiscard([weapon], true)
             logsRef.current.push((logsRef.current.length + 1) + " - " + "Arma de " + weapon.valor + " ha sido cambiada por arma de " + card.valor + ".")
@@ -1182,7 +1237,11 @@ const GamePage = () => {
         }
         const enemyDmg = Math.ceil((card.valor * enemyDmgMultiplier.current)) + enemyExtraDmg.current - dmgReduction.current;
         const pentakill = actualStreak >= pentakillTargetNumber ? pentakillDmg : 0
-
+        let criticalMultiplier = 1;
+        const roll = Math.floor(Math.random() * 100);
+        if(roll <= criticalPercentage.current){
+            criticalMultiplier = 1.5;
+        }
         // INVENCIBLE
         if (invincibilityTurns.current > 0) {
             damageAnimation(0)
@@ -1205,7 +1264,7 @@ const GamePage = () => {
 
         // ATAQUE CON ARMA
         else if (weapon && ((slainMonsters.length === 0 || card.valor < (slainMonsters[slainMonsters.length - 1]?.valor)) || (ricochet.current && card.valor <= (slainMonsters[slainMonsters.length - 1]?.valor)))) {
-            const finalUserDmg = Math.floor((weaponDmg.current + (card.palo == 'Pica' ? spadesExtraTakedDmg.current : clubsExtraTakedDmg.current) + userExtraDmg.current) * userDmgMultiplier.current + 0.5);
+            const finalUserDmg = Math.floor(((weaponDmg.current + (card.palo == 'Pica' ? spadesExtraTakedDmg.current : clubsExtraTakedDmg.current) + userExtraDmg.current) * userDmgMultiplier.current) * criticalMultiplier + 0.5);
             const finalEnemyDmg = enemyDmg - pentakill;
 
             const finalDmg = Math.max(0, finalEnemyDmg - finalUserDmg);
@@ -1241,7 +1300,7 @@ const GamePage = () => {
 
         // ATAQUE SIN ARMA
         else {
-            const finalUserDmg = Math.floor((pentakill + (card.palo == 'Pica' ? spadesExtraTakedDmg.current : clubsExtraTakedDmg.current) + userExtraDmg.current) * userDmgMultiplier.current +0.5);
+            const finalUserDmg = Math.floor(((pentakill + (card.palo == 'Pica' ? spadesExtraTakedDmg.current : clubsExtraTakedDmg.current) + userExtraDmg.current + mma.current) * userDmgMultiplier.current) * criticalMultiplier + 0.5);
             const finalDmg = Math.max(0, enemyDmg - finalUserDmg);
             moveCardToDiscard([card])
             damageAnimation(finalDmg, true)
@@ -1270,17 +1329,28 @@ const GamePage = () => {
         // Lógica de curación
         if (card.palo === 'Corazon') {
             validMove = handleHeal(card)
+            if(validMove) {
+                userExtraDmg.current = 0;
+                if(grandma){
+                    userExtraDmg.current = 1;
+                }
+            }
         }
         // Lógica de arma
         else if (card.palo === 'Diamante') {
             validMove = handleWeapon(card)
+            if(validMove) {
+                userExtraDmg.current = 0;
+            }
         }
         // Lógica de combate
         else if (card.palo === 'Pica' || card.palo === 'Trebol') {
             validMove = handleCombat(card)
             validMove ? enemysDefeated.current += 1 : null;
+            if(validMove) {
+                userExtraDmg.current = 0;
+            }
         }
-        userExtraDmg.current = 0;
         dmgReduction.current = 0;
         if (validMove) {
             if (character?.habilidad_personaje?.id === 1) {
