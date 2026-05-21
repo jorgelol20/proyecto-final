@@ -72,7 +72,7 @@ const GamePage = () => {
 
     const totalEarnedGold = useRef(0);
     const healedLife = useRef(0);
-    const enemysDefeated = useRef(0)
+    const [enemysDefeated, setEnemysDefeated] = useState(0) 
 
 
     const logsRef = useRef([]);
@@ -89,7 +89,7 @@ const GamePage = () => {
                     rounds,
                     totalEarnedGold.current,
                     healedLife.current,
-                    enemysDefeated.current
+                    enemysDefeated
                 );
             } catch (error) {
                 console.error("Error al guardar la partida desde el Navbar:", error);
@@ -115,7 +115,7 @@ const GamePage = () => {
             rounds,
             totalEarnedGold.current,
             healedLife.current,
-            enemysDefeated.current
+            enemysDefeated
         );
     };
 
@@ -127,7 +127,7 @@ const GamePage = () => {
 
             if (proceder) {
                 try {
-                    await endGame(user.id, timeRef.current, gameWin, rounds, totalEarnedGold.current, healedLife.current, enemysDefeated.current)
+                    await endGame(user.id, timeRef.current, gameWin, rounds, totalEarnedGold.current, healedLife.current, enemysDefeated)
                 } catch (error) {
                     console.error("Error al guardar la partida de forma forzada:", error);
                 } finally {
@@ -177,7 +177,7 @@ const GamePage = () => {
         canScape.current = true;
         healedLife.current = 0;
         totalEarnedGold.current = 0;
-        enemysDefeated.current = 0;
+        setEnemysDefeated(0);
         totalCardsUsed.current = 0;
         setIsWizard(false);
         setIsGambler(false);
@@ -254,9 +254,9 @@ const GamePage = () => {
         } else if (user !== undefined) {
             stopTimer();
             if (continuedGame) {
-                updateActualGame(user.id, timeRef.current, gameWin, rounds, totalEarnedGold.current, healedLife.current, enemysDefeated.current)
+                updateActualGame(user.id, timeRef.current, gameWin, rounds, totalEarnedGold.current, healedLife.current, enemysDefeated)
             } else {
-                endGame(user.id, timeRef.current, gameWin, rounds, totalEarnedGold.current, healedLife.current, enemysDefeated.current)
+                endGame(user.id, timeRef.current, gameWin, rounds, totalEarnedGold.current, healedLife.current, enemysDefeated)
             }
         }
 
@@ -410,7 +410,7 @@ const GamePage = () => {
         return () => {
             window.removeEventListener('resize', handleResize)
             if (user && character && modifiers.length > 0) {
-                endGame(user.id, timeRef.current, gameWin, rounds, totalEarnedGold.current, healedLife.current, enemysDefeated.current)
+                endGame(user.id, timeRef.current, gameWin, rounds, totalEarnedGold.current, healedLife.current, enemysDefeated)
             }
             restartFunction()
             stopTimer()
@@ -513,14 +513,29 @@ const GamePage = () => {
         if (roll === 100) {
             setGold(prev => prev + 50);
             setHealth(prev => Math.min(maxHealth, prev + 10));
-            setLastGamblerEffect(`¡JACKTPOT! +50 oro, +10 vida y +10 daño.`)
             userExtraDmg.current += 10;
-        } else if (roll <= 20) {
+            setLastGamblerEffect(`¡JACKTPOT! +50 oro, +10 vida y +10 daño en la siguiente acción.`)
+        } 
+        else if(roll === 1){
+            setGold(0)
+            setLastGamblerEffect(`La banca gana, tú pierdes todo tu dinero.`);
+        }
+        else if(roll <=10){
+            //Veneno
+            poison.current += 3;
+            setLastGamblerEffect(`Estás envenenado 3 turnos. Ese chupito tenia un sabor raro...`)
+        }
+        else if (roll <= 20) {
             //Modificar daño
             const randomDmg = Math.floor(Math.random() * 7) - 3;
             userExtraDmg.current += randomDmg;
             setLastGamblerEffect(`${randomDmg} de daño extra en la siguiente acción.`)
-        } else if (roll <= 40) {
+        }else if(roll <= 30){
+            progresiveHeal.current = 1;
+            progresiveHealTurns.current = 3;
+            setLastGamblerEffect(`Curación progresiva 3 turnos. ¡La hidromiel no falla!`)
+        } 
+        else if (roll <= 40) {
             //Curación/Daño
             const randomHeal = Math.floor(Math.random() * 7) - 3;
             if (randomHeal < 0) {
@@ -537,7 +552,7 @@ const GamePage = () => {
             const weaponPower = Math.min(filter, 13)
             const newWeapon = await getWeapon(weaponPower);
             addCardToMatchDeck(newWeapon);
-            setLastGamblerEffect(`Añadida una nueva arma con valor ${newWeapon.valor}`)
+            setLastGamblerEffect(`Añadida una nueva arma con valor ${newWeapon.valor}.`)
             setDungeon(prev => [newWeapon, ...prev])
         } else if (roll <= 80) {
             //Añadir curación
@@ -546,12 +561,21 @@ const GamePage = () => {
             const healPower = Math.min(filter, 13)
             const newHeal = await getHealItem(healPower);
             addCardToMatchDeck(newHeal);
-            setLastGamblerEffect(`Añadida una nueva curación con valor ${newHeal.valor}`)
+            setLastGamblerEffect(`Añadida una nueva curación con valor ${newHeal.valor}.`)
             setDungeon(prev => [newHeal, ...prev])
-        } else if (roll < 100) {
+        } else if(roll <= 90){
+            const randomHealth = Math.floor(Math.random() * 3) - 1;
+            if (randomHealth == -1) {
+                damageAnimation(randomHealth)
+            } else {
+                healAnimation(randomHealth)
+            }
+            setMaxHealth(prev => prev + randomHealth);
+            setLastGamblerEffect(`${randomHeal} de vida máxima.`)
+        }else if (roll < 100) {
             //Añadir enemigo
             const newEnemy = await addEnemy();
-            setLastGamblerEffect(`Añadido un nuevo enemigo con valor ${newEnemy.valor}`)
+            setLastGamblerEffect(`Añadido un nuevo enemigo con valor ${newEnemy.valor}.`)
             setDungeon(prev => [newEnemy, ...prev])
         }
     }
@@ -673,12 +697,12 @@ const GamePage = () => {
     const extraHealthExpert = useRef(0);
     useRef(() => {
         if (expert.current && extraHealthExpert.current < 10) {
-            if (enemysDefeated.current % 20 == 0) {
+            if (enemysDefeated % 20 == 0) {
                 setMaxHealth(prev => prev + 1);
                 extraHealthExpert.current += 1;
             }
         }
-    }, [expert, enemysDefeated.current])
+    }, [enemysDefeated])
 
 
 
@@ -768,7 +792,7 @@ const GamePage = () => {
                 }
             case 'expert':
                 expert.current = true;
-                extraHealthExpert.current = Math.min(10, Math.floor(enemysDefeated.current / 20));
+                extraHealthExpert.current = Math.min(10, Math.floor(enemysDefeated / 20));
                 setMaxHealth(prev => prev + extraHealthExpert.current);
                 break;
             default:
@@ -1347,7 +1371,7 @@ const GamePage = () => {
         // Lógica de combate
         else if (card.palo === 'Pica' || card.palo === 'Trebol') {
             validMove = handleCombat(card)
-            validMove ? enemysDefeated.current += 1 : null;
+            validMove ? enemysDefeated(prev => prev + 1):null;
             if(validMove) {
                 userExtraDmg.current = 0;
                 dmgReduction.current = 0;
@@ -1448,7 +1472,7 @@ const GamePage = () => {
                                 <p>Cartas restantes en esta ronda: <span>{dungeon.length + room.length}</span></p>
                                 <p>Total de cartas jugadas: <span>{totalCardsUsed.current}</span></p>
                                 <p>Oro obtenido esta partida: <span>{totalEarnedGold.current}</span></p>
-                                <p>Total enemigos derrotados: <span style={{ color: 'var(--main-red)' }}>{enemysDefeated.current}</span></p>
+                                <p>Total enemigos derrotados: <span style={{ color: 'var(--main-red)' }}>{enemysDefeated}</span></p>
                             </div>
                         </div> :
                         <></>
