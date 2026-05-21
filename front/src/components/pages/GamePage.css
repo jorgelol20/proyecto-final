@@ -98,6 +98,8 @@
     border: 0.5cqh solid black;
     border-radius: 4%;
     height: 20%;
+    height: 10cqh;
+    max-height: 15cqh;
     margin-bottom: 5%;
     overflow-y: scroll;
     display: flex;
