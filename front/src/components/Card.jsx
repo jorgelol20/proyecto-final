@@ -16,6 +16,7 @@ import HealthStealIcon from '/images/cardEffects/HealthSteal.webp';
 import ThornyIcon from '/images/cardEffects/Thorny.webp';
 import PlunderIcon from '/images/cardEffects/Plunder.webp';
 import ExtraGoldIcon from '/images/cardEffects/ExtraGold.webp';
+import MitosisIcon from '/images/cardEffects/Mitosis.webp';
 
 const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = true, onDeck = false, isWizard = false, setOverDungeonZone, canBeClicked, cardSuit, defaultImage }, ref) => {
 

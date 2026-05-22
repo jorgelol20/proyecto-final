@@ -46,7 +46,7 @@ const GamePage = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const { startButtonSound, showLogs } = useContext(settingsContext)
-    const { matchDeck, character, activeModifiers: modifiers, setNewDeck, setNewCharacter, startNewGame, addCardToMatchDeck, gameLoading, availableCharacters, getWeapon, getHealItem, endGame, updateActualGame, setCharacter, setActiveModifiers, setGameLoading, addEnemysToMatchDeck, addModifierToMatch } = useContext(matchContext);
+    const { matchDeck, character, activeModifiers: modifiers, setNewDeck, setNewCharacter, startNewGame, addCardToMatchDeck, gameLoading, availableCharacters, getWeapon, getHealItem, endGame, updateActualGame, setCharacter, setActiveModifiers, setGameLoading, addEnemysToMatchDeck, addModifierToMatch, addEnemyToMatchDeck } = useContext(matchContext);
     const { newAchievement } = useAchievements();
     const { user, isLoading } = useUser();
     useEffect(() => {
@@ -72,7 +72,7 @@ const GamePage = () => {
 
     const totalEarnedGold = useRef(0);
     const healedLife = useRef(0);
-    const [enemysDefeated, setEnemysDefeated] = useState(0) 
+    const [enemysDefeated, setEnemysDefeated] = useState(0)
 
 
     const logsRef = useRef([]);
@@ -515,12 +515,12 @@ const GamePage = () => {
             setHealth(prev => Math.min(maxHealth, prev + 10));
             userExtraDmg.current += 10;
             setLastGamblerEffect(`¡JACKTPOT! +50 oro, +10 vida y +10 daño en la siguiente acción.`)
-        } 
-        else if(roll === 1){
+        }
+        else if (roll === 1) {
             setGold(0)
             setLastGamblerEffect(`La banca gana, tú pierdes todo tu dinero.`);
         }
-        else if(roll <=10){
+        else if (roll <= 10) {
             //Veneno
             poison.current += 3;
             setLastGamblerEffect(`Estás envenenado 3 turnos. Ese chupito tenia un sabor raro...`)
@@ -530,11 +530,11 @@ const GamePage = () => {
             const randomDmg = Math.floor(Math.random() * 7) - 3;
             userExtraDmg.current += randomDmg;
             setLastGamblerEffect(`${randomDmg} de daño extra en la siguiente acción.`)
-        }else if(roll <= 30){
+        } else if (roll <= 30) {
             progresiveHeal.current = 1;
             progresiveHealTurns.current = 3;
             setLastGamblerEffect(`Curación progresiva 3 turnos. ¡La hidromiel no falla!`)
-        } 
+        }
         else if (roll <= 40) {
             //Curación/Daño
             const randomHeal = Math.floor(Math.random() * 7) - 3;
@@ -563,7 +563,7 @@ const GamePage = () => {
             addCardToMatchDeck(newHeal);
             setLastGamblerEffect(`Añadida una nueva curación con valor ${newHeal.valor}.`)
             setDungeon(prev => [newHeal, ...prev])
-        } else if(roll <= 90){
+        } else if (roll <= 90) {
             const randomHealth = Math.floor(Math.random() * 3) - 1;
             if (randomHealth == -1) {
                 damageAnimation(randomHealth)
@@ -572,7 +572,7 @@ const GamePage = () => {
             }
             setMaxHealth(prev => prev + randomHealth);
             setLastGamblerEffect(`${randomHeal} de vida máxima.`)
-        }else if (roll < 100) {
+        } else if (roll < 100) {
             //Añadir enemigo
             const newEnemy = await addEnemy();
             setLastGamblerEffect(`Añadido un nuevo enemigo con valor ${newEnemy.valor}.`)
@@ -865,7 +865,10 @@ const GamePage = () => {
             damageAnimation(1)
             setHealth(prev => prev - 1)
         }
-        if (antiheal.current) {
+        if (antihealTurns.current > 0) {
+            antiheal.current = true;
+            antihealTurns.current -= 1;
+        } else {
             antiheal.current = false;
         }
         if (progresiveHealTurns.current > 0) {
@@ -910,7 +913,8 @@ const GamePage = () => {
     }
     const addEnemys = async () => {
         const quantity = 5 + Math.floor((rounds - 1) * 2);
-        await addEnemysToMatchDeck(quantity, rounds);
+        const newEnemys = await addEnemysToMatchDeck(quantity, rounds);
+        setDungeon(prev => [...newEnemys, ...prev])
     };
 
     const shuffleDeck = (deck) => {
@@ -931,7 +935,7 @@ const GamePage = () => {
         }
         else if (rounds !== 10 || continuedGame) {
             setSelectModifier(true)
-            await addEnemys()
+            await addEnemys();
             if (rounds >= 1 && gameOn) {
                 setShopAvailable(true)
             } else {
@@ -1089,6 +1093,7 @@ const GamePage = () => {
     const poison = useRef(0);
 
     const antiheal = useRef(false);
+    const antihealTurns = useRef(0);
 
     const applyThorny = () => {
         damageAnimation(3, true);
@@ -1124,9 +1129,21 @@ const GamePage = () => {
         breakWeapon.current = false;
     }
 
+    const applyMitosis = async (cardValue) => {
+        const cardPower = Math.ceil(cardValue / 2)
+        const card1 = await addEnemyToMatchDeck(cardPower, rounds);
+        const card2 = await addEnemyToMatchDeck(cardPower, rounds);
+        if(card1 !== null){
+            setDungeon(prev => [card1, ...dungeon])
+        }
+        if(card2 !== null){
+            setDungeon(prev => [card2, ...dungeon])
+        }
+    }
+
     const cleanEnemyEffects = () => {
         poison.current = 0;
-        antiheal.current = 0;
+        antiheal.current = false;
         breakWeapon.current = false;
     }
 
@@ -1173,6 +1190,7 @@ const GamePage = () => {
                 break;
             case 'antiheal':
                 antiheal.current = true;
+                antihealTurns.current = 2;
                 break;
             case 'weapon_breaker':
                 breakWeapon.current = true;
@@ -1189,6 +1207,8 @@ const GamePage = () => {
             case 'extra_gold':
                 applyExtraGold(cardValue);
                 break;
+            case 'mitosis':
+                applyMitosis(cardValue);
             default:
                 return false;
         }
@@ -1210,7 +1230,7 @@ const GamePage = () => {
             handleCardEffect(card)
         }
         if (!healedRef.current && !antiheal.current) {
-            setHealth(prev => Math.min(maxHealth, prev + currentHeal.current));
+            setHealth(prev => Math.max(0, Math.min(maxHealth, prev + currentHeal.current)));
             healAnimation(currentHeal.current)
             healedLife.current += currentHeal.current;
             healedRef.current = true
@@ -1224,171 +1244,198 @@ const GamePage = () => {
     }
 
     const handleWeapon = (card) => {
+        // 1. Limpieza y asignación inicial
         cleanWeaponEffects();
-        weaponDmg.current = card.valor
+        weaponDmg.current = card.valor;
+
         if (card.especial) {
-            handleCardEffect(card)
+            handleCardEffect(card);
         }
-        if(tacticalChange.current != 0){
-            healAnimation(tacticalChange.current);
-            setHealth(prev => Math.min(maxHealth, prev + tacticalChange.current))
+
+        // 2. Curación por cambio táctico (evitamos operaciones si es 0)
+        const healAmount = tacticalChange.current;
+        if (healAmount !== 0) {
+            healAnimation(healAmount);
+            setHealth(prev => Math.min(maxHealth, prev + healAmount));
         }
+
+        // 3. Gestión del arma y Logs
+        const logIndex = logsRef.current.length + 1;
+
         if (weapon) {
-            moveCardToDiscard([weapon], true)
-            logsRef.current.push((logsRef.current.length + 1) + " - " + "Arma de " + weapon.valor + " ha sido cambiada por arma de " + card.valor + ".")
+            moveCardToDiscard([weapon], true);
+            logsRef.current.push(`${logIndex} - Arma de ${weapon.valor} ha sido cambiada por arma de ${card.valor}.`);
+
+            // Mantenemos el timeout solo si tu animación visual depende críticamente de un retraso de renderizado
             setTimeout(() => {
                 setWeapon(card);
                 deleteFromRoom(card);
             }, 100);
         } else {
-            deleteFromRoom(card)
+            logsRef.current.push(`${logIndex} - Nueva arma de ${card.valor} activa.`);
             setWeapon(card);
-            logsRef.current.push((logsRef.current.length + 1) + " - " + "Nueva arma de " + card.valor + " activa.")
+            deleteFromRoom(card);
         }
+
+        // Limpieza de zona de juego
         if (slainMonsters.length > 0) {
-            moveCardToDiscard([...slainMonsters], true)
+            moveCardToDiscard([...slainMonsters], true);
+
             setTimeout(() => {
                 setSlainMonsters([]);
             }, 200);
         }
+
+        // Reinicio de racha
         setActualStreak(0);
         return true;
-    }
+    };
 
     const handleCombat = (card) => {
+
+        // Comprobación inicial de efectos en la carta 
         if (card.especial) {
-            handleCardEffect(card)
-        }
-        const enemyDmg = Math.ceil((card.valor * enemyDmgMultiplier.current)) + enemyExtraDmg.current - dmgReduction.current;
-        const pentakill = actualStreak >= pentakillTargetNumber ? pentakillDmg : 0
-        let criticalMultiplier = 1;
-        const roll = Math.floor(Math.random() * 100);
-        if(roll <= criticalPercentage.current){
-            criticalMultiplier = 1.5;
-        }
-        // INVENCIBLE
-        if (invincibilityTurns.current > 0) {
-            damageAnimation(0)
-            if (weapon) {
-                const earnedGold = Math.floor(5 * goldMultiplier.current)
-                setGold(prev => prev + earnedGold);
-                coinAnimation(earnedGold)
-                totalEarnedGold.current += earnedGold;
-            }
-            setSlainMonsters([...slainMonsters, card]);
-            deleteFromRoom(card)
-            setActualStreak(prev => prev + 1);
-            logsRef.current.push((logsRef.current.length + 1) + " - " + card.valor + " de " + card.palo + " te ha hecho " + 0 + " de daño.")
-            invincibilityTurns.current -= 1;
-            if (breakWeapon.current) {
-                weaponBreaker()
-            }
-            return true
+            handleCardEffect(card);
         }
 
-        // ATAQUE CON ARMA
-        else if (weapon && ((slainMonsters.length === 0 || card.valor < (slainMonsters[slainMonsters.length - 1]?.valor)) || (ricochet.current && card.valor <= (slainMonsters[slainMonsters.length - 1]?.valor)))) {
-            const finalUserDmg = Math.floor(((weaponDmg.current + (card.palo == 'Pica' ? spadesExtraTakedDmg.current : clubsExtraTakedDmg.current) + userExtraDmg.current) * userDmgMultiplier.current) * criticalMultiplier + 0.5);
-            const finalEnemyDmg = enemyDmg - pentakill;
+        // Cálculos base de combate y modificadores
+        const criticalMultiplier = Math.floor(Math.random() * 100) <= criticalPercentage.current ? 1.5 : 1;
+        const pentakill = actualStreak >= pentakillTargetNumber ? pentakillDmg : 0;
+        const enemyBaseDmg = Math.floor(card.valor * enemyDmgMultiplier.current) + enemyExtraDmg.current - dmgReduction.current;
+        const extraSuitDmg = card.palo === 'Pica' ? spadesExtraTakedDmg.current : clubsExtraTakedDmg.current;
+        let finalDmg = 0;
+        let isSlain = false;
 
-            const finalDmg = Math.max(0, finalEnemyDmg - finalUserDmg);
-            damageAnimation(finalDmg)
-            const earnedGold = Math.floor(5 * goldMultiplier.current)
-            coinAnimation(earnedGold)
+        // Helpers locales para evitar duplicar lógica recurrente
+        const grantGoldReward = () => {
+            const earnedGold = Math.floor(5 * goldMultiplier.current);
             setGold(prev => prev + earnedGold);
+            coinAnimation(earnedGold);
             totalEarnedGold.current += earnedGold;
-            if (health - finalDmg <= 0 && revive.current) {
-                setHealth(reviveHealth.current)
+        };
+
+        const processDamageAndRevive = (dmg) => {
+            if (health - dmg <= 0 && revive.current) {
+                setHealth(reviveHealth.current);
                 revive.current = false;
                 reviveHealth.current = 0;
             } else {
-                setHealth(prev => Math.max(0, prev - finalDmg));
+                setHealth(prev => Math.max(0, prev - dmg));
             }
-            if (healthSteal.current && card.valor < weaponDmg.current) {
-                const heal = Math.min(0, card.valor - weaponDmg.current) > -3 ? Math.min(0, card.valor - weaponDmg.current) * -1 : 3;
-                healAnimation(heal)
+        };
+
+        // Simplificación de la regla del arma
+        const lastSlainCard = slainMonsters[slainMonsters.length - 1];
+        const canUseWeapon = weapon && (
+            slainMonsters.length === 0 ||
+            card.valor < lastSlainCard?.valor ||
+            (ricochet.current && card.valor <= lastSlainCard?.valor)
+        );
+
+        // Resolución de Ramas de Combate
+        if (invincibilityTurns.current > 0) {
+            // --- MODO INVENCIBLE ---
+            finalDmg = 0;
+            isSlain = true;
+            invincibilityTurns.current -= 1;
+            damageAnimation(0);
+            if (weapon) grantGoldReward();
+        } else if (canUseWeapon) {
+
+            // --- ATAQUE CON ARMA ---
+            const finalUserDmg = Math.floor(((weaponDmg.current + extraSuitDmg + userExtraDmg.current) * userDmgMultiplier.current) * criticalMultiplier + 0.5);
+            finalDmg = Math.max(0, (enemyBaseDmg - pentakill) - finalUserDmg);
+            isSlain = true;
+            damageAnimation(finalDmg);
+            grantGoldReward();
+            processDamageAndRevive(finalDmg);
+
+            // Robo de vida (Lifesteal)
+
+            if (!antiheal.current && healthSteal.current && card.valor < weaponDmg.current) {
+
+                // Simplificación matemática exacta de tu lógica original
+                const heal = Math.min(3, weaponDmg.current - card.valor);
+                healAnimation(heal);
                 setHealth(prev => Math.min(maxHealth, prev + heal));
             }
-            if (weaponHealthSteal.current) {
+            if (!antiheal.current && weaponHealthSteal.current) {
                 setHealth(prev => Math.min(maxHealth, prev + weaponHealthStealQuantity.current));
             }
-            setSlainMonsters([...slainMonsters, card]);
-            deleteFromRoom(card)
-            setActualStreak(prev => prev + 1);
-            logsRef.current.push((logsRef.current.length + 1) + " - " + card.valor + " de " + card.palo + " te ha hecho " + finalDmg + " de daño.")
-            if (breakWeapon.current) {
-                weaponBreaker()
-            }
-            return true
+        } else {
+
+            // --- ATAQUE SIN ARMA ---
+            const finalUserDmg = Math.floor(((pentakill + extraSuitDmg + userExtraDmg.current + mma.current) * userDmgMultiplier.current) * criticalMultiplier + 0.5);
+            finalDmg = Math.max(0, enemyBaseDmg - finalUserDmg);
+            isSlain = false;
+
+            moveCardToDiscard([card]);
+            damageAnimation(finalDmg, true);
+            processDamageAndRevive(finalDmg);
         }
 
-        // ATAQUE SIN ARMA
-        else {
-            const finalUserDmg = Math.floor(((pentakill + (card.palo == 'Pica' ? spadesExtraTakedDmg.current : clubsExtraTakedDmg.current) + userExtraDmg.current + mma.current) * userDmgMultiplier.current) * criticalMultiplier + 0.5);
-            const finalDmg = Math.max(0, enemyDmg - finalUserDmg);
-            moveCardToDiscard([card])
-            damageAnimation(finalDmg, true)
-            if (health - finalDmg <= 0 && revive.current) {
-                setHealth(reviveHealth.current)
-                revive.current = false;
-                reviveHealth.current = 0;
-            } else {
-                setHealth(prev => Math.max(0, prev - finalDmg));
-            }
-            setActualStreak(prev => prev + 1);
-            logsRef.current.push((logsRef.current.length + 1) + " - " + card.valor + " de " + card.palo + " te ha hecho " + finalDmg + " de daño.")
-            if (breakWeapon.current) {
-                weaponBreaker()
-            }
-            return true
+        // Mandar el monstruo a la zona de juego
+        if (isSlain) {
+            setSlainMonsters(prev => [...prev, card]);
+            deleteFromRoom(card);
         }
-    }
+
+        // Actualizar racha global, logs y durabilidad del arma
+        setActualStreak(prev => prev + 1);
+        const nextLogIndex = logsRef.current.length + 1;
+        logsRef.current.push(`${nextLogIndex} - ${card.valor} de ${card.palo} te ha hecho ${finalDmg} de daño.`);
+        if (breakWeapon.current) {
+            weaponBreaker();
+        }
+        return true;
+    };
 
 
-    // Lógica de combate
     const processCardAction = useCallback((card) => {
-        setCanBeClicked(false)
-        document.body.style.cursor = "url('/images/cursor/Cursor_2.webp') 16 16, auto"
+        setCanBeClicked(false);
+        document.body.style.cursor = "url('/images/cursor/Cursor_2.webp') 16 16, auto";
         let validMove = false;
+
         // Lógica de curación
         if (card.palo === 'Corazon') {
-            validMove = handleHeal(card)
-            if(validMove) {
+            validMove = handleHeal(card);
+            if (validMove) {
                 userExtraDmg.current = 0;
-                if(grandma){
+                if (grandma) {
                     userExtraDmg.current = 1;
                 }
             }
         }
         // Lógica de arma
         else if (card.palo === 'Diamante') {
-            validMove = handleWeapon(card)
-            if(validMove) {
+            validMove = handleWeapon(card);
+            if (validMove) {
                 userExtraDmg.current = 0;
                 dmgReduction.current = 0;
             }
         }
         // Lógica de combate
         else if (card.palo === 'Pica' || card.palo === 'Trebol') {
-            validMove = handleCombat(card)
-            validMove ? enemysDefeated(prev => prev + 1):null;
-            if(validMove) {
+            validMove = handleCombat(card);
+            if (validMove) {
+                setEnemysDefeated(prev => prev + 1);
                 userExtraDmg.current = 0;
                 dmgReduction.current = 0;
             }
         }
-        
+
         if (validMove) {
             if (character?.habilidad_personaje?.id === 1) {
-                setAvailableAbility(false)
+                setAvailableAbility(false);
             }
-            canScape.current = false
+            canScape.current = false;
             totalCardsUsed.current += 1;
         } else {
-            logsRef.current.push((logsRef.current.length + 1) + " - " + "Movimiento no válido.")
+            logsRef.current.push(`${logsRef.current.length + 1} - Movimiento no válido.`);
         }
-    }, [health, gold, weapon, discardPile])
 
+        // Añadimos las funciones y estados que REALMENTE se usan dentro de la función
+    }, [handleHeal, handleWeapon, handleCombat, grandma, character]);
     const handleDragEnd = (card, finalX, finalY) => {
         const isOverZone =
             finalX > WEAPON_ZONE.x && finalX < WEAPON_ZONE.x + WEAPON_ZONE.width &&

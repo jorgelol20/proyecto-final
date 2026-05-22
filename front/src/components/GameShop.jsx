@@ -25,38 +25,71 @@ const GameShop = ({ gold, setGold, setShopAvailable, health, maxHealth, formated
 
     const [hoveredIndex, setHoveredIndex] = useState(null);
 
-    useEffect(() => {
-        const currentRound = 1;
-        const mods = getRandomsModifier(3, currentRound) || [];
-        let temp_weapons = []
-        for (let i = 2; i <= 14; i++) {
-            temp_weapons.push(getWeapon(i))
+    const calculateWeaponPrice = (valor, multiplicador) => {
+    const base = valor <= 10 
+        ? valor * 5 
+        : ((valor - 4) * 5) + ((valor >= 14 ? 15 : 10) * (valor - 8));
+    
+    return Math.max(20, base) * multiplicador;
+};
+
+const calculateHealPrice = (valor, multiplicador) => {
+    const base = valor <= 10 
+        ? valor * 5 
+        : ((valor - 4) * 5) + (10 * (valor - 8));
+        
+    return Math.max(5, base) * multiplicador;
+};
+
+// ... Dentro de tu componente:
+
+useEffect(() => {
+    const currentRound = round; 
+    const mods = getRandomsModifier(3, currentRound) || [];
+    const items = [];
+
+    // Multiplicador de precio corregido
+    const multiplicador = currentRound > 10 ? currentRound % 10 == 0? Math.min(20, currentRound - 10) / 2 : Math.min(20, currentRound - 10) : 1;
+
+    // Agregar modificadores si existen
+    mods.forEach((mod, index) => {
+        if (mod) {
+            items.push({
+                id: `mod-${index}`,
+                type: 'modifier',
+                data: mod,
+                price: 50 * (mod.nivel || 1) * multiplicador,
+                isBought: false
+            });
         }
-        let temp_heal = []
-        for (let i = 2; i <= 14; i++) {
-            temp_heal.push(getHealItem(i))
+    });
+
+    for (let valor = 2; valor <= 14; valor++) {
+        const wep = getWeapon(valor);
+        if (wep) {
+            items.push({
+                id: `wep-${valor}`,
+                type: 'card',
+                data: wep,
+                price: calculateWeaponPrice(wep.valor, multiplicador),
+                isBought: false
+            });
         }
-        const weps = [...temp_weapons].filter(w => w !== undefined);
-        const heal = [...temp_heal].filter(w => w !== undefined);
-        const items = [];
 
-        // Agregar modificadores
-        mods.forEach((mod, index) => {
-            if (mod) items.push({ id: `mod-${index}`, type: 'modifier', data: mod, price: 50 * (mod.nivel || 1), isBought: false });
-        });
+        const heal = getHealItem(valor);
+        if (heal) {
+            items.push({
+                id: `heal-${valor}`,
+                type: 'card',
+                data: heal,
+                price: calculateHealPrice(heal.valor, multiplicador),
+                isBought: false
+            });
+        }
+    }
 
-        // Agregar armas
-        weps.forEach((wep, index) => {
-            items.push({ id: `wep-${index}`, type: 'card', data: wep, price: Math.max(20, (index < 9 ? wep.valor * 5 : ((wep.valor - 4) * 5) + ((wep.valor >= 14 ? 15 : 10) * (wep.valor - 8)))), isBought: false });
-        });
-
-        // Agregar cura
-        heal.forEach((heal, index) => {
-            items.push({ id: `heal-${index}`, type: 'card', data: heal, price: Math.max(5, (index < 9 ? heal.valor * 5 : ((heal.valor - 4) * 5) + (10 * (heal.valor - 8)))), isBought: false });
-        });
-
-        setShopItems(items);
-    }, []);
+    setShopItems(items);
+}, [round]);
 
     const [scale, setScale] = useState(window.innerWidth / 1920)
     const [scaleMultiplier, setScaleMultiplier] = useState(1.2)

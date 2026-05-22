@@ -75,7 +75,7 @@ const MatchProvider = (props) => {
     const loadAchievements = async (victoria) => {
         if (victoria) {
             await newAchievement({ logro_id: 3 });
-            switch(character.id){
+            switch (character.id) {
                 case 1:
                     await newAchievement({ logro_id: 8 });
                     break;
@@ -173,10 +173,11 @@ const MatchProvider = (props) => {
         { 'name': 'thorny', 'value': true },
         { 'name': 'plunder', 'value': true },
         { 'name': 'extra', 'value': true },
+        {'name': 'mitosis', 'value': true},
     ]
 
-    const addEnemysToMatchDeck = (quantity, round) => {
-        const minPower = Math.max(2, round);
+    const addRandomEnemysToMatchDeck = (quantity, round) => {
+        const minPower = Math.min(9, Math.max(2, round));
         const maxPower = Math.min(round + 5, 14);
 
         const candidates = cards.filter(({ palo, valor }) =>
@@ -187,7 +188,7 @@ const MatchProvider = (props) => {
 
         const shuffled = lodash.shuffle(candidates);
         const selectedEnemys = shuffled.slice(0, quantity);
-        const effectProbability = Math.min(5 + (round - 1) * 2.5, 50);
+        const effectProbability = Math.min(5 + (round - 1) * 5, 60);
 
         const newEnemys = selectedEnemys.map((card) => {
             const roll = Math.random() * 100;
@@ -208,6 +209,36 @@ const MatchProvider = (props) => {
 
         setMatchDeck(prevDeck => [...prevDeck, ...newEnemys]);
         return newEnemys;
+    };
+
+    const addEnemyToMatchDeck = (power, round) => {
+        const candidates = cards.filter(({ palo, valor }) =>
+            (palo === "Trebol" || palo === "Pica") && valor === power
+        );
+        if (candidates.length === 0) {
+            return null;
+        }
+        const targetCard = candidates[0];
+        const effectProbability = Math.min(5 + (round - 1) * 5, 60);
+        const roll = Math.random() * 100;
+        let appliedEffect = null;
+
+        if (roll < effectProbability) {
+            const randomEffectIndex = Math.floor(Math.random() * negativeCardEffectList.length);
+            // Clonamos profundamente el efecto de la lista base
+            appliedEffect = structuredClone(negativeCardEffectList[randomEffectIndex]);
+        }
+        const newEnemy = {
+            ...targetCard,
+            x: 200,
+            y: 0,
+            key: crypto.randomUUID(),
+            especial: appliedEffect !== null,
+            efectos: appliedEffect
+        };
+        setMatchDeck(prevDeck => [...prevDeck, newEnemy]);
+
+        return newEnemy;
     };
 
     const addModifierToMatch = (modifier) => {
@@ -329,7 +360,7 @@ const MatchProvider = (props) => {
         setCharacter,
         setActiveModifiers,
         setGameLoading,
-        addEnemysToMatchDeck,
+        addEnemysToMatchDeck: addRandomEnemysToMatchDeck,
         getHealItem,
         updateActualGame,
         getTutorialCards
