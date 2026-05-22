@@ -290,7 +290,7 @@ const GamePage = () => {
 
     // Función para saber si ha perdido
     useEffect(() => {
-        if (health === 0) {
+        if (health <= 0) {
             setGameOn(false)
             setGameOver(true)
         }
