@@ -62,8 +62,7 @@ class AuthController extends Controller
     public function handleGoogleCallback()
     {
         $usuario_google = Socialite::driver('google')->stateless()->user();
-
-        $user = Usuarios::updateOrCreate(
+        $user = Usuarios::firstOrCreate(
             ['email' => $usuario_google->getEmail()],
             [
                 'nick' => $usuario_google->getNickname() ?? explode('@', $usuario_google->getEmail())[0],
@@ -73,12 +72,10 @@ class AuthController extends Controller
         );
 
         $token = $user->createToken('auth_token')->plainTextToken;
-
-        // Redirige al frontend pasando el token por URL
-        return redirect(config('app.frontend_url')."/auth/callback?token={$token}");
+        return redirect(config('app.frontend_url') . "/auth/callback?token={$token}");
     }
 
-    //Inicio de sesión con Twitter
+    // Inicio de sesión con Twitter (X)
     public function redirectToX()
     {
         return Socialite::driver('twitter')->stateless()->redirect();
@@ -88,17 +85,17 @@ class AuthController extends Controller
     {
         $xUser = Socialite::driver('twitter')->stateless()->user();
 
-        $user = Usuarios::updateOrCreate(
-            ['email' => $xUser->getNickname()."@Xaccount.com"],
+        $user = Usuarios::firstOrCreate(
+            ['email' => $xUser->getNickname() . "@Xaccount.com"],
             [
                 'nick' => $xUser->getNickname(),
-                'password'=>bcrypt($xUser->getId()),
+                'password' => bcrypt($xUser->getId()),
                 'avatar' => $xUser->getAvatar(),
             ]
         );
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
-        return redirect(config('app.frontend_url')."/auth/callback?token={$token}");
+        return redirect(config('app.frontend_url') . "/auth/callback?token={$token}");
     }
 }
