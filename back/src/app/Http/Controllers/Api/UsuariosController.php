@@ -18,7 +18,7 @@ class UsuariosController extends Controller
 {
     public function index()
     {
-        $usuarios = Usuarios::select('id', 'nick', 'email', 'avatar', 'color', 'created_at', 'ultima_vez_visto')
+        $usuarios = Usuarios::select('id', 'nick', 'es_admin', 'email', 'avatar', 'color', 'created_at', 'ultima_vez_visto')
             ->withCount([
                 'tiene_jugadas as total_victorias' => function ($query) {
                     $query->where('victoria', true);
@@ -35,16 +35,12 @@ class UsuariosController extends Controller
     public function store(StoreUsuarioRequest $request)
     {
         $archivoPath = null;
-
         if ($request->hasFile('avatar')) {
             $archivoPath = $request->file('avatar')->store('usuarios');
-
             if (!str_contains($archivoPath, 'googleusercontent.com')) {
                 $archivoPath = Storage::url($archivoPath);
             }
         }
-
-
         if ($archivoPath == null) {
             $archivoPath = config('app.backend_url') . "/storage/personajes/Guerrero.webp";
         }
@@ -55,9 +51,7 @@ class UsuariosController extends Controller
             'avatar' => $archivoPath,
             'color' => $request->color
         ]);
-
         $token = $usuario->createToken('auth_token')->plainTextToken;
-
         return response()->json([
             "usuario" => $usuario,
             "access_token" => $token,
@@ -80,32 +74,26 @@ class UsuariosController extends Controller
     public function update(UpdateUsuarioRequest $request, $nick)
     {
         $usuario = Usuarios::where('nick', $nick)->firstOrFail();
-
         $data = $request->validated();
-
-
-        if (isset($data['password'])) {
+        if (!empty($data['password'])) {
             $data['password'] = Hash::make($data['password']);
+        } else {
+            unset($data['password']);
         }
-
-        $archivoPath = false;
-        if (isset($data["avatar"])) {
-            if ($request->hasFile('avatar')) {
-                $archivoPath = $request->file('avatar')->store('usuarios');
-            }
-            if (!str_contains($archivoPath, 'googleusercontent.com')) {
-                $archivoPath = Storage::url($archivoPath);
+        if ($request->hasFile('avatar')) {
+            $path = $request->file('avatar')->store('usuarios');
+            $data['avatar'] = Storage::url($path);
+        } elseif (isset($data['avatar']) && str_contains($data['avatar'], 'googleusercontent.com')) {
+        } else {
+            unset($data['avatar']);
+        }
+        if ($request->has('es_admin')) {
+            $currentUser = $request->user();
+            if ($currentUser && $currentUser->es_admin) {
+                $data['es_admin'] = filter_var($request->input('es_admin'), FILTER_VALIDATE_BOOLEAN);
             }
         }
-
-        $usuario->update(
-            [
-                'password' => $request->password != "" ? $data['password'] : $usuario->password,
-                'avatar' => $archivoPath ?: $usuario->avatar,
-                'color' => $data['color']
-            ]
-        );
-
+        $usuario->update($data);
         return response()->json($usuario);
     }
 
@@ -128,14 +116,12 @@ class UsuariosController extends Controller
 
     public function destroy(Request $request, $id)
     {
-
         if (!$request->user()->es_admin) {
             return response()->json([
                 'message' => 'No tienes los permisos necesarios para acceder a este recurso.'
             ], 403);
         }
         Usuarios::findOrFail($id)->delete();
-
         return response()->json(['message' => 'Usuario eliminado'], 201);
     }
 

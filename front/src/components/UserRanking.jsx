@@ -34,13 +34,13 @@ const UserRanking = () => {
         let newRanking = []
         if (newRankingType === 'BEST_MATCH') {
             newRanking = await loadMatchRanking();
-            localStorage.setItem('rankingType','BEST_MATCH');
+            localStorage.setItem('rankingType', 'BEST_MATCH');
         } else if (newRankingType === 'VICTORIAS') {
             newRanking = await loadVictoryRanking();
-            localStorage.setItem('rankingType','VICTORIAS');
+            localStorage.setItem('rankingType', 'VICTORIAS');
         } else {
             newRanking = await loadRoundRanking();
-            localStorage.setItem('rankingType','RONDAS');
+            localStorage.setItem('rankingType', 'RONDAS');
         }
         setRanking(newRanking)
         setRankingType(newRankingType)
@@ -50,8 +50,10 @@ const UserRanking = () => {
     const UserVictoryRanking = ({ userInfo, index }) => {
         return (
             <div key={`user-${index}`} onClick={(e) => { navigate(`/perfil/${userInfo.nick}`) }} className="user-ranking">
-                <h1 id={`num-${index + 1}`}>#{index + 1}</h1>
-                <img style={{ borderColor: userInfo.color }} src={userInfo.avatar} alt="" />
+                <div style={{display:'flex', flexDirection:'row'}}>
+                    <h1 id={`num-${index + 1}`}>#{index + 1}</h1>
+                    <img style={{ borderColor: userInfo.color }} src={userInfo.avatar} alt="" />
+                </div>
                 <h1 className={userInfo.es_admin ? 'admin' : 'user'}>{userInfo.nick}</h1>
                 <h1>Total: <strong style={{ color: 'var(--main-white)' }}>{userInfo.tiene_jugadas_count}</strong></h1>
                 <h1>V: <strong style={{ color: 'var(--main-gold)' }}>{userInfo.total_victorias}</strong></h1>
@@ -62,8 +64,10 @@ const UserRanking = () => {
     const UserRoundRanking = ({ userInfo, index }) => {
         return (
             <div key={`user-${index}`} onClick={(e) => { navigate(`/perfil/${userInfo.nick}`) }} className="user-ranking">
-                <h1 id={`num-${index + 1}`}>#{index + 1}</h1>
-                <img style={{ borderColor: userInfo.color }} src={userInfo.avatar} alt="" />
+                <div style={{display:'flex', flexDirection:'row'}}>
+                    <h1 id={`num-${index + 1}`}>#{index + 1}</h1>
+                    <img style={{ borderColor: userInfo.color }} src={userInfo.avatar} alt="" />
+                </div>
                 <h1 className={userInfo.es_admin ? 'admin' : 'user'}>{userInfo.nick}</h1>
                 <h1>Record Rondas: <strong style={{ color: 'var(--main-gold)' }}>{userInfo.record_rondas}</strong></h1>
             </div>
@@ -72,8 +76,10 @@ const UserRanking = () => {
     const MatchRanking = ({ matchInfo, index }) => {
         return (
             <div key={`user-${index}`} onClick={(e) => { navigate(`/partida/${matchInfo.id}`) }} className="user-ranking">
-                <h1 id={`num-${index + 1}`}>#{index + 1}</h1>
-                <img style={{ borderColor: 'var(--main-gold)' }} src={matchInfo.personaje.imagen} alt="" />
+                <div style={{display:'flex', flexDirection:'row'}}>
+                    <h1 id={`num-${index + 1}`}>#{index + 1}</h1>
+                    <img style={{ borderColor: 'var(--main-gold)' }} src={matchInfo.personaje.imagen} alt="" />
+                </div>
                 <h1>Rondas: <strong style={{ color: 'var(--main-white)' }}>{matchInfo.rondas}</strong></h1>
                 <h1>Enemigos derrotados: <strong style={{ color: 'var(--main-red)', filter: 'brightness(1.5)' }}>{matchInfo.enemigos_enfrentados}</strong></h1>
                 <h1 className={matchInfo.jugador.es_admin ? 'admin' : 'user'}>{matchInfo.jugador.nick}</h1>
@@ -106,7 +112,7 @@ const UserRanking = () => {
     }
 
     useEffect(() => {
-        const savedRankingType = localStorage['rankingType']??'RONDAS';
+        const savedRankingType = localStorage['rankingType'] ?? 'RONDAS';
         handleRankingChange(savedRankingType)
     }, [])
 

@@ -20,6 +20,7 @@
     .user-ranking {
         display: flex;
         align-items: center;
+        justify-content: space-between;
         background-color: var(--second-color);
         height: 3cqw;
         width: 95%;
@@ -49,7 +50,15 @@
         }
 
         .admin {
+            width: 10cqw;
             color: var(--main-gold);
+            overflow: hidden;
+        }
+        .user {
+            width: 10cqw;
+            text-overflow: clip;
+            overflow:hidden;
+            text-overflow: ellipsis;
         }
     }
 

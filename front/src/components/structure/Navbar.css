@@ -4,7 +4,7 @@ nav {
     align-items: center;
     position: sticky;
     top: 0;
-    border: 0.3cqw solid #4C3E3E;
+    border: 0.3cqw solid #4c3e3e00;
     border-radius: 4px;
     padding: 10px 20px;
     padding-left: 20%;
@@ -13,7 +13,7 @@ nav {
     max-height: 2em;
     min-height: 2em;
     color: white;
-    background-color: #4C3E3E;
+    background-color: #4c3e3ea2;
     background-size: 50px 50px;
     z-index: 1000;
 }
@@ -42,7 +42,16 @@ nav {
         border-style: solid;
     }
 }
-
+.game-icon{
+    background: none;
+    width: 10cqw;
+    min-width: 10em;
+    height: 3cqw;
+    min-height: 3em;
+    position: absolute;
+    left: 10em;
+    bottom: 0;
+}
 .menu_link--active {
     color: var(--main-orange);
     border-color: var(--main-orange);
@@ -121,7 +130,11 @@ nav {
     color: #aaa;
     font-size: 14px;
 }
-
+@media (max-width: 1080px) {
+    .game-icon{
+        display: none;
+    }
+}
 @media (max-width: 600px) {
     nav {
         display: flex;
@@ -146,7 +159,6 @@ nav {
         border-width: 2px;
         border-style: solid;
     }
-
 
     .menu_link {
         text-decoration: none;

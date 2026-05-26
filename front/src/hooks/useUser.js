@@ -168,7 +168,7 @@ export const useUser = () => {
         },
         onSuccess: (data) => {
             queryClient.invalidateQueries({ queryKey: ['authUser'] });
-            queryClient.setQueryData(['authUser'], data.usuario);
+            user.nick == data.nick? queryClient.setQueryData(['authUser'], data) : null;
             navigate(`/perfil/${data.nick}`);
         }
     });
@@ -248,8 +248,17 @@ export const useUser = () => {
             throw error;
         }
     };
+    const getUsers = async () => {
+        try {
+            const response = await api.get(`/usuarios`)
+            return response.data.usuario
+        } catch (error) {
+            console.error("Error al obtener usuario:", error.response?.data?.message);
+            throw error;
+        }
+    }
 
-    
+
 
     return {
         user,
@@ -279,6 +288,6 @@ export const useUser = () => {
         deleteProfilePhoto: deleteProfilePhoto.mutate,
         deleteProfilePhotoError: deleteProfilePhoto.error,
         isDeletingProfilePhoto: deleteProfilePhoto.isPending,
-       
+        getUsers
     };
 };

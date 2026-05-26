@@ -25,17 +25,17 @@ const Navbar = () => {
     const navigate = useNavigate()
 
     const handleNavClick = (e, to) => {
-    if (location.pathname === '/jugar') {
-        e.preventDefault();
-        
-        const proceder = window.confirm("Si sales, la partida contará como derrota.");
-        
-        if (proceder) {
-            const eventoSalir = new CustomEvent('interrumpirPartida', { detail: { destino: to } });
-            window.dispatchEvent(eventoSalir);
+        if (location.pathname === '/jugar') {
+            e.preventDefault();
+
+            const proceder = window.confirm("Si sales, la partida contará como derrota.");
+
+            if (proceder) {
+                const eventoSalir = new CustomEvent('interrumpirPartida', { detail: { destino: to } });
+                window.dispatchEvent(eventoSalir);
+            }
         }
-    }
-};
+    };
 
     useEffect(() => {
         if (!isLoading && user) {
@@ -66,6 +66,7 @@ const Navbar = () => {
         <Fragment>
             <nav>
                 {showFPS && <FPSCounter />}
+                <img className="game-icon" src="/images/banner_menu.webp" />
                 <div className="navbar-items">
                     {!isLoading && user && (
                         <div className="navbar-active-players">
@@ -101,6 +102,16 @@ const Navbar = () => {
                             )}
                         </div>
                     )}
+
+                    {user ?
+                        <NavLink
+                            onClick={(e) => handleNavClick(e, `/admin-panel`)}
+                            to={`/admin-panel`}
+                            className={({ isActive }) => isActive ? 'menu_link menu_link--active' : 'menu_link'}
+                        >
+                            Panel Admin
+                        </NavLink> 
+                        : <></>}
 
                     <NavLink
                         to="/"

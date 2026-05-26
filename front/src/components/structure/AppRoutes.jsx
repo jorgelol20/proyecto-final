@@ -12,7 +12,7 @@ const SettingsPage = lazy(() => import('../pages/SettingsPage.jsx'));
 const MatchPage = lazy(() => import('../pages/MatchPage.jsx'));
 const Tutorial = lazy(() => import('../pages/Tutorial.jsx'));
 const CreditPage = lazy(()=> import("../pages/CreditPage.jsx"));
-
+const AdminPanel = lazy(()=> import("../pages/AdminPanel.jsx"))
 import GoogleCallback from "./GoogleCallback.jsx";
 
 const AppRoutes = () => {
@@ -40,6 +40,9 @@ const AppRoutes = () => {
                     <Route path="/creditos" element={<CreditPage/>}/>
 
                     <Route path="/auth/callback" element={<GoogleCallback/>}/>
+
+                    <Route path="/admin-panel" element={<AdminPanel/>}/>
+
                 </Routes>
             </Suspense>
         </Fragment>
