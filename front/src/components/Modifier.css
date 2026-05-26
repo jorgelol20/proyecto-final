@@ -17,6 +17,7 @@
         font-size: 2cqw;
         text-shadow: 1px 0px 0px black;
         text-align: center;
+        height: 10%;
     }
 
     img {
@@ -36,7 +37,7 @@
         color: var(--main-white);
         text-align: center;
         text-shadow: 1px 0px 0px black;
-        font-size: 1.3cqh;
+        font-size: 1em;
     }
 }
 
