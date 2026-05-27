@@ -72,6 +72,9 @@
             height: 5cqw;
             border-width: 0.5cqw;
         }
+        p{
+            font-size: 0.5;
+        }
     }
 
     .modifier-text[popover] {
