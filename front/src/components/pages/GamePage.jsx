@@ -81,7 +81,6 @@ const GamePage = () => {
     useEffect(() => {
         const gestionarSalidaNavbar = async (e) => {
             const rutaDestino = e.detail.destino;
-
             try {
                 await endGame(
                     user?.id,

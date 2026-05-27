@@ -20,6 +20,8 @@ const Navbar = () => {
 
     const [userList, setUserList] = useState([]);
     const [isActiveSearch, setIsActiveSearch] = useState(false);
+
+    const [toPage, setToPage] = useState(null)
     const searchRef = useRef(null);
 
 
@@ -30,18 +32,21 @@ const Navbar = () => {
 
 
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const handleConfirmAction = useCallback(() => {
+
+    const handleConfirmAction = async () => {
         setIsModalOpen(false);
-        const eventoSalir = new CustomEvent('interrumpirPartida', { detail: { destino: location.pathname } });
+        const eventoSalir = new CustomEvent('interrumpirPartida', { detail: { destino: toPage } });
         window.dispatchEvent(eventoSalir);
-    }, [location.pathname]);
-    const handleCancelAction = useCallback(() => {
+    };
+
+    const handleCancelAction = async () => {
         setIsModalOpen(false);
-    }, []);
+    };
 
     const handleNavClick = (e, to) => {
         if (location.pathname === '/jugar') {
             e.preventDefault();
+            setToPage(to)
             setIsModalOpen(true);
         }
     };
