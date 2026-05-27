@@ -41,6 +41,7 @@ import GoldAnimation from '/images/gold.webp';
 import AllDamageAnimation from '/images/animations/AllDamageAnimation.webp';
 import DamageAnimation from '/images/animations/DamageAnimation.webp';
 import { useAchievements } from "../../hooks/useAchievements.js";
+import ConfirmationModal from "../ConfirmationModal.jsx";
 
 const GamePage = () => {
     const navigate = useNavigate();
@@ -105,8 +106,6 @@ const GamePage = () => {
         };
     }, [navigate, user, gameWin, rounds, endGame]);
 
-    //CAPTURAR EL BOTÓN "ATRÁS" DEL NAVEGADOR
-
     const guardarYTerminarPartida = async () => {
         await endGame(
             user.id,
@@ -119,24 +118,30 @@ const GamePage = () => {
         );
     };
 
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const handleCloseModal = useCallback(() => {
+        setIsModalOpen(false);
+        window.history.pushState(null, null, window.location.pathname);
+    }, []);
+
+    const handleConfirmAction = useCallback(async () => {
+        setIsModalOpen(false);
+
+        try {
+            await endGame(user.id, timeRef.current, gameWin, rounds, totalEarnedGold.current, healedLife.current, enemysDefeated)
+        } catch (error) {
+            console.error("Error al guardar la partida:", error);
+        } finally {
+            navigate('/');
+        }
+    }, [navigate, user, gameWin, rounds, endGame]);
+
+
     useEffect(() => {
         window.history.pushState(null, null, window.location.pathname);
-
         const handlePopState = async () => {
-            const proceder = window.confirm("Si sales, la partida contará como derrota.");
-
-            if (proceder) {
-                try {
-                    await endGame(user.id, timeRef.current, gameWin, rounds, totalEarnedGold.current, healedLife.current, enemysDefeated)
-                } catch (error) {
-                    console.error("Error al guardar la partida de forma forzada:", error);
-                } finally {
-                    navigate('/');
-                }
-            } else {
-                // Si cancela, volvemos a bloquear el historial para mantenerlo en la partida
-                window.history.pushState(null, null, window.location.pathname);
-            }
+            setIsModalOpen(true);
         };
 
         window.addEventListener('popstate', handlePopState);
@@ -147,16 +152,6 @@ const GamePage = () => {
     }, [navigate, user, gameWin, rounds, endGame]);
 
 
-    useEffect(() => {
-        const handleBeforeUnload = (e) => {
-            e.preventDefault();
-            e.returnValue = '¿Seguro que quieres salir del juego?';
-            return e.returnValue;
-        };
-
-        window.addEventListener('beforeunload', handleBeforeUnload);
-        return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-    }, []);
 
     const continueFunction = () => {
         setGameOn(true)
@@ -1133,10 +1128,10 @@ const GamePage = () => {
         const cardPower = Math.ceil(cardValue / 2)
         const card1 = await addEnemyToMatchDeck(cardPower, rounds);
         const card2 = await addEnemyToMatchDeck(cardPower, rounds);
-        if(card1 !== null){
+        if (card1 !== null) {
             setDungeon(prev => [card1, ...dungeon])
         }
-        if(card2 !== null){
+        if (card2 !== null) {
             setDungeon(prev => [card2, ...dungeon])
         }
     }
@@ -1490,7 +1485,21 @@ const GamePage = () => {
             </Fragment>
         )
     }
+    if (isModalOpen) {
+        return (
+            <>
+                {/* Contenido principal de la partida */}
 
+                <ConfirmationModal
+                    isOpen={isModalOpen}
+                    onClose={() => handleCloseModal()}
+                    onConfirm={handleConfirmAction}
+                    title="Advertencia"
+                    message="Si sales, la partida contará como derrota."
+                />
+            </>
+        );
+    }
 
     return (
         <Fragment>

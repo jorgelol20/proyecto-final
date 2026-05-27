@@ -20,7 +20,6 @@ const AdminPanel = () => {
 
     const getUserList = async () => {
         const newUserList = await getUsers();
-        console.log(newUserList)
         setUsers(newUserList);
         setShowList(newUserList);
     }
@@ -40,7 +39,7 @@ const AdminPanel = () => {
                 {showList.length > 0 ?
                     <div className="users-panel">
                         {showList.map(user =>
-                            <div className="user-row">
+                            <div key={user.id} className="user-row">
                                 <UserShow userInfo={user} admin={true} />
                             </div>
                         )}
