@@ -1,4 +1,4 @@
-import React, { Fragment, useContext, useEffect, useRef, useState } from "react";
+import React, { Fragment, useCallback, useContext, useEffect, useRef, useState } from "react";
 import './Navbar.css';
 import { useUser } from '../../hooks/useUser.js';
 import Placeholder from '/images/placeholder.webp'
@@ -10,6 +10,7 @@ import { settingsContext } from "../../context/SettingsProvider.jsx";
 
 import FPSCounter from "./FPSCounter.jsx";
 import UserShow from "../UserShow.jsx";
+import ConfirmationModal from "../ConfirmationModal.jsx";
 
 const Navbar = () => {
     const { user, searchUsuario, isLoading, activePlayers } = useUser();
@@ -21,19 +22,27 @@ const Navbar = () => {
     const [isActiveSearch, setIsActiveSearch] = useState(false);
     const searchRef = useRef(null);
 
+
+
+
     const location = useLocation()
     const navigate = useNavigate()
+
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const handleConfirmAction = useCallback(() => {
+        setIsModalOpen(false);
+        const eventoSalir = new CustomEvent('interrumpirPartida', { detail: { destino: location.pathname } });
+        window.dispatchEvent(eventoSalir);
+    }, [location.pathname]);
+    const handleCancelAction = useCallback(() => {
+        setIsModalOpen(false);
+    }, []);
 
     const handleNavClick = (e, to) => {
         if (location.pathname === '/jugar') {
             e.preventDefault();
-
-            const proceder = window.confirm("Si sales, la partida contará como derrota.");
-
-            if (proceder) {
-                const eventoSalir = new CustomEvent('interrumpirPartida', { detail: { destino: to } });
-                window.dispatchEvent(eventoSalir);
-            }
+            setIsModalOpen(true);
         }
     };
 
@@ -110,7 +119,7 @@ const Navbar = () => {
                             className={({ isActive }) => isActive ? 'menu_link menu_link--active' : 'menu_link'}
                         >
                             Panel Admin
-                        </NavLink> 
+                        </NavLink>
                         : <></>}
 
                     <NavLink
@@ -147,6 +156,13 @@ const Navbar = () => {
                     ) : null}
                 </div>
             </nav>
+            <ConfirmationModal
+                isOpen={isModalOpen}
+                onClose={handleCancelAction}
+                onConfirm={handleConfirmAction}
+                title="Salir de la Partida"
+                message="Si sales, la partida contará como derrota."
+            />
         </Fragment>
     );
 };
