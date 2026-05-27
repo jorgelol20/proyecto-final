@@ -117,7 +117,7 @@ const Navbar = () => {
                         </div>
                     )}
 
-                    {user ?
+                    {user && user.es_admin ?
                         <NavLink
                             onClick={(e) => handleNavClick(e, `/admin-panel`)}
                             to={`/admin-panel`}
