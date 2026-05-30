@@ -616,7 +616,7 @@ const Tutorial = () => {
             <div className="tutorial-container">
                 <div className="movement-buttons">
                     {slides.map((slide, index) => {
-                        return <button key={index + '-button'} className="movement-button" onClick={() => { setCurrentIndex(index) }}>{index + 1}</button>
+                        return <button key={index + '-button'} className={currentIndex === index ? "movement-button active" : "movement-button"} onClick={() => { setCurrentIndex(index) }}>{index + 1}</button>
                     })}
                 </div>
                 <div className="tutorial-carousel">
