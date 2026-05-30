@@ -1,20 +1,14 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useContext, useEffect, useState } from "react";
 import { useCharacters } from "../hooks/useCharacter";
 import Placeholder from '/images/placeholder.webp'
 import './Match.css'
 import Modifier from "./Modifier";
+import { matchContext } from "../context/MatchProvider";
 const Match = ({ match, showUser }) => {
-    const [character, setCharacter] = useState(false)
-    const { getCharacterById, isLoading } = useCharacters()
-    const loadCharacter = async () => {
-        const tempCharacter = await getCharacterById(match.personaje_id);
-        setCharacter(tempCharacter)
-    }
-    useEffect(() => {
-        loadCharacter()
-    }, [])
+    const { characters, isLoading } = useCharacters()
     if (!isLoading) {
         return (
+            
             <Fragment>
                 <article className="match-row">
                     <div style={{display:'flex',flexDirection:'column',
@@ -23,7 +17,7 @@ const Match = ({ match, showUser }) => {
                         <p>ID partida:</p>
                         <h1 className="match-id">{match.id}</h1>
                     </div>
-                    <img className="character-image" src={character.imagen} alt={character.nombre} />
+                    <img className="character-image" src={match.personaje.imagen} alt={match.personaje.nombre} />
                     <div className="match-info">
                         <div style={{ display: 'flex', textAlign: 'center', justifyContent: 'center' }}>
                             <h2 className={match.victoria ? 'win' : 'lose'}>{match.victoria ? 'Victoria' : 'Derrota'}</h2>

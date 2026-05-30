@@ -18,7 +18,7 @@ import PlunderIcon from '/images/cardEffects/Plunder.webp';
 import ExtraGoldIcon from '/images/cardEffects/ExtraGold.webp';
 import MitosisIcon from '/images/cardEffects/Mitosis.webp';
 
-const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = true, onDeck = false, isWizard = false, setOverDungeonZone, canBeClicked, cardSuit, defaultImage }, ref) => {
+const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = true, onDeck = false, isWizard = false, setOverDungeonZone, canBeClicked, cardSuit, defaultImage, scale = 1 }, ref) => {
 
     const groupRef = useRef(null);
     const [strokeWidth, setStrokeWidth] = useState(2);

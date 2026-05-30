@@ -1,18 +1,27 @@
 .tutorial-container {
     width: 100%;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
+    position: relative;
+    top: -10em;
+
+    p {
+        font-size: 1cqw;
+        width: 80%;
+    }
 
     .tutorial-carousel {
         position: relative;
-        width: 60%;
+        width: 80%;
         margin: auto;
         overflow: hidden;
         border-radius: 8px;
         background-color: var(--main-color);
 
-        button {
+        .btn-prev,
+        .btn-next {
             opacity: 0.9;
             position: absolute;
             top: 50%;
@@ -47,16 +56,16 @@
     strong {
         color: var(--main-red);
     }
+
+    h1 {
+        color: var(--main-gold);
+    }
 }
 
 .slide-1 {
     img {
         background: none;
         width: 30cqw;
-    }
-
-    p {
-        font-size: 1cqw;
     }
 
 }
@@ -80,12 +89,6 @@
         margin: 0;
     }
 
-    p {
-        font-size: 1cqw;
-        margin: 0;
-    }
-
-
 
 }
 
@@ -104,10 +107,6 @@
     img {
         background: none;
         width: 3cqw;
-    }
-
-    p {
-        font-size: 1cqw;
     }
 
     .card-stage {
@@ -154,10 +153,11 @@
 
     .card-effects {
         width: 80%;
-        max-height: 35cqh;
+        max-height: 50cqh;
         display: flex;
         flex-wrap: wrap;
         overflow: auto;
+        justify-content: center;
 
         .card-effect {
             width: 10cqw;
@@ -181,10 +181,6 @@
                     width: 4cqw;
                     background: none;
                     border: 0.5em groove var(--main-gold);
-                }
-
-                p {
-                    font-size: 0.7em;
                 }
             }
 
@@ -211,26 +207,111 @@
                     margin-bottom: 0;
                 }
 
-                p {
-                    font-size: 0.85em;
-                }
             }
         }
     }
 }
 
+.slide-6 {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+
+    p {
+        text-align: justify;
+    }
+}
+.slide-7{
+    p{
+        width: 80%;
+    }
+    h3{
+        font-size: 1em;
+        text-align: center;
+    }
+}
+
+.slide-8 {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+
+    .player-health {
+        display: flex;
+        align-items: center;
+        color: var(--main-red);
+        font-size: 2cqw;
+
+        img {
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+            margin-right: 0.5cqw;
+            background: none;
+            width: 2cqw;
+        }
+    }
+
+    h3 {
+        font-size: 1cqw;
+        color: var(--main-gold);
+        text-align: center;
+    }
+
+    .reset-simulator-btn {
+        position: relative;
+        background-color: var(--main-red, #c0392b);
+        color: white;
+        border: 2px solid white;
+        padding: 10px 20px;
+        font-family: 'Romulus', sans-serif;
+        font-size: 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: transform 0.2s, background-color 0.2s;
+    }
+
+    .reset-simulator-btn:hover {
+        background-color: var(--dark-red, #a93226);
+    }
+}
+.slide-9{
+    img{
+        background: none;
+    }
+}
+
 .btn-prev {
     position: absolute;
-    left: 15cqw;
+    left: 5cqw;
 }
 
 .btn-next {
     position: absolute;
-    right: 15cqw;
+    right: 5cqw;
+}
+
+.movement-buttons {
+    width: 60%;
+
+    .movement-button {
+        width: 1.5em;
+        border-radius: 5px;
+    }
 }
 
 
 @media (max-width: 1080px) {
+    .tutorial-container {
+        top: -5em;
+
+        p{
+            font-size: 0.6em;
+        }
+
+    }
+
     .slide-1 {
         img {
             background: none;
@@ -241,10 +322,7 @@
             font-size: 6cqw;
         }
 
-        p {
-            font-size: 3cqw;
-            text-align: center;
-        }
+
 
     }
 
@@ -303,11 +381,13 @@
         }
 
     }
-    .slide-4{
+
+    .slide-4 {
         h1 {
-        font-size: 6cqw;
+            font-size: 6cqw;
+        }
     }
-    }
+
     .slide-5 {
         h1 {
             font-size: 6cqw;
@@ -337,15 +417,64 @@
         }
     }
 
+    .slide-8 {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+
+        .player-health {
+            display: flex;
+            align-items: center;
+            color: var(--main-red);
+            font-size: 1em;
+
+            img {
+                image-rendering: pixelated;
+                image-rendering: crisp-edges;
+                margin-right: 0.5cqw;
+                background: none;
+                width: 2cqw;
+            }
+        }
+        
+
+        h3 {
+            font-size: 0.6em;
+            color: var(--main-gold);
+            text-align: center;
+        }
+
+        .reset-simulator-btn {
+            position: relative;
+            background-color: var(--main-red, #c0392b);
+            color: white;
+            border: 2px solid white;
+            height: 0.7em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 20px;
+            font-family: 'Romulus', sans-serif;
+            font-size: 0.6em;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+
+        .reset-simulator-btn:hover {
+            background-color: var(--dark-red, #a93226);
+        }
+    }
+
     .btn-prev {
         position: absolute;
-        left: 10cqw;
+        left: 5cqw;
         width: 10cqw;
     }
 
     .btn-next {
         position: absolute;
-        right: 10cqw;
+        right: 5cqw;
         width: 10cqw;
     }
 }
