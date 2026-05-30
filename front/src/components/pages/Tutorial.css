@@ -6,6 +6,8 @@
     align-items: center;
     position: relative;
     top: -10em;
+    font-weight: 100;
+    text-shadow: 1px 1px 1px black;
 
     p {
         font-size: 1cqw;
@@ -36,6 +38,9 @@
             opacity: 1;
         }
     }
+    .active{
+        color: var(--main-orange);
+    }
 }
 
 .slide {
@@ -63,6 +68,13 @@
 }
 
 .slide-1 {
+
+    p {
+        width: 30% !important;
+        text-align: center !important;
+    }
+
+
     img {
         background: none;
         width: 30cqw;
@@ -223,11 +235,13 @@
         text-align: justify;
     }
 }
-.slide-7{
-    p{
+
+.slide-7 {
+    p {
         width: 80%;
     }
-    h3{
+
+    h3 {
         font-size: 1em;
         text-align: center;
     }
@@ -276,8 +290,9 @@
         background-color: var(--dark-red, #a93226);
     }
 }
-.slide-9{
-    img{
+
+.slide-9 {
+    img {
         background: none;
     }
 }
@@ -306,13 +321,15 @@
     .tutorial-container {
         top: -5em;
 
-        p{
+        p {
             font-size: 0.6em;
         }
 
     }
 
     .slide-1 {
+        text-align: center;
+
         img {
             background: none;
             width: 50cqw;
@@ -436,7 +453,7 @@
                 width: 2cqw;
             }
         }
-        
+
 
         h3 {
             font-size: 0.6em;
