@@ -61,7 +61,7 @@ class UsuariosController extends Controller
     public function show(string $nick)
     {
         $usuario = Usuarios::select('id', 'nick', 'email', 'es_admin', 'avatar', 'color', 'created_at', 'ultima_vez_visto')->where('nick', '=', $nick)->get();
-        $usuario = $usuario->load(['comentarios', 'tiene_jugadas.modificadores', 'logros']);
+        $usuario = $usuario->load(['comentarios', 'tiene_jugadas.modificadores','tiene_jugadas.personaje', 'logros']);
         return response()->json(['usuario' => $usuario], 201);
     }
 

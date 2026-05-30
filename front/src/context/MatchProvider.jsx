@@ -323,13 +323,15 @@ const MatchProvider = (props) => {
     };
 
     const getTutorialCards = (tutorialNumber = 1) => {
+        const tempDeck = [...baseDeck]
         switch (tutorialNumber) {
             case 1:
-                const tempDeck = [...baseDeck]
-                const cards = [tempDeck[0], tempDeck[14], tempDeck[28], tempDeck[42]]
-                return cards;
+                const cardstutorialOne = [tempDeck[0], tempDeck[14], tempDeck[28], tempDeck[42]]
+                return cardstutorialOne;
                 break;
-            case 2:
+            case 7:
+                const cardstutorialSeven = [tempDeck[5], tempDeck[26],tempDeck[28], tempDeck[41]]
+                return cardstutorialSeven;
                 break;
             default:
                 break;

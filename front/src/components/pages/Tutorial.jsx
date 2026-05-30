@@ -1,10 +1,11 @@
-import React, { useState, Fragment, useContext, useEffect } from "react";
+import React, { useState, Fragment, useContext, useEffect, useCallback } from "react";
 import './Tutorial.css';
 import { useNavigate } from "react-router-dom";
 import { matchContext } from "../../context/MatchProvider.jsx";
-import { Layer, Label, Rect, Stage, Text, Image } from "react-konva";
+import { Layer, Label, Rect, Stage, Text, Image, Group } from "react-konva";
 import Card from "../Card";
 import useImage from "use-image";
+
 
 //Palos
 import ClubIcon from '/images/suit_club.webp';
@@ -12,6 +13,7 @@ import HeartIcon from '/images/suit_heart.webp';
 import DiamonIcon from '/images/suit_diamond.webp';
 import SpadeIcon from '/images/suit_spade.webp';
 import DefaultCardImage from '/images/default_card.webp';
+import GoldIcon from '/images/gold.webp';
 
 //ShopMan
 import ShopManSad from '/images/shopman/Sad.webp';
@@ -22,6 +24,10 @@ import ShopManSarcastic from '/images/shopman/Sarcastic.webp';
 import ShopManThinking from '/images/shopman/Thinking.webp';
 import { useModifier } from "../../hooks/useModifier.js";
 import Modifier from "../Modifier.jsx";
+
+import healthIcon from '/images/full_health.png';
+import AllDamageAnimation from '/images/animations/AllDamageAnimation.webp';
+import DamageAnimation from '/images/animations/DamageAnimation.webp';
 
 const Tutorial = () => {
     const navigate = useNavigate();
@@ -46,18 +52,18 @@ const Tutorial = () => {
     const modificadores = modifiers;
 
     // Escala para react-konva
-    const [scale, setScale] = useState(window.innerWidth / 1920)
-    
-    
-        useEffect(() => {
-            const handleResize = () => {
-                setScale(window.innerWidth / 1920)
-            };
-            window.addEventListener('resize', handleResize);
-            return () => {
-                window.removeEventListener('resize', handleResize)
-            };
-        }, []);
+    const [scale, setScale] = useState(window.innerWidth / 2560)
+
+
+    useEffect(() => {
+        const handleResize = () => {
+            setScale(window.innerWidth / 1920)
+        };
+        window.addEventListener('resize', handleResize);
+        return () => {
+            window.removeEventListener('resize', handleResize)
+        };
+    }, []);
 
     const slide1 = (
         <Fragment>
@@ -225,7 +231,7 @@ const Tutorial = () => {
                 <p>En tu partida irás consiguiendo <span>modificadores</span> que te ayudarán a llegar lo más lejos que puedas.</p>
                 <p><span>Ponte encima</span> o <span>clica sobre ellos</span> para conocer sus efectos.</p>
                 <div className="tutorial-modifiers">
-                    {modifiers?.map(modifier => <Modifier modifierInfo={modifier} />)}
+                    {modifiers?.map(modifier => <Modifier key={modifier.id + '-modifier'} modifierInfo={modifier} />)}
                 </div>
             </div>
         </Fragment>
@@ -249,7 +255,7 @@ const Tutorial = () => {
         <Fragment>
             <div className="slide-5 slide">
                 <h1>Efectos en las cartas</h1>
-                <div style={{width: '80%'}}>
+                <div style={{ width: '80%' }}>
                     <p>Aleatoriamente, algunas cartas enemigas podrán tener <span>efectos</span>. Para contrarrestar eso, en la tienda podrás obtener cartas (<span>curaciones</span> y <span>armas</span>) con efectos únicos.</p>
                 </div>
                 <div className="card-effects">
@@ -276,7 +282,325 @@ const Tutorial = () => {
         </Fragment>
     )
 
-    const slides = [slide1, slide2, slide3, slide4, slide5];
+
+    //
+    const [DUNGEON_ZONE, setDUNGEON_ZONE] = useState({ x: 10, y: 5, width: 100, height: 130 });
+    const [DISCARD_ZONE, setDISCARD_ZONE] = useState({ x: 650, y: 170, width: 100, height: 130 });
+    const [WEAPON_ZONE, setWEAPON_ZONE] = useState({ x: 200, y: 170, width: 370, height: 190 });
+    const [HAND_ZONE, setHAND_ZONE] = useState({ x: 150, y: 5, width: 550, height: 160 });
+    const slide6 = (
+        <Fragment>
+            <div className="slide-6 slide">
+                <h1>Zona de juego</h1>
+                <div style={{ width: '80%' }}>
+                    <p>
+                        La zona de juego se reparte en 4 partes: el <span>mazo</span>, la <span>mano</span>, la <span>zona de juego</span> y los <span>descartes</span>.<br />
+                        El <span>mazo</span> es donde se 'apilan' todas las cartas que van a verse durante la ronda. <br />
+                        La <span>mano</span>, donde irán apareciendo las cartas <span>jugables</span> de <span>4 en 4</span>. <br />
+                        La <span>zona de juego</span> donde se deberán mover las cartas para ser jugadas. <br />
+                        Por último, están los <span>descartes</span>, donde se irán almacenando las cartas ya jugadas.
+                    </p>
+                </div>
+                <Stage width={765 * scale} height={400 * scale} scaleX={scale} scaleY={scale} y={20 * scale / 20}>
+                    <Layer>
+                        {/* ZONA DEL MAZO */}
+                        <Group x={DUNGEON_ZONE.x} y={DUNGEON_ZONE.y}>
+                            <Rect width={DUNGEON_ZONE.width} height={DUNGEON_ZONE.height} fill="#0000006c" stroke="white" strokeWidth={2} cornerRadius={8} />
+                            <Text text="DUNGEON" rotation={55} fontFamily="Romulus" fontSize={20} fill="white" y={25} x={35} />
+                        </Group>
+                        <Group x={DISCARD_ZONE.x} y={DISCARD_ZONE.y}>
+                            <Rect width={DISCARD_ZONE.width} height={DISCARD_ZONE.height} fill="#9c4747c9" stroke="white" strokeWidth={2} cornerRadius={8} />
+                            <Text text="DESCARTES" rotation={55} fontFamily="Romulus" fontSize={20} fill="white" y={WEAPON_ZONE.height * 0.05} x={WEAPON_ZONE.width * 0.08} />
+                        </Group>
+                        <Group x={WEAPON_ZONE.x} y={WEAPON_ZONE.y}>
+                            <Rect width={WEAPON_ZONE.width} height={WEAPON_ZONE.height} fill="#6a9c476e" stroke="white" strokeWidth={2} cornerRadius={8} />
+                            <Text text="ZONA DE EQUIPO" fontFamily="Romulus" fontSize={40} fill="white" y={WEAPON_ZONE.height * 0.4} x={WEAPON_ZONE.width * 0.12} />
+                        </Group>
+                        <Group x={HAND_ZONE.x} y={HAND_ZONE.y}>
+                            <Rect width={HAND_ZONE.width} height={HAND_ZONE.height} fill="#90c0ff50" stroke="white" strokeWidth={2} cornerRadius={8} />
+                            <Text text="MANO" fontFamily="Romulus" fontSize={40} fill="white" y={HAND_ZONE.height * 0.4} x={HAND_ZONE.width * 0.35} />
+                        </Group>
+                    </Layer>
+                </Stage>
+
+
+            </div>
+        </Fragment>
+    )
+    const tutorial7Cards = getTutorialCards(7)
+    const [room, setRoom] = useState([
+        ...tutorial7Cards
+    ]);
+    const [discardPile, setDiscardPile] = useState([]);
+    const [health, setHealth] = useState(20);
+    const [healthAnimationValue, setHealthAnimationValue] = useState(null);
+    const [weapon, setWeapon] = useState(null);
+    const [slainMonsters, setSlainMonsters] = useState([]);
+    const [canBeClicked, setCanBeClicked] = useState(true);
+
+    const deleteFromRoom = (card) => {
+        setRoom(prev => prev.filter(c => c.key !== card.key));
+    }
+
+    const [healthAnimation, setHealthAnimation] = useState(null);
+    const damageAnimation = async (value, allDamage = false) => {
+        setHealthAnimationValue(value * -1);
+        if (allDamage) {
+            setHealthAnimation(AllDamageAnimation);
+        } else {
+            setHealthAnimation(DamageAnimation);
+        }
+
+        setTimeout(() => {
+            setHealthAnimation(null);
+        }, 300);
+    }
+
+    const moveCardToDiscard = (cardsToMove, moved = false) => {
+        setTimeout(() => {
+            setDiscardPile(prev => [...prev, ...cardsToMove]);
+            setRoom(prev => prev.filter(c => !cardsToMove.find(moved => moved.key === c.key)));
+        }, 200);
+    };
+
+    const handleWeapon = (card) => {
+        if (weapon) {
+            moveCardToDiscard([weapon], true);
+            setTimeout(() => {
+                setWeapon(card);
+                deleteFromRoom(card);
+            }, 100);
+        } else {
+            setWeapon(card);
+            deleteFromRoom(card);
+        }
+
+        if (slainMonsters.length > 0) {
+            moveCardToDiscard([...slainMonsters], true);
+            setTimeout(() => {
+                setSlainMonsters([]);
+            }, 200);
+        }
+        return true;
+    };
+
+    const handleCombat = (card) => {
+        let finalDmg = 0;
+        let isSlain = false;
+
+        const lastSlainCard = slainMonsters[slainMonsters.length - 1];
+        const canUseWeapon = weapon && (
+            slainMonsters.length === 0 ||
+            card.valor < lastSlainCard?.valor
+        );
+
+        if (canUseWeapon) {
+            finalDmg = Math.max(0, card.valor - weapon.valor);
+            isSlain = true;
+            damageAnimation(finalDmg);
+            setHealth(prev => Math.max(0, prev - finalDmg));
+        } else {
+            finalDmg = card.valor;
+            isSlain = false;
+            moveCardToDiscard([card]);
+            damageAnimation(finalDmg, true);
+            setHealth(prev => Math.max(0, prev - finalDmg));
+        }
+
+        if (isSlain) {
+            setSlainMonsters(prev => [...prev, card]);
+            deleteFromRoom(card);
+        }
+
+        return true;
+    };
+
+    const processCardAction = useCallback((card) => {
+        setCanBeClicked(false);
+        document.body.style.cursor = "url('/images/cursor/Cursor_2.webp') 16 16, auto";
+
+        if (card.palo === 'Diamante') {
+            handleWeapon(card);
+        } else if (card.palo === 'Pica' || card.palo === 'Trebol') {
+            handleCombat(card);
+        }
+
+        setTimeout(() => {
+            setCanBeClicked(true);
+            document.body.style.cursor = "auto";
+        }, 500);
+    }, [weapon, slainMonsters, health]);
+
+    const handleDragEnd = (card, finalX, finalY) => {
+        const isOverZone =
+            finalX > WEAPON_ZONE.x && finalX < WEAPON_ZONE.x + WEAPON_ZONE.width &&
+            finalY > WEAPON_ZONE.y && finalY < WEAPON_ZONE.y + WEAPON_ZONE.height;
+        if (isOverZone) {
+            processCardAction(card);
+            return true;
+        }
+        return false;
+    };
+
+    const resetSimulator = () => {
+        setRoom([
+            ...getTutorialCards(7)
+        ]);
+        setWeapon(null);
+        setSlainMonsters([]);
+        setDiscardPile([]);
+        setHealth(20);
+    };
+
+    const slide7 = (
+        <Fragment>
+            <div className="slide-7 slide">
+                <div className="container">
+                    <h1>Combate</h1>
+                    <p>
+                        El combate en Scoundrel es bastante sencillo. <br />
+                        Si tienes un <span>arma</span> en la <span>zona de juego</span>,  atacarás al <strong>enemigo</strong> restando el el valor del arma al daño del enemigo. <br />
+                        Siempre y cuando el enemigo sea <span>más débil que el último derrotado</span> con esa arma, podrás atacarle. En caso contrario, el <strong>enemigo</strong> irá a descartes, recibiendo todo el daño. <br />
+                        <span>Si no tienes ninguna arma</span>, el enemigo irá directo a descartes sufriendo todo el daño.
+                    </p>
+                    <h3>A continuación, tendrás un simulador de combate para comprobarlo por tu cuenta.</h3>
+                </div>
+            </div>
+        </Fragment>
+    );
+
+    const slide8 = (
+        <Fragment>
+            <div className="slide-8 slide">
+                <h1>Simulador</h1>
+                <h1 className="player-health"><img src={healthIcon} />{health}/20{healthAnimation !== null ? <div className="animation-container"><strong className="animation" disabled={healthAnimation}>{healthAnimationValue}</strong><img className="animation" disabled={healthAnimation} src={healthAnimation} /></div> : <></>}</h1>
+                <div>
+                    <button className="reset-simulator-btn" onClick={resetSimulator}>
+                        Reiniciar
+                    </button>
+                    <Stage width={1200 * scale} height={550 * scale} scaleX={scale * 1.5} scaleY={scale * 1.5} y={30 * scale / 30}>
+                        <Layer>
+                            {/* ZONA DEL MAZO */}
+                            <Group x={DUNGEON_ZONE.x} y={DUNGEON_ZONE.y}>
+                                <Rect width={DUNGEON_ZONE.width} height={DUNGEON_ZONE.height} fill="#0000006c" stroke="white" strokeWidth={2} cornerRadius={8} />
+                                <Text text="DUNGEON" rotation={55} fontFamily="Romulus" fontSize={20} fill="white" y={25} x={35} />
+                            </Group>
+
+                            {/* DESCARTES */}
+                            <Group x={DISCARD_ZONE.x} y={DISCARD_ZONE.y}>
+                                <Rect width={DISCARD_ZONE.width} height={DISCARD_ZONE.height} fill="#9c4747c9" stroke="white" strokeWidth={2} cornerRadius={8} />
+                                <Text text="DESCARTES" rotation={55} fontFamily="Romulus" fontSize={20} fill="white" y={WEAPON_ZONE.height * 0.05} x={WEAPON_ZONE.width * 0.08} />
+                                {discardPile.slice(-1).map((card, i) => (
+                                    <Card
+                                        key={card.key}
+                                        cardInfo={card}
+                                        x={5}
+                                        y={5}
+                                        onDragEnd={() => { }}
+                                        onClick={() => { }}
+                                        isDraggable={false}
+                                        canBeClicked={false}
+                                        cardSuit={card.palo == "Diamante" ? DiamonIcon : card.palo == "Trebol" ? ClubIcon : card.palo == "Corazon" ? HeartIcon : SpadeIcon}
+                                        defaultImage={defaultImage}
+                                    />
+                                ))}
+                            </Group>
+
+                            {/* ZONA DE EQUIPO */}
+                            <Group x={WEAPON_ZONE.x} y={WEAPON_ZONE.y}>
+                                <Rect width={WEAPON_ZONE.width} height={WEAPON_ZONE.height} fill="#6a9c476e" stroke="white" strokeWidth={2} cornerRadius={8} />
+                                <Text text="ZONA DE EQUIPO" fontFamily="Romulus" fontSize={40} fill="white" y={WEAPON_ZONE.height * 0.4} x={WEAPON_ZONE.width * 0.12} />
+                                {weapon && <Card
+                                    key={weapon.key}
+                                    cardInfo={weapon}
+                                    x={10}
+                                    y={10}
+                                    onDragEnd={() => { }}
+                                    onClick={() => { }}
+                                    isDraggable={false}
+                                    canBeClicked={false}
+                                    cardSuit={weapon.palo == "Diamante" ? DiamonIcon : weapon.palo == "Trebol" ? ClubIcon : weapon.palo == "Corazon" ? HeartIcon : SpadeIcon}
+                                    defaultImage={defaultImage}
+                                />}
+                                {slainMonsters.map((card, i) => (
+                                    <Card
+                                        key={card.key}
+                                        cardInfo={card}
+                                        x={140 + (i * 20)}
+                                        y={10 + (i * 10)}
+                                        onDragEnd={() => { }}
+                                        onClick={() => { }}
+                                        isDraggable={false}
+                                        canBeClicked={false}
+                                        cardSuit={card.palo == "Diamante" ? DiamonIcon : card.palo == "Trebol" ? ClubIcon : card.palo == "Corazon" ? HeartIcon : SpadeIcon}
+                                        defaultImage={defaultImage}
+                                    />
+                                ))}
+                            </Group>
+
+                            {/* MANO */}
+                            <Group x={HAND_ZONE.x} y={HAND_ZONE.y}>
+                                <Rect width={HAND_ZONE.width} height={HAND_ZONE.height} fill="#90c0ff50" stroke="white" strokeWidth={2} cornerRadius={8} />
+                                <Text text="MANO" fontFamily="Romulus" fontSize={40} fill="white" y={HAND_ZONE.height * 0.4} x={HAND_ZONE.width * 0.35} />
+                                {room.length != 0 ? room.map((card, index) => {
+                                    if (card !== undefined) {
+                                        return <Card
+                                            key={card.key}
+                                            cardInfo={card}
+                                            x={10 + (index * 130)}
+                                            y={5}
+                                            onDragEnd={handleDragEnd}
+                                            onClick={() => processCardAction(card)}
+                                            canBeClicked={canBeClicked}
+                                            isDraggable={true}
+                                            cardSuit={card.palo == "Diamante" ? DiamonIcon : card.palo == "Trebol" ? ClubIcon : card.palo == "Corazon" ? HeartIcon : SpadeIcon}
+                                            defaultImage={defaultImage}
+                                            scale={scale}
+                                        />
+                                    }
+                                }
+                                ) : <></>}
+                            </Group>
+                        </Layer>
+                        <Layer>
+                            <Label x={0} y={0}>
+                                <Rect width={150} height={120} fill="#FFF" x={40} y={170} cornerRadius={5} stroke={"black"} />
+                                <Text text={"Si no cargan las cartas, dale a reiniciar."} fill="var(--main-black)" padding={5} fontSize={24} width={150} align="center" fontFamily="Romulus" x={40} y={175} />
+                                <Image image={shopManNormal} width={60} height={60} x={5} y={265} imageSmoothingEnabled={false} listening={false} />
+                            </Label>
+                        </Layer>
+                    </Stage>
+                </div>
+
+            </div>
+        </Fragment>
+    )
+
+    const slide9 = (
+        <Fragment>
+            <div className="slide-9 slide">
+                <div className="container">
+                    <h1>Tienda</h1>
+                    <p>
+                        Tras terminar cada ronda, aparecerá la tienda donde podrás comprar con el oro obtenido cartas de <span>curación</span>, <span>armas</span> e incluso <span>modificadores</span>. <br /> <br />
+                        Obtienes <span>5 de oro <img src={GoldIcon} /></span> cada vez que derrotas a un enemigo con tu arma. <br /> <br />
+                        No te preocupes por el precio de los objetos, este solo aumentará una vez pases al modo infinito
+                    </p>
+                    <Stage width={300 * scale} height={250 * scale} scaleX={scale} scaleY={scale} x={0} y={0}>
+                        <Layer>
+                            <Label x={0} y={0}>
+                                <Rect width={220} height={150} fill="#FFF" x={70} y={5} cornerRadius={5} stroke={"black"} />
+                                <Text text={"Tengo los mejores precios de la zona y la única tienda en la zona."} fill="var(--main-black)" padding={5} fontSize={26} width={220} align="center" fontFamily="Romulus" x={70} y={5} />
+                                <Image image={shopManHappy} width={90} height={90} x={5} y={120} imageSmoothingEnabled={false} listening={false} />
+                            </Label>
+                        </Layer>
+                    </Stage>
+                </div>
+            </div>
+        </Fragment>
+    );
+
+    const slides = [slide1, slide2, slide3, slide4, slide5, slide6, slide7, slide8, slide9];
     const totalSlides = slides.length;
 
     const moveSlide = (direction) => {
@@ -290,6 +614,11 @@ const Tutorial = () => {
     return (
         <Fragment>
             <div className="tutorial-container">
+                <div className="movement-buttons">
+                    {slides.map((slide, index) => {
+                        return <button key={index + '-button'} className="movement-button" onClick={() => { setCurrentIndex(index) }}>{index + 1}</button>
+                    })}
+                </div>
                 <div className="tutorial-carousel">
                     <div className="carousel-inner">
                         {slides[currentIndex]}
@@ -297,11 +626,8 @@ const Tutorial = () => {
                 </div>
                 <button className="btn-prev" onClick={() => moveSlide(-1)}>&#10094;</button>
                 <button className="btn-next" onClick={() => moveSlide(1)}>&#10095;</button>
-                <div>
-                    {slides.map((slide, index)=>{
 
-                    })}
-                </div>
+
             </div>
         </Fragment>
     );
