@@ -1,33 +1,38 @@
+// 1. React y librerías externas (NPM)
 import React, { useState, Fragment, useContext, useEffect, useCallback } from "react";
-import './Tutorial.css';
 import { useNavigate } from "react-router-dom";
-import { matchContext } from "../../context/MatchProvider.jsx";
 import { Layer, Label, Rect, Stage, Text, Image, Group } from "react-konva";
-import Card from "../Card";
 import useImage from "use-image";
 
-
-//Palos
-import ClubIcon from '/images/suit_club.webp';
-import HeartIcon from '/images/suit_heart.webp';
-import DiamonIcon from '/images/suit_diamond.webp';
-import SpadeIcon from '/images/suit_spade.webp';
-import DefaultCardImage from '/images/default_card.webp';
-import GoldIcon from '/images/gold.webp';
-
-//ShopMan
-import ShopManSad from '/images/shopman/Sad.webp';
-import ShopManAngry from '/images/shopman/Angry.webp';
-import ShopManNormal from '/images/shopman/Normal.webp';
-import ShopManHappy from '/images/shopman/Happy.webp';
-import ShopManSarcastic from '/images/shopman/Sarcastic.webp';
-import ShopManThinking from '/images/shopman/Thinking.webp';
+// 2. Contextos y Hooks
+import { matchContext } from "../../context/MatchProvider.jsx";
 import { useModifier } from "../../hooks/useModifier.js";
+
+// 3. Componentes
+import Card from "../Card.jsx"; 
 import Modifier from "../Modifier.jsx";
 
-import healthIcon from '/images/full_health.png';
-import AllDamageAnimation from '/images/animations/AllDamageAnimation.webp';
-import DamageAnimation from '/images/animations/DamageAnimation.webp';
+import './Tutorial.css';
+
+const ASSETS = {
+  ClubIcon: '/images/suit_club.webp',
+  HeartIcon: '/images/suit_heart.webp',
+  DiamonIcon: '/images/suit_diamond.webp',
+  SpadeIcon: '/images/suit_spade.webp',
+  DefaultCardImage: '/images/default_card.webp',
+  GoldIcon: '/images/gold.webp',
+
+  ShopManSad: '/images/shopman/Sad.webp',
+  ShopManAngry: '/images/shopman/Angry.webp',
+  ShopManNormal: '/images/shopman/Normal.webp',
+  ShopManHappy: '/images/shopman/Happy.webp',
+  ShopManSarcastic: '/images/shopman/Sarcastic.webp',
+  ShopManThinking: '/images/shopman/Thinking.webp',
+
+  healthIcon: '/images/full_health.png',
+  AllDamageAnimation: '/images/animations/AllDamageAnimation.webp',
+  DamageAnimation: '/images/animations/DamageAnimation.webp',
+};
 
 const Tutorial = () => {
     const navigate = useNavigate();
@@ -36,16 +41,16 @@ const Tutorial = () => {
     const { getTutorialCards } = useContext(matchContext);
 
     //Imagenes ShopMan
-    const [shopManSad] = useImage(ShopManSad);
-    const [shopManAngry] = useImage(ShopManAngry);
-    const [shopManNormal] = useImage(ShopManNormal);
-    const [shopManHappy] = useImage(ShopManHappy);
-    const [shopManThinking] = useImage(ShopManSarcastic);
-    const [shopManSarcastic] = useImage(ShopManThinking);
+    const [shopManSad] = useImage(ASSETS.ShopManSad);
+    const [shopManAngry] = useImage(ASSETS.ShopManAngry);
+    const [shopManNormal] = useImage(ASSETS.ShopManNormal);
+    const [shopManHappy] = useImage(ASSETS.ShopManHappy);
+    const [shopManThinking] = useImage(ASSETS.ShopManSarcastic);
+    const [shopManSarcastic] = useImage(ASSETS.ShopManThinking);
 
     // Tutorial 1
     const tutorial1Cards = getTutorialCards(1);
-    const [defaultImage] = useImage(DefaultCardImage);
+    const [defaultImage] = useImage(ASSETS.DefaultCardImage);
     const [hoveredIndex, setHoveredIndex] = useState(null);
 
     // Tutorial 2
@@ -113,7 +118,7 @@ const Tutorial = () => {
                                     onClick={() => { }}
                                     canBeClicked={false}
                                     isDraggable={false}
-                                    cardSuit={HeartIcon}
+                                    cardSuit={ASSETS.HeartIcon}
                                     defaultImage={defaultImage}
                                 />
                                 {hoveredIndex === tutorial1Cards[1]?.id && (
@@ -144,7 +149,7 @@ const Tutorial = () => {
                                     onClick={() => { }}
                                     canBeClicked={false}
                                     isDraggable={false}
-                                    cardSuit={DiamonIcon}
+                                    cardSuit={ASSETS.DiamondIcon}
                                     defaultImage={defaultImage}
                                 />
                                 {hoveredIndex === tutorial1Cards[2]?.id && (
@@ -174,7 +179,7 @@ const Tutorial = () => {
                                     onClick={() => { }}
                                     canBeClicked={false}
                                     isDraggable={false}
-                                    cardSuit={SpadeIcon}
+                                    cardSuit={ASSETS.SpadeIcon}
                                     defaultImage={defaultImage}
                                 />
                                 {hoveredIndex === tutorial1Cards[0]?.id && (
@@ -205,7 +210,7 @@ const Tutorial = () => {
                                     onClick={() => { }}
                                     canBeClicked={false}
                                     isDraggable={false}
-                                    cardSuit={ClubIcon}
+                                    cardSuit={ASSETS.ClubIcon}
                                     defaultImage={defaultImage}
                                 />
                                 {hoveredIndex === tutorial1Cards[3]?.id && (
@@ -346,9 +351,9 @@ const Tutorial = () => {
     const damageAnimation = async (value, allDamage = false) => {
         setHealthAnimationValue(value * -1);
         if (allDamage) {
-            setHealthAnimation(AllDamageAnimation);
+            setHealthAnimation(ASSETS.AllDamageAnimation);
         } else {
-            setHealthAnimation(DamageAnimation);
+            setHealthAnimation(ASSETS.DamageAnimation);
         }
 
         setTimeout(() => {
@@ -459,7 +464,7 @@ const Tutorial = () => {
                     <h1>Combate</h1>
                     <p>
                         El combate en Scoundrel es bastante sencillo. <br />
-                        Si tienes un <span>arma</span> en la <span>zona de juego</span>,  atacarás al <strong>enemigo</strong> restando el el valor del arma al daño del enemigo. <br />
+                        Si tienes un <span>arma</span> en la <span>zona de juego</span>,  atacarás al <strong>enemigo</strong> restando el valor del arma al daño del enemigo. <br />
                         Siempre y cuando el enemigo sea <span>más débil que el último derrotado</span> con esa arma, podrás atacarle. En caso contrario, el <strong>enemigo</strong> irá a descartes, recibiendo todo el daño. <br />
                         <span>Si no tienes ninguna arma</span>, el enemigo irá directo a descartes sufriendo todo el daño.
                     </p>
@@ -473,7 +478,7 @@ const Tutorial = () => {
         <Fragment>
             <div className="slide-8 slide">
                 <h1>Simulador</h1>
-                <h1 className="player-health"><img src={healthIcon} />{health}/20{healthAnimation !== null ? <div className="animation-container"><strong className="animation" disabled={healthAnimation}>{healthAnimationValue}</strong><img className="animation" disabled={healthAnimation} src={healthAnimation} /></div> : <></>}</h1>
+                <h1 className="player-health"><img src={ASSETS.healthIcon} />{health}/20{healthAnimation !== null ? <div className="animation-container"><strong className="animation" disabled={healthAnimation}>{healthAnimationValue}</strong><img className="animation" disabled={healthAnimation} src={healthAnimation} /></div> : <></>}</h1>
                 <div>
                     <button className="reset-simulator-btn" onClick={resetSimulator}>
                         Reiniciar
@@ -500,7 +505,7 @@ const Tutorial = () => {
                                         onClick={() => { }}
                                         isDraggable={false}
                                         canBeClicked={false}
-                                        cardSuit={card.palo == "Diamante" ? DiamonIcon : card.palo == "Trebol" ? ClubIcon : card.palo == "Corazon" ? HeartIcon : SpadeIcon}
+                                        cardSuit={card.palo == "Diamante" ? ASSETS.DiamondIcon : card.palo == "Trebol" ? ASSETS.ClubIcon : card.palo == "Corazon" ? ASSETS.HeartIcon : ASSETS.SpadeIcon}
                                         defaultImage={defaultImage}
                                     />
                                 ))}
@@ -519,7 +524,7 @@ const Tutorial = () => {
                                     onClick={() => { }}
                                     isDraggable={false}
                                     canBeClicked={false}
-                                    cardSuit={weapon.palo == "Diamante" ? DiamonIcon : weapon.palo == "Trebol" ? ClubIcon : weapon.palo == "Corazon" ? HeartIcon : SpadeIcon}
+                                    cardSuit={weapon.palo == "Diamante" ? ASSETS.DiamondIcon : weapon.palo == "Trebol" ? ASSETS.ClubIcon : weapon.palo == "Corazon" ? ASSETS.HeartIcon : ASSETS.SpadeIcon}
                                     defaultImage={defaultImage}
                                 />}
                                 {slainMonsters.map((card, i) => (
@@ -532,7 +537,7 @@ const Tutorial = () => {
                                         onClick={() => { }}
                                         isDraggable={false}
                                         canBeClicked={false}
-                                        cardSuit={card.palo == "Diamante" ? DiamonIcon : card.palo == "Trebol" ? ClubIcon : card.palo == "Corazon" ? HeartIcon : SpadeIcon}
+                                        cardSuit={card.palo == "Diamante" ? ASSETS.DiamondIcon : card.palo == "Trebol" ? ASSETS.ClubIcon : card.palo == "Corazon" ? ASSETS.HeartIcon : ASSETS.SpadeIcon}
                                         defaultImage={defaultImage}
                                     />
                                 ))}
@@ -553,7 +558,7 @@ const Tutorial = () => {
                                             onClick={() => processCardAction(card)}
                                             canBeClicked={canBeClicked}
                                             isDraggable={true}
-                                            cardSuit={card.palo == "Diamante" ? DiamonIcon : card.palo == "Trebol" ? ClubIcon : card.palo == "Corazon" ? HeartIcon : SpadeIcon}
+                                            cardSuit={card.palo == "Diamante" ? ASSETS.DiamondIcon : card.palo == "Trebol" ? ASSETS.ClubIcon : card.palo == "Corazon" ? ASSETS.HeartIcon : ASSETS.SpadeIcon}
                                             defaultImage={defaultImage}
                                             scale={scale}
                                         />
@@ -583,7 +588,7 @@ const Tutorial = () => {
                     <h1>Tienda</h1>
                     <p>
                         Tras terminar cada ronda, aparecerá la tienda donde podrás comprar con el oro obtenido cartas de <span>curación</span>, <span>armas</span> e incluso <span>modificadores</span>. <br /> <br />
-                        Obtienes <span>5 de oro <img src={GoldIcon} /></span> cada vez que derrotas a un enemigo con tu arma. <br /> <br />
+                        Obtienes <span>5 de oro <img src={ASSETS.GoldIcon} /></span> cada vez que derrotas a un enemigo con tu arma. <br /> <br />
                         No te preocupes por el precio de los objetos, este solo aumentará una vez pases al modo infinito
                     </p>
                     <Stage width={300 * scale} height={250 * scale} scaleX={scale} scaleY={scale} x={0} y={0}>
