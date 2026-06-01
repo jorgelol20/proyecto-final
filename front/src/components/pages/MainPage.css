@@ -1,4 +1,4 @@
-.main-menu{
+.main-menu {
     display: flex;
     background-color: var(--second-color);
     flex-direction: column;
@@ -9,56 +9,66 @@
     border-radius: 5px;
     justify-content: center;
     align-items: center;
-    button{
-        margin-bottom: 1em;
-        margin-top: 1em;
+
+    button {
+        margin-bottom: 1cqh;
+        margin-top: 1cqh;
     }
 }
-.menu{
+
+.menu {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
 }
-article{
+
+article {
     position: relative;
-    top: -2em;
+    top: -5cqh;
     display: flex;
     justify-content: center;
 }
-.banner-menu{
+
+.banner-menu {
     background: none;
-    margin-bottom: -3em;
-    margin-top: -10em;
-    width: 45em;
+    margin-bottom: -2.5cqw;
+    margin-top: -15cqh;
+    width: 45cqw;
     z-index: 10;
 }
-.advise{
+
+.advise {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    text-align: center  ;
+    text-align: center;
     border: 5px var(--main-red) groove;
-    margin: 5%;
-    margin-top: 1%;
-    background-color: var(--second-color-light);
-    h1{
+    margin: 1cqw;
+    margin-top: 2cqw;
+    background-color: var(--second-color-dark);
+
+    h1 {
         color: var(--main-red);
         margin-bottom: 0;
         filter: brightness(2);
+        font-size: 2cqw;
     }
-    p{
+
+    p {
         color: var(--main-white);
-        padding-left: 5%;
-        padding-right: 5%;
+        padding-right: 1caw;
+        font-size: 1cqw;
     }
-    strong{
+
+    strong {
         color: var(--main-orange);
         filter: brightness(1.1);
     }
 }
-.last-matches{
+
+.last-matches {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -66,13 +76,46 @@ article{
     background-color: var(--main-color);
     margin-top: 2em;
     width: 50%;
-    h1{
+    text-align: center;
+    height: 45cqh;
+    border-radius: 5px;
+
+    h1 {
         color: var(--main-gold);
         margin-bottom: 0%;
+        font-size: 3cqw;
     }
-    .match-history{
+
+    .match-history {
         width: 90%;
         overflow-y: scroll;
+        padding: 2%;
         padding-top: 5%;
+        padding-bottom: 0;
+        border-color: var(--second-color-dark);
+        border-width: 5px;
+        border-style: groove;
+        border-radius: 5px;
+        min-height: 5cqw;
+    }
+}
+
+@media (max-width: 900px) {
+    article {
+        margin-top: 10cqw;
+        .banner-menu{
+            margin-right: 40%;
+        }
+        .main-menu{
+            width: 30cqw;
+            margin-right: 40%;
+        }
+        .last-matches {
+            width: 100cqw;
+            margin-top: 0;
+            .match-history {
+                padding-top: 10cqw;
+            }
+        }
     }
 }

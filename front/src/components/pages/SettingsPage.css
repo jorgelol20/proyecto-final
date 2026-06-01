@@ -29,8 +29,8 @@
     background: none;
     border: none;
     img{
-        width: 100%;
-        height: 100%;
+        width: 2cqw;
+        height: 2cqw;
         background: none;
     }
 }
@@ -40,4 +40,110 @@
 .fps-setting{
     width: 1em;
     height: 1em;
+}
+
+/* Estilos base para el slider */
+input[type="range"] {
+    -webkit-appearance: none; /* Reset para Chrome/Safari */
+    appearance: none;
+    width: 100%;
+    background: transparent;
+    cursor: pointer;
+}
+
+/* --- TRACK (La línea del slider) --- */
+
+/* Chrome, Safari, Edge y Opera */
+input[type="range"]::-webkit-slider-runnable-track {
+    background: var(--main-white);
+    height: 8px;
+    border: 2px solid #000; /* Borde negro para estilo pixel */
+}
+
+/* Firefox */
+input[type="range"]::-moz-range-track {
+    background: var(--main-white);
+    height: 8px;
+    border: 2px solid #000;
+}
+
+/* --- THUMB (El botoncito que se mueve) --- */
+
+/* Chrome, Safari, Edge y Opera */
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; /* Importante para Chrome */
+    appearance: none;
+    margin-top: -10px; /* Centra el thumb sobre el track */
+    background-color: var(--main-color);
+    height: 24px;
+    width: 12px;
+    border: 2px solid #000;
+    box-shadow: 2px 2px 0px #000; /* Sombra sólida tipo pixel */
+}
+
+/* Firefox */
+input[type="range"]::-moz-range-thumb {
+    border: none; /* Quita borde por defecto de FF */
+    background-color: var(--main-color);
+    height: 24px;
+    width: 12px;
+    border-radius: 0; /* Cuadrado para estética pixel */
+    border: 2px solid #000;
+    box-shadow: 2px 2px 0px #000;
+}
+
+/* Estado Focus para accesibilidad */
+input[type="range"]:focus {
+    outline: none;
+}
+
+input[type="range"]:focus::-webkit-slider-thumb {
+    background-color: var(--main-white); /* Feedback visual al seleccionar */
+}
+
+/* Checkbox Estilo Pixel */
+.checkbox-setting {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background-color: var(--main-white);
+    border: 3px solid #000;
+    cursor: pointer;
+    position: relative;
+}
+
+/* El "Check" (la X o marca) */
+.checkbox-setting:checked {
+    background-color: var(--main-color); /* Color cuando está activo */
+}
+
+.checkbox-setting:checked::after {
+    content: '✔';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #000;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/* Efecto Hover para ambos */
+.checkbox-setting:hover, 
+input[type="range"]:hover::-webkit-slider-thumb {
+    filter: brightness(1.2);
+}
+@media (max-width: 1080px) {
+    .muteButton{
+    width: 2em;
+    height: 2em;
+    background: none;
+    border: none;
+    img{
+        width: 5cqw;
+        height: 5cqw;
+        background: none;
+    }
+}
 }

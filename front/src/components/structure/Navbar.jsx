@@ -1,26 +1,55 @@
-import React, { Fragment, useContext, useEffect, useRef, useState } from "react";
+import React, { Fragment, useCallback, useContext, useEffect, useRef, useState } from "react";
 import './Navbar.css';
 import { useUser } from '../../hooks/useUser.js';
-import Placeholder from './../../images/placeholder.webp'
-import { NavLink } from "react-router-dom";
+import Placeholder from '/images/placeholder.webp'
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 
 import { matchContext } from "../../context/MatchProvider.jsx";
 
 import { settingsContext } from "../../context/SettingsProvider.jsx";
 
 import FPSCounter from "./FPSCounter.jsx";
-import UserShow from "../UserShow.jsx"; 
+import UserShow from "../UserShow.jsx";
+import ConfirmationModal from "../ConfirmationModal.jsx";
 
 const Navbar = () => {
-    const { user, searchUsuario, isLoading } = useUser();
+    const { user, searchUsuario, isLoading, activePlayers } = useUser();
     const { showFPS } = useContext(settingsContext);
     const [userAvatar, setUserAvatar] = useState('');
     const [userColor, setUserColor] = useState('');
 
     const [userList, setUserList] = useState([]);
-    // 1. Usamos estado para que la UI se actualice
-    const [isActiveSearch, setIsActiveSearch] = useState(false); 
+    const [isActiveSearch, setIsActiveSearch] = useState(false);
+
+    const [toPage, setToPage] = useState(null)
     const searchRef = useRef(null);
+
+
+
+
+    const location = useLocation()
+    const navigate = useNavigate()
+
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const handleConfirmAction = async () => {
+        setIsModalOpen(false);
+        const eventoSalir = new CustomEvent('interrumpirPartida', { detail: { destino: toPage } });
+        window.dispatchEvent(eventoSalir);
+    };
+
+    const handleCancelAction = async () => {
+        setIsModalOpen(false);
+    };
+
+    const handleNavClick = (e, to) => {
+        if (location.pathname === '/jugar') {
+            e.preventDefault();
+            setToPage(to)
+            setIsModalOpen(true);
+        }
+    };
 
     useEffect(() => {
         if (!isLoading && user) {
@@ -40,10 +69,10 @@ const Navbar = () => {
 
     // Función para resetear todo tras el clic
     const handleResultClick = () => {
-        setIsActiveSearch(false); 
+        setIsActiveSearch(false);
         setUserList([]);
         if (searchRef.current) {
-            searchRef.current.value = ""; 
+            searchRef.current.value = "";
         }
     };
 
@@ -51,26 +80,34 @@ const Navbar = () => {
         <Fragment>
             <nav>
                 {showFPS && <FPSCounter />}
+                <img className="game-icon" src="/images/banner_menu.webp" />
                 <div className="navbar-items">
                     {!isLoading && user && (
+                        <div className="navbar-active-players">
+                            <span style={{ width: '8px', height: '8px', backgroundColor: '#2ecc71', borderRadius: '50%' }}></span>
+                            {activePlayers} activos
+                        </div>
+                    )}
+                    {!isLoading && user && (
                         <div className="search">
-                            <input 
+                            <input
                                 ref={searchRef}
-                                type="search" 
-                                className="search-input" 
-                                placeholder="Buscar usuario" 
+                                type="search"
+                                className="search-input"
+                                placeholder="Buscar usuario"
                                 onFocus={() => setIsActiveSearch(true)}
-                                onChange={(e) => handleSearchUser(e.target.value)} 
+                                onChange={(e) => handleSearchUser(e.target.value)}
                             />
-                            
-                            {/* 2. Ahora React sí reaccionará a este cambio */}
                             {isActiveSearch && userList.length > 0 && (
                                 <div className="searc-list">
                                     {userList.map((userInfo) => (
-                                        <NavLink 
-                                            key={userInfo.nick} 
-                                            to={`/perfil/${userInfo.nick}`} 
-                                            onClick={handleResultClick}
+                                        <NavLink
+                                            key={userInfo.nick}
+                                            to={`/perfil/${userInfo.nick}`}
+                                            onClick={(e) => {
+                                                handleNavClick(e, `/perfil/${userInfo.nick}`);
+                                                if (!e.defaultPrevented) handleResultClick();
+                                            }}
                                         >
                                             <UserShow userInfo={userInfo} />
                                         </NavLink>
@@ -79,22 +116,40 @@ const Navbar = () => {
                             )}
                         </div>
                     )}
-                    
-                    <NavLink to="/" className={({ isActive }) => isActive ? 'menu_link menu_link--active' : 'menu_link'}>
+
+                    {user && user.es_admin ?
+                        <NavLink
+                            onClick={(e) => handleNavClick(e, `/admin-panel`)}
+                            to={`/admin-panel`}
+                            className={({ isActive }) => isActive ? 'menu_link menu_link--active' : 'menu_link'}
+                        >
+                            Panel Admin
+                        </NavLink>
+                        : <></>}
+
+                    <NavLink
+                        to="/"
+                        className={({ isActive }) => isActive ? 'menu_link menu_link--active' : 'menu_link'}
+                        onClick={(e) => handleNavClick(e, '/')}
+                    >
                         Inicio
                     </NavLink>
 
                     {!isLoading ? (
                         user ? (
-                            <NavLink to={`/perfil/${user.nick}`} className={({ isActive }) => isActive ? 'menu_link menu_link--active' : 'menu_link'}>
-                                <img 
-                                    className="navbar-avatar" 
-                                    src={userAvatar || Placeholder} 
-                                    alt="avatar" 
+                            <NavLink
+                                onClick={(e) => handleNavClick(e, `/perfil/${user.nick}`)}
+                                to={`/perfil/${user.nick}`}
+                                className={({ isActive }) => isActive ? 'menu_link menu_link--active' : 'menu_link'}
+                            >
+                                <img
+                                    className="navbar-avatar"
+                                    src={userAvatar || Placeholder}
+                                    alt="avatar"
                                     style={{ borderColor: userColor }}
                                     onError={(e) => {
                                         e.currentTarget.src = Placeholder;
-                                    }} 
+                                    }}
                                 />
                             </NavLink>
                         ) : (
@@ -106,6 +161,13 @@ const Navbar = () => {
                     ) : null}
                 </div>
             </nav>
+            <ConfirmationModal
+                isOpen={isModalOpen}
+                onClose={handleCancelAction}
+                onConfirm={handleConfirmAction}
+                title="Salir de la Partida"
+                message="Si sales, la partida contará como derrota."
+            />
         </Fragment>
     );
 };

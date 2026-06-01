@@ -1,10 +1,10 @@
 import { Fragment, useState, useRef } from 'react'
 import { BrowserRouter } from 'react-router-dom';
-import MainPage from './components/pages/MainPage.jsx'
 import Navbar from './components/structure/Navbar.jsx';
 import './App.css'
 import ContentPage from './components/pages/ContentPage.jsx';
 import Banner from './components/structure/Banner.jsx';
+import Footer from './components/structure/Footer.jsx';
 
 function App() {
 
@@ -18,6 +18,7 @@ function App() {
         <main className='MainPage'>
           <ContentPage />
         </main>
+        <Footer/>
       </BrowserRouter>
     </Fragment>
 

@@ -27,7 +27,7 @@ class UpdateUsuarioRequest extends FormRequest
                 'sometimes',
                 'string',
                 'regex:/^#?([a-fA-F0-9]{3}){1,2}$/'
-            ]
+            ],
         ];
     }
     public function messages()

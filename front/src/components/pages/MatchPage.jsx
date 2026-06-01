@@ -6,8 +6,11 @@ import Loading from "../Loading.jsx";
 import Modifier from './../Modifier.jsx'
 import { useUser } from "../../hooks/useUser.js";
 
+import GoldIcon from '/images/gold.webp'
+import FullHealthIcon from '/images/full_health.png'
 import Placeholder from '/images/placeholder.webp'
 import Comentario from "../Comentario.jsx";
+import AllDamageAnimation from '/images/animations/AllDamageAnimation.webp'
 
 const MatchPage = () => {
     const { getMatchById, isLoading: matchLoading } = useMatch();
@@ -61,15 +64,19 @@ const MatchPage = () => {
             setIsLoadingComments(true)
             const form = new FormData();
             form.append('comentario', commentRef.current.value)
-            form.append('usuario_id', user.id)
             form.append('partida_id', matchId);
             await comment(form);
-            setTimeout(requestMatch, 5000)
             commentRef.current.value = ""
-        }else{
+        } else {
             setIsLoadingComments(false)
         }
     };
+
+    useEffect(() => {
+        if (!isCommenting) {
+            requestMatch()
+        }
+    }, [isCommenting])
 
 
     useEffect(() => {
@@ -97,36 +104,53 @@ const MatchPage = () => {
     }
     return (
         <Fragment>
-            {console.log(match)}
             <div className="match">
                 <div className="match-body">
                     <div className="match-info">
                         <div className="match-parameters">
-                            <h1>Num partida: {match.id}</h1>
+                            <h1>ID de la partida: {match.id}</h1>
                             <div style={{ display: "flex", alignItems: "center" }}>
                                 <img className="character-image" src={character.imagen} alt={character.nombre} />
                                 <div className="match-modifiers">
                                     {match.modificadores.length > 0 ? match.modificadores.map((modifierInfo) => {
-                                        return <Modifier modifierInfo={modifierInfo} />
+                                        return <Modifier key={modifierInfo.id} modifierInfo={modifierInfo} />
                                     }) : <h1>Sin modificadores</h1>}
                                 </div>
                             </div>
-                            <div>
-                                <p>Jugada el {new Date(match.created_at).toLocaleDateString('es-ES')}</p>
-                                <h2 className={match.victoria ? 'win' : 'lose'}>{match.victoria ? 'Victoria' : 'Derrota'} <strong>{`Tiempo: ${String(Math.floor((match.tiempo / 60 / 60))).padStart(2, '0')}:${String(Math.floor((match.tiempo / 60 % 60))).padStart(2, '0')}:${String(match.tiempo % 60).padStart(2, '0')}`}</strong></h2>
+                            <div className="match-text">
+                                <br />
+                                <p>Jugada el {new Date(match.created_at).toLocaleString('es-ES', {
+                                    day: '2-digit',
+                                    month: '2-digit',
+                                    year: 'numeric',
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                })}</p>
+                                <div className="info">
+                                    <h2 className={match.victoria ? 'win' : 'lose'}>{match.victoria ? 'Victoria' : 'Derrota'}</h2>
+                                    <h2><strong>{`Tiempo: ${String(Math.floor((match.tiempo / 60 / 60))).padStart(2, '0')}:${String(Math.floor((match.tiempo / 60 % 60))).padStart(2, '0')}:${String(match.tiempo % 60).padStart(2, '0')}`}</strong></h2>
+                                    <h2><strong>Rondas superadas: {match.rondas}</strong></h2>
+                                </div>
+                                <div className="info extra-info">
+                                    <h2>Oro total obtenido: <span style={{ color: 'var(--main-gold)' }}>{match.oro_obtenido}<img src={GoldIcon} /></span></h2>
+                                    <h2>Vida total curada: <span style={{ color: 'var(--main-red)' }}>{match.vida_curada}<img src={FullHealthIcon} /></span></h2>
+                                    <h2>Enemigos enfrentados: <span style={{ color: 'var(--main-red)' }}>{match.enemigos_enfrentados}<img src={AllDamageAnimation} /></span></h2>
+                                </div>
                             </div>
                         </div>
                         <div className="player-info">
-                            <img className='user-avatar' onClick={()=>{navigate(`/perfil/${player.nick}`)}} style={{ borderColor: player.color }} src={player.avatar !== "" && player.avatar ? player.avatar : Placeholder} alt={`Avatar de ${match.jugador.nick}`} />
-                            <h1 className={player.es_admin ? "admin" : "user"}>{player.nick}</h1>
+                            <img className='user-avatar' onClick={() => { navigate(`/perfil/${player.nick}`) }} style={{ borderColor: player.color }} src={player.avatar !== "" && player.avatar ? player.avatar : Placeholder} alt={`Avatar de ${match.jugador.nick}`} />
+                            <p className={player.es_admin ? "admin" : "user"} x="50%" y="10" textAnchor="middle" fontFamily="Romulus" fontWeight="bold" fill="#333">
+                                {player.nick}
+                            </p>
                         </div>
                     </div>
                 </div>
                 <div className="match-comments" ref={scrollRef}>
 
                     <div className="comments">
-                        {comments.map((comentario) => {
-                            return <Comentario comentario={comentario} requestMatch={requestMatch} />
+                        {comments.map((comentario, index) => {
+                            return <Comentario key={index} comentario={comentario} requestMatch={requestMatch} />
                         })}
                     </div>
                 </div>

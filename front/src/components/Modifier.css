@@ -1,45 +1,34 @@
-#nivel-1 {
-        border-color: var(--main-bronze);
-        color: var(--main-bronze);
-    }
-
-    #nivel-2 {
-        border-color: var(--main-silver);
-        color: var(--main-silver);
-    }
-
-    #nivel-3 {
-        border-color: var(--main-gold);
-        color: var(--main-gold);
-    }
-
-    #nivel-0 {
-        border-color: var(--main-red);
-        color: var(--main-red);
-    }
-
 .modifier-info {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-between;
+    position: relative;
     align-items: center;
-    padding: 2%;
-    margin: 2%;
-    border: 4px groove var(--second-color-dark);
+    padding: 1cqw;
+    margin: 1cqw;
+    border: 0.5cqw groove var(--second-color-dark);
     background-color: var(--second-color-light);
     border-radius: 5%;
+    width: 30cqw;
+    height: 40cqw;
+    max-height: 40cqh;
 
     h3 {
-        font-size: 1.5em;
+        font-size: 2cqw;
         text-shadow: 1px 0px 0px black;
+        text-align: center;
+        height: 10%;
     }
 
     img {
-        width: 30%;
-        background-color: var(--main-color);
-        border: 0.5em groove var(--main-gold);
+        height: 5cqw;
+        width: 5cqw;
+        background-color: var(--second-color-light);
+        border: 1cqw groove var(--main-gold);
         border-radius: 5px;
     }
+
+
 
 
     p {
@@ -48,15 +37,21 @@
         color: var(--main-white);
         text-align: center;
         text-shadow: 1px 0px 0px black;
+        font-size: 1em;
+
+        @media (max-width: 1080px) {
+            font-size: 2cqw;
+        }
     }
+
 }
 
 .modifier-info:hover {
-    scale: 1.1;
+    scale: 1.05;
     filter: brightness(1.1);
 }
 
-.modifier-info-mini{
+.modifier-info-mini {
     position: relative;
     display: flex;
     flex-direction: column;
@@ -66,50 +61,114 @@
     margin: 2%;
     border-radius: 5px;
     max-width: 35px;
+    /* Eliminamos isolation para que no cree un nuevo contexto que corte */
+    overflow: visible !important;
 
 
     img {
-        width: 100%;
         background-color: var(--main-color);
         border: 5px groove var(--main-gold);
         border-radius: 1%;
     }
 
-    
+    @media (max-width: 1080px) {
+        img {
+            width: 5cqw;
+            height: 5cqw;
+            border-width: 0.5cqw;
+        }
 
-    p {
-        padding-left: 5%;
-        padding-right: 5%;
-        color: var(--main-white);
-        text-align: center;
-        text-shadow: 1px 0px 0px black;
     }
-    .modifier-text{
-        position:fixed;
-        width: 15%;
-        padding: 1%;
-        x: 1000 ;
-        border-radius: 5px;
-        border: 4px groove var(--second-color-dark);
+
+    .modifier-text[popover] {
+        /* Tus estilos de color y tamaño intactos */
+        width: 15cqw;
+
+
+
+        padding: 0.5cqw;
         background-color: var(--main-color);
+        border: 4px groove var(--second-color-dark);
+        color: white;
+        top: 10%;
+        /* CAMBIOS PARA QUE NO SE CORTE */
+        position: fixed;
+        white-space: normal;
         z-index: 1000;
-        padding-bottom: 0;
-        h3{
+
+
+        img {
+            width: 10cqw;
+            height: 10cqw;
+            margin-bottom: 0;
+            border-width: 1cqw;
+            background-color: var(--second-color-light);
+        }
+
+
+        p {
+            margin-top: 1cqw;
+            color: var(--main-white);
+            text-shadow: 1px 0px 0px black;
+            font-size: 0.9cqw;
+
+            @media (max-width: 1080px) {
+                font-size: 2cqw;
+            }
+        }
+
+        h3 {
             margin: 0;
             padding: 0;
-            margin-bottom: 5%;
-            text-decoration: underline;
+            font-size: 2cqw;
         }
-        p{
-            font-size: 0.7em;
-            text-align: left;
-        }
-
     }
 }
-.player-info{
-    img{
+
+.modifier-info-mini:hover [popover] {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+
+    @media (max-width: 1080px) {
+        width: 25cqw;
+        height: 30cqw;
+    }
+}
+
+.player-info {
+    img {
         width: 2em;
         margin-bottom: 0px;
     }
+}
+
+#nivel-1 {
+    border-color: var(--main-bronze);
+    color: var(--main-bronze);
+}
+
+#nivel-2 {
+    border-color: var(--main-silver);
+    color: var(--main-silver);
+}
+
+#nivel-3 {
+    border-color: var(--main-gold);
+    color: var(--main-gold);
+}
+
+#nivel-0 {
+    border-color: var(--main-red);
+    color: var(--main-red);
+}
+
+.bigger {
+    width: 5cqw;
+    height: 5cqw;
 }

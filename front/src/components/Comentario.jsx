@@ -1,20 +1,27 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect } from "react";
 import './Comentario.css'
 import { useUser } from "../hooks/useUser";
 import Placeholder from '/images/placeholder.webp'
 import { useNavigate } from "react-router-dom";
 import DeleteIcon from '/images/delete-icon.svg'
-const Comentario = ({ comentario, requestMatch }) => {
+const Comentario = ({ comentario, requestMatch}) => {
     const { user, isLoading: userLoading, isError, deleteComment, deleteCommentError, isDeletingComment } = useUser();
+    const navigate = useNavigate()
     if (user == undefined) {
         return <></>
     }
-    const navigate = useNavigate()
+    
+
+    useEffect(()=>{
+        if(!isDeletingComment){
+            requestMatch()
+        }
+    },[isDeletingComment])
 
     const handleDelete = () => {
         deleteComment(comentario.pivot.id);
-        setTimeout(requestMatch, 5000)
     }
+    
 
     return (
         <Fragment>
@@ -23,7 +30,7 @@ const Comentario = ({ comentario, requestMatch }) => {
                     <div className="comment-info">
                         <div>
                             <img className='user-avatar' onClick={() => { navigate(`/perfil/${comentario.nick}`) }} style={{ borderColor: comentario.color }} src={comentario.avatar !== "" && comentario.avatar ? comentario.avatar : Placeholder} alt={`Avatar de ${comentario.nick}`} />
-                            <p className="date">{new Date(comentario.created_at).toLocaleDateString('es-ES')}</p>
+                            <p className="date">{new Date(comentario.pivot.created_at).toLocaleDateString('es-ES')}</p>
                             {user.es_admin?<button className="delete-button" onClick={()=>{confirm("¿Seguro que quieres eliminar el comentario?")?handleDelete():null}}><img className="delete-icon" src={DeleteIcon} alt="" /></button>:<></>}
                         </div>
                     </div>

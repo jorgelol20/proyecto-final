@@ -1,1 +1,10 @@
 back/src/public/storage
+back/src/public/storage
+back/src/.env
+front/.env
+# Ignora cualquier archivo .env en cualquier profundidad
+**/.env
+# Si también quieres ignorar los de desarrollo/local
+**/.env.*
+# Pero NO ignores el .example si quieres compartir la estructura
+!**/.env.example

@@ -1,45 +1,111 @@
-import React, { useRef, useImperativeHandle, forwardRef, useState } from "react";
+import React, { useRef, useImperativeHandle, forwardRef, useState, useEffect } from "react";
 import { Group, Rect, Text, Image } from 'react-konva';
 import Konva from 'konva';
 import useImage from 'use-image';
-
-// Importaciones de imágenes (mantenidas igual)
-import ClubIcon from '/images/suit_club.webp'
-import HeartIcon from '/images/suit_heart.webp'
-import DiamonIcon from '/images/suit_diamond.webp'
-import SpadeIcon from '/images/suit_spade.webp'
 import Default from '/images/default_card.webp'
+import PoisonIcon from '/images/cardEffects/Poison.webp';
+import AntihealIcon from '/images/cardEffects/Antiheal.webp';
+import WeaponBreakerIcon from '/images/cardEffects/WeaponBreaker.webp';
+import RestoreAbilityIcon from '/images/cardEffects/RestoreAbility.webp';
+import DmgReductionIcon from '/images/cardEffects/DmgReduction.webp';
+import ProgresiveHealIcon from '/images/cardEffects/ProgresiveHeal.webp';
+import HealRouleteIcon from '/images/cardEffects/HealRoulete.webp';
+import InvincibilityIcon from '/images/cardEffects/Invincibility.webp';
+import ReviveIcon from '/images/cardEffects/Revive.webp';
+import HealthStealIcon from '/images/cardEffects/HealthSteal.webp';
+import ThornyIcon from '/images/cardEffects/Thorny.webp';
+import PlunderIcon from '/images/cardEffects/Plunder.webp';
+import ExtraGoldIcon from '/images/cardEffects/ExtraGold.webp';
+import MitosisIcon from '/images/cardEffects/Mitosis.webp';
 
-const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = true, onDeck = false, isWizard = false }, ref) => {
+const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = true, onDeck = false, isWizard = false, setOverDungeonZone, canBeClicked, cardSuit, defaultImage, scale = 1 }, ref) => {
 
     const groupRef = useRef(null);
     const [strokeWidth, setStrokeWidth] = useState(2);
+    const [hasEffect, setHasEffect] = useState(false);
 
     // Exponemos métodos al padre (GamePage)
     useImperativeHandle(ref, () => ({
         animateTo: (targetX, targetY, duration = 0.3) => {
-            groupRef.current.to({
-                x: targetX,
-                y: targetY,
-                duration: duration,
-                easing: Konva.Easings.EaseInOut,
-            });
+            if (groupRef.current) {
+                groupRef.current.to({
+                    x: targetX,
+                    y: targetY,
+                    duration: duration,
+                    easing: Konva.Easings.EaseInOut,
+                });
+            }
         }
     }));
 
     // Carga de imágenes
-    const [image] = useImage(cardInfo?.imagen ?? null);
-    const [diamonImage] = useImage(DiamonIcon);
-    const [clubImage] = useImage(ClubIcon);
-    const [heartImage] = useImage(HeartIcon);
-    const [spadeImage] = useImage(SpadeIcon);
-    const [defaultImage] = useImage(Default);
+    const [image] = useImage(cardInfo?.imagen);
+    const [suit] = useImage(cardSuit);
+    
+    const selectEffectImage = () => {
+        if (cardInfo?.efectos) {
+            const effectsList = Array.isArray(cardInfo.efectos) ? cardInfo.efectos : [cardInfo.efectos];
+            switch (effectsList[0].name) {
+                case 'antiheal': return AntihealIcon;
+                case 'weapon_breaker': return WeaponBreakerIcon;
+                case 'poison': return PoisonIcon;
+                case 'restore_ability': return RestoreAbilityIcon;
+                case 'progresive_heal': return ProgresiveHealIcon;
+                case 'heal_roulete': return HealRouleteIcon;
+                case 'dmg_reduction': return DmgReductionIcon;
+                case 'revive': return ReviveIcon;
+                case 'invincibility_turns': return InvincibilityIcon;
+                case 'health_steal': return HealthStealIcon;
+                case 'thorny': return ThornyIcon;
+                case 'plunder': return PlunderIcon;
+                case 'extra_gold': return ExtraGoldIcon;
+                default: return null;
+            }
+        }
+        return null;
+    };
+    const [effectIcon] = useImage(selectEffectImage());
+
+    // Color de la carta
+    const colorRef = useRef('');
+
+    // --- SISTEMA DE CACHÉ INTELIGENTE PARA PIXEL ART ---
+    useEffect(() => {
+        const imagesLoaded = image && suit && (!hasEffect || effectIcon);
+        
+        if (imagesLoaded && groupRef.current) {
+            // Un pequeño timeout asegura que Konva ya tenga los textos listos antes de congelar la imagen
+            const timeoutId = setTimeout(() => {
+                if (groupRef.current) {
+                    groupRef.current.clearCache();
+                    groupRef.current.cache({
+                        x: -5,          // Margen para que el stroke (borde) no se corte
+                        y: -5,
+                        width: 130,     // Un poco más ancho que los 120 del Rect
+                        height: 160,    // Un poco más alto que los 150 del Rect
+                        pixelRatio: 2   // Forzamos alta densidad para que fuentes y pixelart se vean nítidos
+                    });
+
+                    // Desactivamos el suavizado de curvas en el canvas interno del caché
+                    const nativeCanvas = groupRef.current._cache?.canvas?._canvas;
+                    if (nativeCanvas) {
+                        const ctx = nativeCanvas.getContext('2d');
+                        if (ctx) ctx.imageSmoothingEnabled = false;
+                    }
+                    
+                    groupRef.current.getLayer()?.batchDraw();
+                }
+            }, 60);
+
+            return () => clearTimeout(timeoutId);
+        }
+    }, [image, suit, effectIcon, hasEffect, cardInfo.valor, strokeWidth, onDeck, isWizard]);
 
     const handleDragEndInternal = (e) => {
         const finalX = e.target.x();
         const finalY = e.target.y();
         const isValidMove = onDragEnd(cardInfo, finalX, finalY);
-        setStrokeWidth(2)
+        setStrokeWidth(2);
 
         if (!isValidMove) {
             groupRef.current.to({
@@ -51,55 +117,69 @@ const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = tru
         }
     };
 
+    useEffect(() => {
+        const palos = ['Diamante', 'Corazon'];
+        if (cardInfo.valor > 10 && palos.indexOf(cardInfo.palo) !== -1) {
+            if (cardInfo.valor !== 14) {
+                cardInfo.valor = 10;
+            }
+        }
+        setHasEffect(cardInfo.efectos ? true : false);
+        colorRef.current = cardInfo.especial ? '#D4AF37' : cardInfo.palo === 'Corazon' ? '#1E5128' : cardInfo.palo === 'Diamante' ? '#F77F00' : '#0C0C0C';
+    }, [cardInfo]);
+
     return (
         <Group
             ref={groupRef}
             x={x}
             y={y}
             draggable={isDraggable}
-            onClick={() => onClick(cardInfo)}
-            onDragStart={()=>{setStrokeWidth(6)}}
+            onClick={() => !onDeck ? (canBeClicked ? onClick(cardInfo) : null) : (canBeClicked && setOverDungeonZone ? setOverDungeonZone(prev => !prev) : null)}
+            onTap={() => !onDeck ? (canBeClicked ? onClick(cardInfo) : null) : (canBeClicked && setOverDungeonZone ? setOverDungeonZone(prev => !prev) : null)}
+            onDragStart={() => { 
+                setStrokeWidth(6); 
+                document.body.style.cursor = "url('/images/cursor/Cursor_4.webp') 3 7, auto"; 
+            }}
             onDragEnd={handleDragEndInternal}
-            onDragMove={() => { document.body.style.cursor = "url('/images/cursor/Cursor_4.webp') 3 7, auto" }}
-            onMouseEnter={() => { document.body.style.cursor = isDraggable ? "url('/images/cursor/Cursor_3.webp') 3 7, auto" : "url('/images/cursor/Cursor_5.webp') 3 7, auto"; }}
-            onMouseLeave={() => { document.body.style.cursor = "url('/images/cursor/Cursor_1.webp') 3 7, auto"; }}
+            onMouseEnter={() => { 
+                if (isWizard && setOverDungeonZone) setOverDungeonZone(true); 
+                document.body.style.cursor = isDraggable ? "url('/images/cursor/Cursor_3.webp') 3 7, auto" : "url('/images/cursor/Cursor_5.webp') 3 7, auto"; 
+            }}
+            onMouseLeave={() => { 
+                if (isWizard && setOverDungeonZone) setOverDungeonZone(false); 
+                document.body.style.cursor = "url('/images/cursor/Cursor_1.webp') 3 7, auto"; 
+            }}
         >
             <Rect
                 width={120}
                 height={150}
-                fill={onDeck ? "#000" : "white"}
+                fill={onDeck ? (!isWizard ? "#000000" : "#ffffffe5") : "white"}
                 cornerRadius={8}
-                stroke={!onDeck?cardInfo.palo === 'Corazon' ? '#1E5128' : cardInfo.palo === 'Diamante' ? '#F77F00' : '#0C0C0C':'#0C0C0C'} 
-                strokeWidth={!onDeck?strokeWidth:0}
-                shadowBlur={10}
-                shadowOpacity={0.3}
+                stroke={!onDeck ? colorRef.current : '#0C0C0C'}
+                strokeWidth={!onDeck ? strokeWidth : 0}
                 lineJoin="round"
-                onDragMove={null}
             />
 
             {!onDeck && (
-                <>
-                    {/* VALOR SUPERIOR */}
+                <>  
                     <Text
                         text={`${cardInfo.valor}`}
-                        fill={cardInfo.palo === 'Corazon' ? '#1E5128' : cardInfo.palo === 'Diamante' ? '#F77F00' : '#0C0C0C'}
+                        fill={colorRef.current}
                         fontSize={34}
                         fontFamily="Romulus"
                         x={15}
                         y={4}
+                        listening={false}
                     />
-
-                    {/* PALO SUPERIOR */}
                     <Image
-                        image={cardInfo.palo == "Diamante" ? diamonImage : cardInfo.palo == "Trebol" ? clubImage : cardInfo.palo == "Corazon" ? heartImage : spadeImage}
+                        image={suit}
                         width={25}
                         height={25}
                         x={75}
                         y={8}
                         imageSmoothingEnabled={false}
+                        listening={false}
                     />
-
-                    {/* IMAGEN CENTRAL */}
                     <Image
                         image={image}
                         width={90}
@@ -107,58 +187,114 @@ const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = tru
                         x={15}
                         y={35}
                         imageSmoothingEnabled={false}
+                        listening={false}
                     />
-
-                    {/* PALO INFERIOR (Rotado) */}
+                    {hasEffect && (
+                        <Image
+                            image={effectIcon}
+                            width={30}
+                            height={30}
+                            x={45}
+                            y={112}
+                            imageSmoothingEnabled={false}
+                            listening={false}
+                        />
+                    )}
                     <Image
-                        image={cardInfo.palo == "Diamante" ? diamonImage : cardInfo.palo == "Trebol" ? clubImage : cardInfo.palo == "Corazon" ? heartImage : spadeImage}
+                        image={suit}
                         width={25}
                         height={25}
                         x={40}
                         y={142}
                         imageSmoothingEnabled={false}
                         rotation={180}
+                        listening={false}
                     />
-                    {/* 
-                        --main-green: #1E5128;
-                        --main-red: #84142D;
-                        --main-orange: #F77F00;
-                    */}
-                    {/* VALOR INFERIOR (Rotado) */}
                     <Text
                         text={`${cardInfo.valor}`}
-                        fill={cardInfo.palo === 'Corazon' ? '#1E5128' : cardInfo.palo === 'Diamante' ? '#F77F00' : '#0C0C0C'}
+                        fill={colorRef.current}
                         fontSize={34}
                         fontFamily="Romulus"
                         x={100}
                         y={146}
                         rotation={180}
+                        listening={false}
                     />
                 </>
             )}
 
             {onDeck && (
-                <>
+                !isWizard ? (
                     <Image
                         image={defaultImage}
-                        width={115}
+                        width={120}
                         height={150}
                         x={0}
                         y={0}
                         imageSmoothingEnabled={false}
+                        listening={false}
                     />
-                    {
-                        isWizard ?
-                            <Image
-                                image={cardInfo.palo == "Diamante" ? diamonImage : cardInfo.palo == "Trebol" ? clubImage : cardInfo.palo == "Corazon" ? heartImage : spadeImage}
-                                width={60}
-                                height={60}
-                                x={27}
-                                y={45}
-                                imageSmoothingEnabled={false}
-                            /> : <></>
-                    }
-                </>
+                ) : (
+                    <>
+                        <Image
+                            image={defaultImage}
+                            width={120}
+                            height={150}
+                            x={0}
+                            y={0}
+                            opacity={0.2}
+                            imageSmoothingEnabled={false}
+                            listening={false}
+                        />
+                        <Text
+                            text={`${cardInfo.valor}`}
+                            fill={colorRef.current}
+                            fontSize={34}
+                            fontFamily="Romulus"
+                            x={15}
+                            y={4}
+                            listening={false}
+                        />
+                        <Image
+                            image={suit}
+                            width={25}
+                            height={25}
+                            x={75}
+                            y={8}
+                            imageSmoothingEnabled={false}
+                            listening={false}
+                        />
+                        <Image
+                            image={image}
+                            width={90}
+                            height={90}
+                            x={15}
+                            y={35}
+                            imageSmoothingEnabled={false}
+                            listening={false}
+                        />
+                        <Image
+                            image={suit}
+                            width={25}
+                            height={25}
+                            x={40}
+                            y={142}
+                            imageSmoothingEnabled={false}
+                            rotation={180}
+                            listening={false}
+                        />
+                        <Text
+                            text={`${cardInfo.valor}`}
+                            fill={colorRef.current}
+                            fontSize={34}
+                            fontFamily="Romulus"
+                            x={100}
+                            y={146}
+                            rotation={180}
+                            listening={false}
+                        />
+                    </>
+                )
             )}
         </Group>
     );

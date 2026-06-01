@@ -1,37 +1,52 @@
-import React, {Fragment} from "react";
-import {Routes, Route} from 'react-router-dom';
-import LoginPage from '../pages/LoginPage.jsx'
-import ProfilePage from "../pages/ProfilePage.jsx";
-import ProfileEdit from "../pages/ProfileEditPage.jsx";
-import MainPage from "../pages/MainPage.jsx"
-import SignupPage from "../pages/SignupPage.jsx";
-import GamePage from "../pages/GamePage.jsx";
-import SettingsPage from "../pages/SettingsPage.jsx";
+import React, { Fragment, lazy, Suspense } from "react";
+import { Routes, Route } from 'react-router-dom';
+
+// Importaciones `lazy` para que al hacer npm run build no pese tanto
+const LoginPage = lazy(() => import('../pages/LoginPage.jsx'));
+const ProfilePage = lazy(() => import('../pages/ProfilePage.jsx'));
+const ProfileEdit = lazy(() => import('../pages/ProfileEditPage.jsx'));
+const MainPage = lazy(() => import('../pages/MainPage.jsx'));
+const SignupPage = lazy(() => import('../pages/SignupPage.jsx'));
+const GamePage = lazy(() => import('../pages/GamePage.jsx'));
+const SettingsPage = lazy(() => import('../pages/SettingsPage.jsx'));
+const MatchPage = lazy(() => import('../pages/MatchPage.jsx'));
+const Tutorial = lazy(() => import('../pages/Tutorial.jsx'));
+const CreditPage = lazy(()=> import("../pages/CreditPage.jsx"));
+const AdminPanel = lazy(()=> import("../pages/AdminPanel.jsx"))
 import GoogleCallback from "./GoogleCallback.jsx";
-import MatchPage from "../pages/MatchPage.jsx";
 
 const AppRoutes = () => {
     return (
         <Fragment>
-            <Routes>
-                <Route path="/perfil/:nick/editar" element={<ProfileEdit/>}/>
-                <Route path='/perfil/:nick' element={<ProfilePage/>}/>
-                <Route path='/perfil' element={<ProfilePage/>}/>
+            <Suspense fallback={<div>Cargando página...</div>}>
+                <Routes>
+                    <Route path="/perfil/:nick/editar" element={<ProfileEdit/>}/>
+                    <Route path='/perfil/:nick' element={<ProfilePage/>}/>
+                    <Route path='/perfil' element={<ProfilePage/>}/>
 
-                <Route path='/partida/:matchId' element={<MatchPage/>}/>
-                
-                <Route path="/login" element={<LoginPage/>}/>
-                <Route path="/signup" element={<SignupPage/>}/>
+                    <Route path='/jugar/tutorial' element={<Tutorial/>}/>
 
-                <Route path="/" element={<MainPage/>}/>
-                <Route path="/jugar" element={<GamePage/>}/>
-                <Route path='/ajustes' element={<SettingsPage/>}/>
-                
-                <Route path="/*" element={<MainPage/>}/>
+                    <Route path='/partida/:matchId' element={<MatchPage/>}/>
+                    
+                    <Route path="/login" element={<LoginPage/>}/>
+                    <Route path="/signup" element={<SignupPage/>}/>
 
-                <Route path="/auth/callback" element={<GoogleCallback/>}/>
-            </Routes>
+                    <Route path="/" element={<MainPage/>}/>
+                    <Route path="/jugar" element={<GamePage/>}/>
+                    <Route path='/ajustes' element={<SettingsPage/>}/>
+                    
+                    <Route path="/*" element={<MainPage/>}/>
+
+                    <Route path="/creditos" element={<CreditPage/>}/>
+
+                    <Route path="/auth/callback" element={<GoogleCallback/>}/>
+
+                    <Route path="/admin-panel" element={<AdminPanel/>}/>
+
+                </Routes>
+            </Suspense>
         </Fragment>
     )
 }
+
 export default AppRoutes;

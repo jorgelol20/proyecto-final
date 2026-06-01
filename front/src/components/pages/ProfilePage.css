@@ -2,7 +2,6 @@
     position: relative;
     width: 100%;
     height: 30em;
-    padding: 0em 5em;
     background-color: var(--second-color);
     border-radius: 20px;
     border-color: var(--main-color);
@@ -23,6 +22,7 @@
 
         .user-profile {
             background-color: var(--background-profile-color);
+            position: relative;
             padding: 1em;
             display: flex;
             flex-direction: column;
@@ -34,19 +34,60 @@
             border-width: 5px;
             border-style: solid;
             max-height: max-content;
-            p{
-                color: white;
-                font-size: 1.2em;
+
+            .admin {
+                color: var(--main-yellow);
+                height: 5%;
             }
+
+            .user {
+                color: var(--main-white);
+                height: 5%;
+            }
+
+            p {
+                color: white;
+                font-size: 1em;
+            }
+
+            .user-basic {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
             .user-avatar {
-                width: 15em;
-                height: 15em;
+                width: 12em;
+                height: 12em;
                 border-radius: 50%;
                 border-width: 10px;
                 border-style: groove;
+                image-rendering: pixelated;
+                image-rendering: crisp-edges;
             }
-            .user-buttons{
-                display: flex;   
+
+            .user-buttons {
+                display: flex;
+                margin-bottom: 2em;
+            }
+
+            .delete-button {
+                width: 3em;
+                height: 3em;
+                position: absolute;
+                padding: 5px;
+                padding-bottom: 0;
+                margin: 0;
+                top: 0.5em;
+                right: 0;
+                border-radius: 15px;
+
+                .delete-icon {
+                    background: none;
+                    border-width: 0px;
+                    width: 2.5cqw;
+                    height: 2.5cqw;
+                }
             }
         }
 
@@ -55,24 +96,15 @@
             background-color: var(--background-profile-color);
             width: 80%;
             padding: 0px 1em;
-            margin-right: 20%;
+            margin-right: 0%;
             border-radius: 15px;
             border-color: var(--main-black);
             border-width: 5px;
             border-style: solid;
-            
+            color: var(--main-gold);
+            text-align: center;
 
-            .admin {
-                color: var(--main-yellow);
-                height: 5%;
-            }
-
-            .user {
-                color: var(--main-black);
-                height: 5%;
-            }
-
-            .match-history{
+            .match-history {
                 position: relative;
                 display: flex;
                 flex-direction: column;
@@ -83,9 +115,139 @@
                 height: 20em;
                 padding-left: 1em;
                 padding-top: 3em;
-                overflow-y:scroll;
+                overflow-y: scroll;
             }
-            
+
+
+        }
+
+        .achievements {
+            border-radius: 15px;
+            border-color: var(--main-black);
+            border-width: 5px;
+            border-style: solid;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: var(--background-profile-color);
+            width: 30%;
+            h1 {
+                text-align: center;
+                color: var(--main-gold);
+            }
+
+            .user-achievements {
+                overflow: auto;
+                overflow-x:hidden;
+                position: relative;
+                background-color: var(--background-profile-color);
+                padding: 0px 1em;
+                margin-right: 0%;
+                border-radius: 15px;
+                border-color: var(--main-black);
+                border-width: 5px;
+                border-style: solid;
+                color: var(--main-gold);
+                display: flex;
+                flex-direction: column;
+                height: 80%;
+            }
+        }
+
+
+
+    }
+}
+
+@media (max-width: 1080px) {
+
+    .user-background {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        .userInfo {
+            flex-direction: column;
+            width: 80%;
+
+            .user-profile {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 100%;
+                margin-left: -5cqw;
+
+                .user-basic {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+
+                    h1 {
+                        font-size: 1em;
+                    }
+                }
+
+                .user-avatar {
+                    width: 30cqw;
+                    height: 30cqw;
+                }
+
+
+                p {
+                    font-size: 5cqw;
+                }
+
+                .delete-button {
+                    width: 5em;
+                    height: 5em;
+                    position: absolute;
+                    padding: 5px;
+                    padding-bottom: 0;
+                    margin: 0;
+                    bottom: 0;
+                    right: 0;
+
+                    .delete-icon {
+                        background: none;
+                        border-width: 0px;
+
+                        width: 3em;
+                        height: 3em;
+                    }
+                }
+            }
+
+            .user-history {
+                width: 100%;
+                margin-left: -5cqw;
+                font-size: 1em;
+
+                .match-history {
+                    padding: 0;
+                    padding-top: 10cqw;
+
+                }
+
+
+            }
+
+            .achievements {
+                width: 100%;
+                margin-left: -2cqw;
+
+                h1 {
+                    margin: 0;
+                }
+
+                .user-achievements {
+                    width: 80%;
+                    min-height: 5em;
+                }
+            }
+
         }
     }
 }

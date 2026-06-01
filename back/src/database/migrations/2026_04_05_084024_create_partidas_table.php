@@ -18,6 +18,9 @@ return new class extends Migration
             $table->integer('tiempo');
             $table->boolean('victoria');
             $table->integer('rondas');
+            $table->integer('oro_obtenido');
+            $table->integer('vida_curada');
+            $table->integer('enemigos_enfrentados');
             $table->timestamps();
         });
     }

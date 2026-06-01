@@ -26,7 +26,7 @@ const FPSCounter = () => {
   }, []);
 
   return (
-    <div style={{ position: 'absolute', top: 10, left: 10, background: 'black', color: 'white', padding: '5px' }}>
+    <div style={{ position: 'absolute', top: 0, left: 10, background: 'black', color: 'white', padding: '5px', fontSize: '2cqw' }}>
       FPS: {fps}
     </div>
   );

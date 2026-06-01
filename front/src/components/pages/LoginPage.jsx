@@ -6,6 +6,7 @@ import Banner from '../structure/Banner.jsx';
 import './LoginPage.css'
 import { useNavigate } from 'react-router-dom';
 import { settingsContext } from '../../context/SettingsProvider.jsx';
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -30,11 +31,11 @@ const Login = () => {
     }, [isLoading])
 
     const loginWithGoogle = () => {
-        window.location.href = 'https://api.scoundrels-quest.com/api/auth/google/redirect';
+        window.location.href = BACKEND_URL+'/auth/google/redirect';
     };
 
     const loginWithX = () => {
-        window.location.href = 'https://api.scoundrels-quest.com/api/auth/x/redirect';
+        window.location.href = BACKEND_URL+'/auth/x/redirect';
     };
 
     return (

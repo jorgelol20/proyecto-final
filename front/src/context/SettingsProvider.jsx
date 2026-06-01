@@ -10,6 +10,7 @@ const SettingsProvider = ({ children }) => {
     const [musicVolume, setMusicVolume] = useState(50);
     const [musicMuted, setMusicMuted] = useState(false);
     const [showFPS, setShowFPS] = useState(false);
+    const [showLogs, setShowLogs] = useState(false)
 
 
     const musicRef = useRef(null);
@@ -22,12 +23,14 @@ const SettingsProvider = ({ children }) => {
         const savedMutedEffect = localStorage["effect_muted"];
         const savedMutedMusic = localStorage["music_muted"];
         const savedShowFPS = (localStorage.getItem('show_fps'));
+        const savedShowLogs = (localStorage.getItem('show_logs'))
 
         if (savedMutedMusic !== null && savedMutedMusic !== undefined) setMusicMuted(Number(savedMutedMusic));
         if (savedMutedEffect !== null && savedMutedEffect !== undefined) setEffectsMuted(Number(savedMutedEffect));
         if (savedEffect !== null && savedEffect !== undefined) setEffectsVolume(Number(savedEffect));
         if (savedMusic !== null && savedMusic !== undefined) setMusicVolume(Number(savedMusic));
         if (savedShowFPS !== null && savedShowFPS !== undefined) setShowFPS(savedShowFPS);
+        if (savedShowLogs !== null && savedShowLogs !== undefined) setShowLogs(savedShowLogs);
     }, []);
 
     useEffect(() => {
@@ -72,13 +75,13 @@ const SettingsProvider = ({ children }) => {
 
     const muteMusic = (event) => {
         if (event) {
-            localStorage.setItem('music_muted', !musicMuted)
+            localStorage['music_muted'] = !musicMuted
             setMusicMuted(!musicMuted)
         }
     }
     const muteEffects = (event) => {
         if (event) {
-            localStorage.setItem('effect_muted', !effectsMuted)
+            localStorage['effect_muted'] = !effectsMuted
             setEffectsMuted(!effectsMuted)
         }
     }
@@ -94,7 +97,10 @@ const SettingsProvider = ({ children }) => {
     const changeShowFPS = (event) => {
         localStorage.setItem('show_fps', event.currentTarget.checked)
         setShowFPS(event.currentTarget.checked)
-
+    }
+    const changeShowLogs = (event) => {
+        localStorage.setItem('show_logs', event.currentTarget.checked)
+        setShowLogs(event.currentTarget.checked)
     }
 
     const value = {
@@ -109,6 +115,8 @@ const SettingsProvider = ({ children }) => {
         muteEffects,
         muteMusic,
         changeShowFPS,
+        changeShowLogs,
+        showLogs
     };
 
     return (
