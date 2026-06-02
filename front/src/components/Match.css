@@ -132,10 +132,10 @@ article {
     .match-id {
         margin: 0;
         text-align: center;
-        width: 2cqw;
-        max-width: 4cqw;
+        width: 3cqw;
+        max-width: 5cqw;
         color: var(--main-white);
-        font-size: 0.7em;
+        font-size: 2cqw;
     }
 }
 
