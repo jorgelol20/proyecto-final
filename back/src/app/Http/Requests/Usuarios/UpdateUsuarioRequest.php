@@ -37,8 +37,8 @@ class UpdateUsuarioRequest extends FormRequest
             'password.required' => 'La contraseña es obligatoria.',
             'password.min' => 'La contraseña debe tener al menos 8 caractéres.',
             'password.string' => 'La contraseña no puede estar vacía.',
-            'avatar.image' => 'Solo se admiten los formatos JPG, JPEG, PNG y WEBP',
-            'avatar.mimes' => 'Solo se admiten los formatos JPG, JPEG, PNG y WEBP',
+            'avatar.image' => 'Solo se admiten los formatos JPG, JPEG, PNG, WEBP y GIF',
+            'avatar.mimes' => 'Solo se admiten los formatos JPG, JPEG, PNG, WEBP y GIF',
             'avatar.max' => 'Tamaño máximo de la imagen: 2MB',
             'color.regex' => 'El formato del color debe ser hexadecimal',
         ];
