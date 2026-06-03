@@ -237,8 +237,17 @@
 }
 
 .slide-7 {
-    p {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .container{
         width: 80%;
+    }
+    h1{
+        text-align: center;
+    }
+    p {
+        width: 100%;
     }
 
     h3 {
