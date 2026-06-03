@@ -98,13 +98,18 @@ const Tutorial = () => {
             <div className="slide-3 slide">
                 <div className="slide-3-info">
                     <h1>Cartas</h1>
-                    <p>En <span>Scoundrel's Quest</span> cada carta tiene su función y motivo y la forma más fácil de conocerlas, es verlas.</p>
+                    <p>En <span>Scoundrel's Quest</span> se utilizan las cartas de la baraja de póker donde cada una tiene una función propia.</p>
+                    <p>
+                        Los <strong>enemigos</strong> son las picas y los tréboles. <br/>
+                        Las <span>armas</span> son los diamantes. <br/>
+                        Las <span style={{color:'var(--main-green)'}}>curaciones</span> son los corazones.
+                    </p>
                     <p><span>Ponte encima </span> o <span>clica</span> en ellas para conocer más.</p>
                 </div>
                 <div className="card-stage">
                     {/* Carta 2 */}
                     <div key={tutorial1Cards[1]?.key + 3}>
-                        <Stage width={200 * scale} height={200 * scale} scaleX={scale} scaleX={scale} scaleY={scale} y={20 * scale / 20}
+                        <Stage width={200 * (scale + 0.1)} height={200 * (scale + 0.1)} scaleX={scale + 0.1} scaleY={scale + 0.1} y={20 * scale / 20}
                             onMouseOver={() => setHoveredIndex(tutorial1Cards[1]?.id)}
                             onMouseLeave={() => setHoveredIndex(null)}
                             onTap={() => hoveredIndex != null ? setHoveredIndex(null) : setHoveredIndex(tutorial1Cards[1]?.id)}
@@ -135,7 +140,7 @@ const Tutorial = () => {
 
                     {/* Carta 3 */}
                     <div key={tutorial1Cards[2]?.key + 3}>
-                        <Stage width={200 * scale} height={200 * scale} scaleX={scale} scaleY={scale} y={20 * scale / 20}
+                        <Stage width={200 * (scale + 0.1)} height={200 * (scale + 0.1)} scaleX={(scale + 0.1)} scaleY={(scale + 0.1)} y={20 * scale / 20}
                             onMouseOver={() => setHoveredIndex(tutorial1Cards[2]?.id)}
                             onMouseLeave={() => setHoveredIndex(null)}
                             onTap={() => hoveredIndex != null ? setHoveredIndex(null) : setHoveredIndex(tutorial1Cards[2]?.id)}
@@ -165,7 +170,7 @@ const Tutorial = () => {
 
                     {/* Carta 1 */}
                     <div key={tutorial1Cards[0]?.key + 3}>
-                        <Stage width={200 * scale} height={200 * scale} scaleX={scale} scaleX={scale} scaleY={scale} y={20 * scale / 20}
+                        <Stage width={200 * (scale + 0.1)} height={200 * (scale + 0.1)} scaleX={(scale + 0.1)} scaleY={(scale + 0.1)} y={20 * scale / 20}
                             onMouseOver={() => setHoveredIndex(tutorial1Cards[0]?.id)}
                             onMouseLeave={() => setHoveredIndex(null)}
                             onTap={() => hoveredIndex != null ? setHoveredIndex(null) : setHoveredIndex(tutorial1Cards[0]?.id)}
@@ -196,7 +201,7 @@ const Tutorial = () => {
 
                     {/* Carta 4 */}
                     <div key={tutorial1Cards[3]?.key + 3}>
-                        <Stage width={200 * scale} height={200 * scale} scaleX={scale} scaleX={scale} scaleY={scale} y={20 * scale / 20}
+                        <Stage width={200 * (scale + 0.1)} height={200 * (scale + 0.1)} scaleX={(scale + 0.1)} scaleY={(scale + 0.1)} y={20 * scale / 20}
                             onMouseOver={() => setHoveredIndex(tutorial1Cards[3]?.id)}
                             onMouseLeave={() => setHoveredIndex(null)}
                             onTap={() => hoveredIndex != null ? setHoveredIndex(null) : setHoveredIndex(tutorial1Cards[3]?.id)}
@@ -301,9 +306,9 @@ const Tutorial = () => {
                     <p>
                         La zona de juego se reparte en 4 partes: el <span>mazo</span>, la <span>mano</span>, la <span>zona de juego</span> y los <span>descartes</span>.<br />
                         El <span>mazo</span> es donde se 'apilan' todas las cartas que van a verse durante la ronda. <br />
-                        La <span>mano</span>, donde irán apareciendo las cartas <span>jugables</span> de <span>4 en 4</span>. <br />
+                        La <span>mano</span>, donde irán apareciendo las cartas que podrán ser <strong>enemigos</strong>, <span>armas</span> o <span style={{color:"var(--main-green)"}}>curaciones</span> de <span>4 en 4</span>. <br />
                         La <span>zona de juego</span> donde se deberán mover las cartas para ser jugadas. <br />
-                        Por último, están los <span>descartes</span>, donde se irán almacenando las cartas ya jugadas.
+                        Por último, están los <span>descartes</span>, donde se irán quedando las cartas ya jugadas.
                     </p>
                 </div>
                 <Stage width={765 * scale} height={400 * scale} scaleX={scale} scaleY={scale} y={20 * scale / 20}>
@@ -463,12 +468,12 @@ const Tutorial = () => {
                 <div className="container">
                     <h1>Combate</h1>
                     <p>
-                        El combate en Scoundrel es bastante sencillo. <br />
-                        Si tienes un <span>arma</span> en la <span>zona de juego</span>,  atacarás al <strong>enemigo</strong> restando el valor del arma al daño del enemigo. <br />
-                        Siempre y cuando el enemigo sea <span>más débil que el último derrotado</span> con esa arma, podrás atacarle. En caso contrario, el <strong>enemigo</strong> irá a descartes, recibiendo todo el daño. <br />
-                        <span>Si no tienes ninguna arma</span>, el enemigo irá directo a descartes sufriendo todo el daño.
+                        Las bases del combate en Scoundrel's Quest gira en torno a el arma activa. <br/>
+                        Si <span>tienes arma</span> y <span>no has pegado aún</span> a ningún <strong>enemigo</strong>, el daño que recibirás será el valor del <strong>enemigo</strong> menos el valor del <span>arma</span> <br />
+                        Si <span>ya dispones de un arma</span> y ya la has <span>usado contra un enemigo</span>, para que el arma tenga efecto el <span>último enemigo</span> que has derrotado tiene que ser mayor que el que vas a derrotar a continuación <br />
+                        <span>Si no tienes ninguna arma</span> o si el enemigo que vas a golpear es <span> mayor o igual que el anterior</span>, recibirás <strong>todo el daño del enemigo</strong>.
                     </p>
-                    <h3>A continuación, tendrás un simulador de combate para comprobarlo por tu cuenta.</h3>
+                    <p>A continuación, tendrás un <span>simulador de combate</span> para comprobarlo por tu cuenta.</p>
                 </div>
             </div>
         </Fragment>
@@ -477,7 +482,7 @@ const Tutorial = () => {
     const slide8 = (
         <Fragment>
             <div className="slide-8 slide">
-                <h1>Simulador</h1>
+                <h1>Simulador de combate</h1>
                 <h1 className="player-health"><img src={ASSETS.healthIcon} />{health}/20{healthAnimation !== null ? <div className="animation-container"><strong className="animation" disabled={healthAnimation}>{healthAnimationValue}</strong><img className="animation" disabled={healthAnimation} src={healthAnimation} /></div> : <></>}</h1>
                 <div>
                     <button className="reset-simulator-btn" onClick={resetSimulator}>
@@ -605,7 +610,7 @@ const Tutorial = () => {
         </Fragment>
     );
 
-    const slides = [slide1, slide2, slide3, slide4, slide5, slide6, slide7, slide8, slide9];
+    const slides = [slide1,slide2,slide6, slide3 ,slide7, slide8,  slide4, slide5, slide9];
     const totalSlides = slides.length;
 
     const moveSlide = (direction) => {
@@ -621,7 +626,7 @@ const Tutorial = () => {
             <div className="tutorial-container">
                 <div className="movement-buttons">
                     {slides.map((slide, index) => {
-                        return <button key={index + '-button'} className={currentIndex === index ? "movement-button active" : "movement-button"} onClick={() => { setCurrentIndex(index) }}>{index + 1}</button>
+                        return <button key={index + '-button'} className={currentIndex === index ? "movement-button active" : "movement-button"} onClick={() => { setCurrentIndex(index) }}>{index+1}</button>
                     })}
                 </div>
                 <div className="tutorial-carousel">
