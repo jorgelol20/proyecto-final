@@ -28,7 +28,7 @@
 
         h1 {
             margin: 0;
-            font-size: 2cqw;
+            font-size: 1em;
             color: var(--main-yellow);
             text-shadow: 1px 1px 2px var(--main-black);
         }
@@ -126,7 +126,7 @@
 
         h1 {
             margin: 0;
-            font-size: 2cqw;
+            font-size: 1em;
             color: var(--main-yellow);
             text-shadow: 1px 1px 2px var(--main-black);
         }
@@ -192,7 +192,7 @@
 
         .character-info {
             h1 {
-                font-size: 4cqw;
+                font-size: 1em;
             }
 
             button {
