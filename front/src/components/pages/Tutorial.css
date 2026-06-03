@@ -11,7 +11,7 @@
 
     p {
         font-size: 1cqw;
-        width: 80%;
+        width: 100%;
     }
 
     .tutorial-carousel {
@@ -211,7 +211,10 @@
                 }
 
                 .effect-description {
-                    height: 70%;
+                    height: 100%;
+                    p{
+                        width: 100%;
+                    }
                 }
 
                 h1 {
@@ -421,7 +424,7 @@
 
         .card-effects {
             justify-content: center;
-
+            
             .card-effect {
                 width: 15em;
 
