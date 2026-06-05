@@ -133,7 +133,7 @@ article {
         margin: 0;
         text-align: center;
         width: 3cqw;
-        max-width: 5cqw;
+        max-width: 3cqw;
         color: var(--main-white);
         font-size: 2cqw;
     }
@@ -146,7 +146,7 @@ article {
         max-height: 15cqw;
 
         h1 {
-            font-size: 5cqw;
+            font-size: 1em;
         }
 
         .match-id {
