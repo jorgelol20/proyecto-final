@@ -39,7 +39,7 @@
     width: 100%;
 
     p {
-        font-size: 0.3em;
+        font-size: 0.7em;
         color: var(--main-white);
     }
 }
@@ -63,6 +63,11 @@
             img{
                 width: 1em;
                 height: 1em;
+            }
+        }
+        .achievement-description{
+            p{
+                font-size: 0.4em;
             }
         }
 

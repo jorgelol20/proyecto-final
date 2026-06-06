@@ -126,6 +126,7 @@
             border-color: var(--main-black);
             border-width: 5px;
             border-style: solid;
+            font-size: 1em;
             display: flex;
             flex-direction: column;
             justify-content: center;
