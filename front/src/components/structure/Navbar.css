@@ -128,7 +128,7 @@ nav {
     align-items: center;
     gap: 10px;
     color: #aaa;
-    font-size: 14px;
+    font-size: 0.7em;
 }
 @media (max-width: 1080px) {
     .game-icon{
