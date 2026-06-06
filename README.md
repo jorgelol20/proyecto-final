@@ -14,6 +14,10 @@ Scoundrel's Quest
 1. Clonar el repositorio
 2. Ejecutar el `start-dev.bat` que se encuentra en la raiz del repositorio
 ---
+### Linux/Mac
+1. Clonar el repositorio
+2. Ejecutar el `start-dev.sh` que se encuentra en la raiz del repositorio
+---
 ### Otros
 1. Clonar el repositorio
 2. Ejecutar `npm run dev` dentro de la carpeta **/front**.
