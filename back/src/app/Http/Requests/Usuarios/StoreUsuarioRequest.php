@@ -46,7 +46,7 @@ class StoreUsuarioRequest extends FormRequest
             'password.required' => 'La contraseña es obligatoria.',
             'password.min' => 'La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial [-_@$!%*?&].',
             'password.string' => 'La contraseña no puede estar vacía.',
-            'email.email' => 'El email introducido no es válido.',
+            'email.email' => 'El correo introducido no es válido.',
             'email.required' => 'El correo es obligatorio.',
             'email.unique' => 'Este correo ya está en uso.',
             'email.regex' => 'El correo no tiene un formato válido.',
