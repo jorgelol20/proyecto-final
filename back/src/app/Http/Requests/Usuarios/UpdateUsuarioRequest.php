@@ -33,9 +33,9 @@ class UpdateUsuarioRequest extends FormRequest
     public function messages()
     {
         return [
-            'password.regex' => 'La contraseña debe tener al menos una mayúscula, una minúscula, un número y un carácter especial.',
+            'password.regex' => 'La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial [-_@$!%*?&].',
             'password.required' => 'La contraseña es obligatoria.',
-            'password.min' => 'La contraseña debe tener al menos 8 caractéres.',
+            'password.min' => 'La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial [-_@$!%*?&].',
             'password.string' => 'La contraseña no puede estar vacía.',
             'avatar.image' => 'Solo se admiten los formatos JPG, JPEG, PNG, WEBP y GIF',
             'avatar.mimes' => 'Solo se admiten los formatos JPG, JPEG, PNG, WEBP y GIF',
