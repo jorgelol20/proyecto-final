@@ -86,7 +86,7 @@ class AuthController extends Controller
         $xUser = Socialite::driver('twitter')->stateless()->user();
 
         $user = Usuarios::firstOrCreate(
-            ['email' => $xUser->getNickname() . "@Xaccount.com"],
+            ['email' => $xUser->getEmail()],
             [
                 'nick' => $xUser->getNickname(),
                 'password' => bcrypt($xUser->getId()),
