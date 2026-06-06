@@ -18,7 +18,7 @@ const MainPage = () => {
     const { startMusic, startButtonSound } = useContext(settingsContext)
     const navigate = useNavigate();
 
-    
+
     if (isLoading) {
         return (
             <Fragment>
@@ -29,7 +29,7 @@ const MainPage = () => {
     return (
         <Fragment>
             <article className="menu">
-                <img className="banner-menu" src="/images/banner_menu.webp" />
+                <img className="banner-menu" src="/images/banner_menu.webp" alt="Icono juego" />
                 <div className="main-menu">
                     <button onClick={(event) => { startButtonSound(event); user ? navigate(`/jugar`) : navigate('/login') }}>JUGAR</button>
                     <button onClick={(event) => { startButtonSound(event); user ? navigate(`/jugar/tutorial`) : navigate('/login') }}>CÓMO JUGAR</button>
@@ -45,15 +45,19 @@ const MainPage = () => {
                     }
                 </div>
                 <div>
-                    <UserRanking/>
+                    <UserRanking />
                 </div>
             </article>
             <article>
                 <div className="last-matches">
                     <h1>Últimas partidas ( Global )</h1>
-                    <div className="match-history">
+                    <div tabIndex={1} className="match-history">
                         {matches?.map((match, index) => {
-                            return <div key={match.id} onClick={() => { navigate(`/partida/${match.id}`) }}><Match key={match.id} match={match} showUser={true} /></div>
+                            return <div tabIndex={1} key={match.id}
+                                onKeyDown={(event) => {
+                                    if (event.key === 'Enter' || event.key === ' ') { navigate(`/partida/${match.id}`) }
+                                }}
+                                onClick={() => { navigate(`/partida/${match.id}`) }}><Match key={match.id} match={match} showUser={true} /></div>
                         })}
                     </div>
                 </div>

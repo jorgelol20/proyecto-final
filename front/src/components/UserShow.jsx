@@ -54,7 +54,7 @@ const UserShow = ({ userInfo, admin = false }) => {
                 <img
                     className="show-avatar"
                     src={userInfo.avatar}
-                    alt=""
+                    alt={'Avatar de ' +  userInfo.nick}
                     style={{ borderColor: userInfo.color }}
                     onError={(e) => {
                         e.currentTarget.src = Placeholder;

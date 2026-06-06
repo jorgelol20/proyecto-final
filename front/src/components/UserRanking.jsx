@@ -49,8 +49,8 @@ const UserRanking = () => {
 
     const UserVictoryRanking = ({ userInfo, index }) => {
         return (
-            <div key={`user-${index}`} onClick={(e) => { navigate(`/perfil/${userInfo.nick}`) }} className="user-ranking">
-                <div style={{display:'flex', flexDirection:'row'}}>
+            <div tabIndex={0} key={`user-${index}`} onClick={(e) => { navigate(`/perfil/${userInfo.nick}`) }} className="user-ranking">
+                <div style={{ display: 'flex', flexDirection: 'row' }}>
                     <h1 id={`num-${index + 1}`}>#{index + 1}</h1>
                     <img style={{ borderColor: userInfo.color }} src={userInfo.avatar} alt="" />
                 </div>
@@ -63,8 +63,8 @@ const UserRanking = () => {
     }
     const UserRoundRanking = ({ userInfo, index }) => {
         return (
-            <div key={`user-${index}`} onClick={(e) => { navigate(`/perfil/${userInfo.nick}`) }} className="user-ranking">
-                <div style={{display:'flex', flexDirection:'row'}}>
+            <div tabIndex={0} key={`user-${index}`} onClick={(e) => { navigate(`/perfil/${userInfo.nick}`) }} className="user-ranking">
+                <div style={{ display: 'flex', flexDirection: 'row' }}>
                     <h1 id={`num-${index + 1}`}>#{index + 1}</h1>
                     <img style={{ borderColor: userInfo.color }} src={userInfo.avatar} alt="" />
                 </div>
@@ -75,8 +75,12 @@ const UserRanking = () => {
     }
     const MatchRanking = ({ matchInfo, index }) => {
         return (
-            <div key={`user-${index}`} onClick={(e) => { navigate(`/partida/${matchInfo.id}`) }} className="user-ranking">
-                <div style={{display:'flex', flexDirection:'row'}}>
+            <div tabIndex={0} key={`user-${index}`}
+                onKeyDown={(event) => {
+                    if (event.key === 'Enter' || event.key === ' ') { navigate(`/partida/${matchInfo.id}`) }
+                }}
+                onClick={(e) => { navigate(`/partida/${matchInfo.id}`) }} className="user-ranking">
+                <div style={{ display: 'flex', flexDirection: 'row' }}>
                     <h1 id={`num-${index + 1}`}>#{index + 1}</h1>
                     <img style={{ borderColor: 'var(--main-gold)' }} src={matchInfo.personaje.imagen} alt="" />
                 </div>
@@ -126,7 +130,7 @@ const UserRanking = () => {
                     <button disabled={loading} className={rankingType === 'VICTORIAS' ? "ranking-button active" : "ranking-button"} id="forVictory" onClick={(e) => { setLoading(true); handleRankingChange('VICTORIAS') }}>VICTORIAS</button>
                 </div>
                 <h1>Ranking de <strong style={{ color: 'var(--main-gold)' }}>{rankingType !== 'BEST_MATCH' ? rankingType : "MEJORES PARTIDAS"}</strong></h1>
-                <div className="ranking-container">
+                <div tabIndex={0} className="ranking-container">
                     {ranking !== undefined && ranking.length > 0 ?
                         createRanking()
                         : <></>}

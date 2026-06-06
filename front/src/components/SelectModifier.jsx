@@ -30,7 +30,7 @@ const SelectModifier = ({ setSelectModifier, rounds }) => {
                                     </div>
                                 </div>
                                 <div style={{display:'flex'}}>
-                                    <img src={ShopMan} alt="" />
+                                    <img src={ShopMan} alt="ShopMan" />
                                     <button onClick={()=>{setSelectModifier(false)}}>Pues vale...</button>
                                 </div>
                             </div>

@@ -25,7 +25,7 @@ const Modifier = ({ modifierInfo, setSelectModifier, bigger }) => {
         <Fragment>
             <div className="modifier-info">
                 <h3 id={"nivel-" + modifierInfo.nivel}>{modifierInfo.nombre}</h3>
-                <img id={"nivel-" + modifierInfo.nivel} src={modifierInfo.imagen} alt="" />
+                <img id={"nivel-" + modifierInfo.nivel} src={modifierInfo.imagen} alt={modifierInfo.nombre} />
                 <div>
                     <p>{modifierInfo.descripcion}</p>
                 </div>

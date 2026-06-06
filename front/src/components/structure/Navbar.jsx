@@ -80,7 +80,7 @@ const Navbar = () => {
         <Fragment>
             <nav>
                 {showFPS && <FPSCounter />}
-                <img className="game-icon" src="/images/banner_menu.webp" />
+                <img className="game-icon" alt="Icono juego" src="/images/banner_menu.webp" />
                 <div className="navbar-items">
                     {!isLoading && user && (
                         <div className="navbar-active-players">
