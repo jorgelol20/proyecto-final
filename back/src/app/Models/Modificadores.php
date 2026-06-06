@@ -5,7 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-
+/**
+ * Summary of Modificadores
+ */
 class Modificadores extends Model
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */

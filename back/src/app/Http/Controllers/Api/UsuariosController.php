@@ -65,12 +65,14 @@ class UsuariosController extends Controller
         return response()->json(['usuario' => $usuario], 201);
     }
 
+    // Buscar usuarios por coincidencia en el nick
     public function search(string $search)
     {
         $usuarios = Usuarios::select('id', 'nick', 'email', 'es_admin', 'avatar', 'color', 'created_at', 'ultima_vez_visto')->where('nick', 'LIKE', '%' . $search . '%')->limit(3)->get();
         return response()->json(['usuarios' => $usuarios], 201);
     }
 
+    // Actualizar info de un usuario
     public function update(UpdateUsuarioRequest $request, $nick)
     {
         $usuario = Usuarios::where('nick', $nick)->firstOrFail();
@@ -97,6 +99,8 @@ class UsuariosController extends Controller
         return response()->json($usuario);
     }
 
+    // Función para eliminar ÚNICAMENTE la foto de perfil
+    // La solicitud solo se efectuará si el usuario que la realiza es admin.
     public function borrarFotoPerfil(Request $request, $nick)
     {
         if (!$request->user()->es_admin) {
@@ -125,7 +129,7 @@ class UsuariosController extends Controller
         return response()->json(['message' => 'Usuario eliminado'], 201);
     }
 
-
+    // Función para guardar un comentario
     public function storeComentario(Request $request)
     {
         $partida = Partidas::findOrFail($request->partida_id);
@@ -138,6 +142,8 @@ class UsuariosController extends Controller
 
         return response()->json(['message' => 'Comentario añadido con éxito']);
     }
+
+    //Función para actualizar un comentario
     public function updateComentario(Request $request)
     {
         if ($request->user()->id !== $request->usuario_id) {
@@ -156,6 +162,9 @@ class UsuariosController extends Controller
 
         return response()->json(['message' => 'Comentario actualizado con éxito']);
     }
+
+    // Función para eliminar un comentario
+    // La solicitud solo se efectuará si el usuario que la realiza es admin.
     public function destroyComentario(Request $request, $id)
     {
         if (!$request->user()->es_admin) {
@@ -173,6 +182,8 @@ class UsuariosController extends Controller
             'message' => 'Comentario eliminado correctamente'
         ]);
     }
+
+    // Función para obtener el ranking de usuarios por victoria
     public function ranking_victorias()
     {
         $usuarios = Usuarios::select('id', 'nick', 'email', 'avatar', 'color', 'created_at', 'es_admin', 'ultima_vez_visto')
@@ -190,6 +201,8 @@ class UsuariosController extends Controller
             ->get();
         return response()->json(['usuarios' => $usuarios]);
     }
+
+    // Función para obtener el ranking de usuarios por record de rondas
     public function ranking_rondas()
     {
         $usuarios = Usuarios::select('id', 'nick', 'email', 'avatar', 'color', 'created_at', 'es_admin', 'ultima_vez_visto')
@@ -204,6 +217,7 @@ class UsuariosController extends Controller
         return response()->json(['usuarios' => $usuarios]);
     }
 
+    // Función para realizar 'ping' y actualizar la última vez visto
     public function ping(Request $request)
     {
         $user = $request->user();
@@ -217,6 +231,8 @@ class UsuariosController extends Controller
         ]);
     }
 
+
+    // Función para obtener el número de usuarios cuya última vez vista haya sido hace menos de 1 minuto.
     public function cuentaActiva()
     {
         $umbral = now()->subSeconds(60)->toDateTimeString();
@@ -224,6 +240,7 @@ class UsuariosController extends Controller
         return response()->json(['active_users' => $conteo]);
     }
 
+    //Función para registrar un logro por su ID
     public function registrarLogro(Request $request)
     {
 

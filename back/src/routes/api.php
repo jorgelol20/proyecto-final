@@ -18,15 +18,26 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
+// Rutas protegidas por Sanctum
 Route::middleware('auth:sanctum')->group(function () {
+
+    // Rutas para obtener el perfil y cerrar sesión. 
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/perfil', [AuthController::class, 'me']);
+
+    // Rutas de jugadores activos
     Route::post('/usuarios/ping', [UsuarioApiController::class, 'ping']);
     Route::get('/jugadores-activos', [UsuarioApiController::class, 'cuentaActiva']);
+
+    // Rutas para eliminar fotos
     Route::delete('/usuarios/eliminar-foto/{nick}', [UsuarioApiController::class, 'borrarFotoPerfil']);
+
+    // Rutas de comentarios
     Route::post('/usuarios/comentario/', [UsuarioApiController::class, 'storeComentario'])->name('api.usuarios.comentario');
     Route::delete('/usuarios/comentario/{id}', [UsuarioApiController::class, 'destroyComentario'])->name('api.usuarios.comentario.eliminar');
     Route::put('/usuarios/comentario/{id}', [UsuarioApiController::class, 'updateComentario'])->name('api.usuarios.comentario.actualizar');
+
+    //Rutas logros
     Route::post('/nuevo-logro', [UsuarioApiController::class, 'registrarLogro'])->name('api.usuarios.logro');
 });
 

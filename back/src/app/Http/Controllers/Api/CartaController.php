@@ -9,12 +9,14 @@ use App\Http\Requests\Cartas\UpdateCartaRequest;
 use Illuminate\Http\Request;
 
 class CartaController extends Controller
-{
+{   
+    //Obtener todas las cartas
     public function index()
     {
         return response()->json(Carta::all());
     }
 
+    // Guardar una Carta
     public function store(StoreCartaRequest $request)
     {
         $data = $request->validated();
@@ -29,11 +31,13 @@ class CartaController extends Controller
         return response()->json($carta, 201);
     }
 
+    //Obtener info de una carta
     public function show($id)
     {
         return response()->json(Carta::findOrFail($id));
     }
 
+    //Actualizar info de una carta
     public function update(UpdateCartaRequest $request, $id)
     {
         $carta = Carta::findOrFail($id);
@@ -50,6 +54,7 @@ class CartaController extends Controller
         return response()->json($carta);
     }
 
+    // Eliminar una carta
     public function destroy($id)
     {
         Carta::findOrFail($id)->delete();

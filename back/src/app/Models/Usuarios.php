@@ -45,7 +45,6 @@ class Usuarios extends Authenticatable
 
     /**
      * Summary of comentarios
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany<Partidas, Usuarios, \Illuminate\Database\Eloquent\Relations\Pivot>
      */
     public function comentarios(){
         return $this->belongsToMany(
@@ -57,13 +56,16 @@ class Usuarios extends Authenticatable
     }
 
     /**
-     * Summary of tiene
+     * Relación con partidas en la que un usuario tiene muchas partidas y una partida pertenece a un usuario
      * @return \Illuminate\Database\Eloquent\Relations\HasMany<Partidas, Usuarios>
      */
     public function tiene_jugadas(){
         return $this->hasMany(Partidas::class, 'usuario_id');
     }
 
+    /*
+    *   Relación con los logros.
+    */
     public function logros(){
         return $this->belongsToMany(Logros::class, "usuarios_logros", 'usuario_id', 'logro_id')->withPivot('id', 'created_at', 'updated_at');
     }
