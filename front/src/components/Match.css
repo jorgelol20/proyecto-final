@@ -134,7 +134,7 @@ article {
         text-align: center;
         width: 3cqw;
         max-width: 3cqw;
-        color: var(--main-white);
+        color: var(--main-white) !important;
         font-size: 2cqw;
     }
 }
