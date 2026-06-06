@@ -78,7 +78,7 @@ class AuthController extends Controller
     // Inicio de sesión con Twitter (X)
     public function redirectToX()
     {
-        return Socialite::driver('twitter-oauth-2')->stateless()->redirect();
+        return Socialite::driver('twitter-oauth-2')->redirect();
     }
 
     public function handleXCallback()
