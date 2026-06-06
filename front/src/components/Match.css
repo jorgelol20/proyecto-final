@@ -52,12 +52,14 @@
 
         p {
             margin-top: 0;
-            font-size: 50%;
+            font-size: 100%;
+            text-overflow: clip;
             width: 100%;
         }
 
         .admin {
             color: var(--main-gold);
+            filter: brightness(1.2);
         }
 
         .user {

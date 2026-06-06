@@ -16,7 +16,7 @@ Scoundrel's Quest
 ---
 ### Otros
 1. Clonar el repositorio
-2. Ejecutar `npm run build` (Solo ejecución) o `npm run dev` (Desarrollo) dentro de la carpeta **/front**.
+2. Ejecutar `npm run dev` dentro de la carpeta **/front**.
 3. Levantar los contenedores desde la carpeta **/back** con `docker compose up -d --build`.
 4. Acceder al contenedor de **PHP** y ejecutar los siguientes comandos:
     - `php artisan migrate`
@@ -26,7 +26,7 @@ Scoundrel's Quest
 
 ## Uso
 ### Local
-Acceder a la build de Node en [http://localhost:5173](http://localhost:5173) o el puerto de desarrollo de `npm run build` [http://localhost:5174](http://localhost:5174)
+Acceder a [http://localhost:5174](http://localhost:5174)
 ### Producción
 Acceder a [Scoundrel's Quest](scoundrels-quest.com)
 
