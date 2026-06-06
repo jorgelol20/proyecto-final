@@ -257,7 +257,7 @@ const Tutorial = () => {
         { 'name': 'Veneno', 'description': 'Te va causando daño al pasar de mano durante una cantidad de manos fijas.', 'image': '/images/cardEffects/Poison.webp', 'target': 'Enemigo' },
         { 'name': 'Curación progresiva', 'description': 'Te cura una cantidad de vida al pasar de mano durante una cantidad de manos fijas.', 'image': '/images/cardEffects/ProgresiveHeal.webp', 'target': 'Curación' },
         { 'name': 'Restaurar habilidad', 'description': 'Restaura tu habilidad, pero no te cura.', 'image': '/images/cardEffects/RestoreAbility.webp', 'target': 'Curación' },
-        { 'name': 'Revivir', 'description': 'Si fueses a morir con golpeando con el arma portadora del efecto, sobrevives a 1 de vida.', 'image': '/images/cardEffects/Revive.webp', 'target': 'Arma' },
+        { 'name': 'Revivir', 'description': 'Si fueses a morir golpeando con el arma portadora del efecto, sobrevives a 1 de vida.', 'image': '/images/cardEffects/Revive.webp', 'target': 'Arma' },
         { 'name': 'Espinoso', 'description': 'Recibes 3 de daño fijo.', 'image': '/images/cardEffects/Thorny.webp', 'target': 'Enemigo' },
         { 'name': 'Rompe Armas', 'description': 'Rompe el arma activa.', 'image': '/images/cardEffects/WeaponBreaker.webp', 'target': 'Enemigo' },
     ]
