@@ -93,7 +93,7 @@
 
         .user-history {
             position: relative;
-            background-color: var(--background-profile-color);
+            background-color: var(--second-color);
             width: 80%;
             padding: 0px 1em;
             margin-right: 0%;
@@ -110,6 +110,7 @@
                 flex-direction: column;
                 border-radius: 5px;
                 border-color: var(--main-black);
+                background-color: var(--background-profile-color);
                 border-width: 5px;
                 border-style: solid;
                 height: 20em;
@@ -131,7 +132,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            background-color: var(--background-profile-color);
+            background-color: var(--second-color);
             width: 30%;
             h1 {
                 text-align: center;
