@@ -22,7 +22,7 @@ class PersonajesFactory extends Factory
             'nombre'      => $this->faker->name(),
             'descripcion' => $this->faker->sentence(10),
             'imagen'      => null,
-            'activo'      => $this->faker->boolean(80),
+            'activo'      => true,
             'habilidad_id'   => Habilidad::factory(), 
         ];
     }

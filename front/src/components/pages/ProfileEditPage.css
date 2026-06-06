@@ -72,7 +72,7 @@
 
     .file-button:hover {
         background-color: var(--second-color);
-        border-color: var(--main-yellow);
+        border-color: var(--main-gold);
         transform: scale(1.02);
     }
 
