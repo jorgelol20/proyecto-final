@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect, useRef } from "react";
-import MainMusic from '../sounds/main-music.mp3';
-import ButtonSound from '../sounds/button-sound.mp3';
+import MainMusic from '/sounds/main-music.mp3';
+import ButtonSound from '/sounds/button-sound.mp3';
 
 export const settingsContext = createContext();
 
