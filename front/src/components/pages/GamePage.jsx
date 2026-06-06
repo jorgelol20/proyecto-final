@@ -373,7 +373,6 @@ const GamePage = () => {
      * CARGA INICIAL Y RESPONSIVIDAD DEL CANVA
      * ==========================================
      */
-    // Ancho virtual total sobre el que diseñaste tu tablero (Zona descarte termina en X: 780)
     const VIRTUAL_WIDTH = 800;
 
     const calculateLayout = () => {
@@ -387,7 +386,8 @@ const GamePage = () => {
             width: physicalWidth,
             height: physicalHeight,
             // Escala proporcional basada en el ancho disponible real frente al virtual
-            scale: physicalWidth / VIRTUAL_WIDTH
+            scale: physicalWidth / VIRTUAL_WIDTH,
+
         };
     };
 
@@ -1568,7 +1568,7 @@ const GamePage = () => {
                     </div>
 
                     {/* VENTANA DE JUEGO */}
-                    <Stage className="game-window" width={layout.width} height={layout.height} scaleX={layout.scale} scaleY={layout.scale} imageSmoothingEnabled={false} x={0}>
+                    <Stage className="game-window" width={layout.width} height={layout.height * 0.8} scaleX={layout.scale} scaleY={layout.scale} imageSmoothingEnabled={false} x={0}>
                         {/* CAPA ESTÁTICA */}
                         <Layer>
                             {/* ZONA DEL MAZO */}
