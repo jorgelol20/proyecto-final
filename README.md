@@ -7,7 +7,7 @@ Scoundrel's Quest
 ## Requisitos previos
 - Docker instalado localmente.
 - Node V.24.* o superior.
-- `.env` [Contactame para solicitarlos](jorgejorgemonovar@gmail.com)
+- `.env` [Contactame para solicitarlos](mailto:jorgejorgemonovar@gmail.com)
 
 ## Ejecutar el proyecto en local
 ### Windows
