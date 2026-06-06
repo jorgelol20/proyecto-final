@@ -7,7 +7,7 @@ import Placeholder from '/images/placeholder.webp'
 import VisibilityOn from '/images/visibility_on.svg'
 import VisibilityOff from '/images/visibility_off.svg'
 import Folder from '/images/folder.svg'
-import './ProfileEditPage.css'
+import './SignupPage.css'
 import Loading from "../Loading.jsx";
 import Banner from "../structure/Banner.jsx";
 
