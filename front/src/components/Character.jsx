@@ -13,13 +13,13 @@ const Character = ({characterInfo, fastSelector = false}) => {
             <Fragment>
                 <div className="fastSelector-container">
                     <div className="character-info">
-                        <img className="character-image" src={characterInfo.imagen}/>
+                        <img className="character-image" src={characterInfo.imagen} alt={characterInfo.nombre}/>
                         <h1>{characterInfo.nombre}</h1>
                         
                     </div>
                     <div>
                         <div className="character-abilitie">
-                            <img className="abilitie-icon" src={characterInfo.habilidad_personaje.icono}/>
+                            <img className="abilitie-icon" src={characterInfo.habilidad_personaje.icono} alt={"Habilidad de " +  characterInfo.nombre}/>
                             
                         </div>
                     </div>
@@ -35,13 +35,13 @@ const Character = ({characterInfo, fastSelector = false}) => {
             <div>
                 <div className="character-container">
                     <div className="character-info">
-                        <img className="character-image" src={characterInfo.imagen}/>
+                        <img className="character-image" src={characterInfo.imagen} alt={characterInfo.nombre}/>
                         <h1>{characterInfo.nombre}</h1>
                         <button onClick={(event)=>{startButtonSound(event);setNewCharacter(characterInfo)}}>Seleccionar</button>
                     </div>
                     <div>
                         <div className="character-abilitie">
-                            <img className="abilitie-icon" src={characterInfo.habilidad_personaje.icono}/>
+                            <img className="abilitie-icon" src={characterInfo.habilidad_personaje.icono} alt={"Habilidad de " +  characterInfo.nombre}/>
                             <div className="abilitie-text">
                                 <p>{characterInfo.habilidad_personaje.descripcion}</p>
                             </div>

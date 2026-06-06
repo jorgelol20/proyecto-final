@@ -6,9 +6,7 @@ const ContentPage = () => {
     
     return (
         <Fragment>
-            <main>
                 {<AppRoutes />}
-            </main>
         </Fragment>
     );
 }
