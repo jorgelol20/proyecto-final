@@ -24,8 +24,8 @@
     font-style: normal;
 }
 img{
-    image-rendering: pixelated; /* Chrome/Edge/Safari */
-    image-rendering: crisp-edges; /* Firefox */
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
 }
 
 
@@ -37,14 +37,11 @@ body {
     background-color: var(--second-color);
     background-size: 50px 50px;
     font-weight: 100;
-    /* La magia de los gradientes */
     background-image:
         linear-gradient(335deg, var(--second-color-dark) 23px, transparent 23px),
         linear-gradient(155deg, var(--second-color-dark) 23px, transparent 23px),
         linear-gradient(335deg, var(--second-color-dark) 23px, transparent 23px),
         linear-gradient(155deg, var(--second-color-dark) 23px, transparent 23px);
-
-    /* Posicionamiento para crear el efecto de "traba" (escalonado) */
     background-position:
         0px 2px,
         4px 35px,
@@ -68,7 +65,6 @@ button {
 img {
     background-color: var(--background-image-color);
     image-rendering: pixelated;
-    /* Chrome/Edge/Safari */
     image-rendering: crisp-edges;
 }
 
@@ -145,9 +141,7 @@ button {
     border-radius: 2cqw;
     border-color: var(--main-color);
     background-color: var(--second-color-light);
-    /* Elimina espacios inusuales alrededor */
     width: 10cqw;
-    /* Se ajusta al contenedor 'a' */
     height: 3cqw;
     box-sizing: border-box;
     color: var(--main-gold);
@@ -170,7 +164,6 @@ button {
     }
 }
 button:hover {
-    /* cursor: url('/images/suit_heart.webp') 16 16, auto; */
     cursor: url('/images/cursor/Cursor_1.webp') 3 7, auto;
     background-color: var(--second-color);
     color: var(--main-white);

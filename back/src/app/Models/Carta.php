@@ -4,7 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-
+/**
+ * Modelo para la representación de una carta
+ */
 class Carta extends Model
 {
     use HasFactory;

@@ -13,6 +13,9 @@ use Laravel\Socialite\Facades\Socialite;
 
 class AuthController extends Controller
 {
+    /**
+     * Función para iniciar sesión 'Normalmente'
+     */
     public function login(Request $request)
     {
         $request->validate([
@@ -37,6 +40,9 @@ class AuthController extends Controller
         ]);
     }
 
+    /**
+     * Función para cerrar sesión
+     */
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
