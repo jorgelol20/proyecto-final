@@ -130,7 +130,7 @@ const Tutorial = () => {
                                     <Label x={0} y={0}>
                                         <Rect width={150} height={110} fill="#FFF" x={50} y={0} cornerRadius={5} stroke={"black"} />
 
-                                        <Text text={"¡Comida! Te servirá para curarte tras el combate. Su poder base va desde el 2 hasta el 10"} fill="var(--main-black)" padding={5} fontSize={16} width={150} align="center" fontFamily="Romulus" x={50} y={0} />
+                                        <Text text={"¡Comida! Te servirá para curarte tras el combate. Su poder base va desde el 2 hasta el 10"} fill="var(--main-black)" padding={5} fontSize={16} width={150} align="center" fontFamily="Alagard" x={50} y={0} />
                                         <Image image={shopManHappy} width={60} height={60} x={15} y={85} imageSmoothingEnabled={false} listening={false} />
                                     </Label>
                                 )}
@@ -160,7 +160,7 @@ const Tutorial = () => {
                                 {hoveredIndex === tutorial1Cards[2]?.id && (
                                     <Label x={0} y={0}>
                                         <Rect width={150} height={110} fill="#FFF" x={50} y={0} cornerRadius={5} stroke={"black"} />
-                                        <Text text={"Son las armas que te ayudarán en la mazmorra. Su poder base va desde el 2 hasta el 10."} fill="var(--main-black)" padding={5} fontSize={16} width={150} align="center" fontFamily="Romulus" x={50} y={0} />
+                                        <Text text={"Son las armas que te ayudarán en la mazmorra. Su poder base va desde el 2 hasta el 10."} fill="var(--main-black)" padding={5} fontSize={16} width={150} align="center" fontFamily="Alagard" x={50} y={0} />
                                         <Image image={shopManNormal} width={60} height={60} x={15} y={85} imageSmoothingEnabled={false} listening={false} />
                                     </Label>
                                 )}
@@ -190,7 +190,7 @@ const Tutorial = () => {
                                 {hoveredIndex === tutorial1Cards[0]?.id && (
                                     <Label x={0} y={0}>
                                         <Rect width={150} height={90} fill="#FFF" x={50} y={20} cornerRadius={5} stroke={"black"} />
-                                        <Text text={"Se tratan de enemigos con forma humanoide. Su poder va del 2 al 14."} fill="var(--main-black)" padding={5} fontSize={16} width={150} align="center" fontFamily="Romulus" x={50} y={20} />
+                                        <Text text={"Se tratan de enemigos con forma humanoide. Su poder va del 2 al 14."} fill="var(--main-black)" padding={5} fontSize={16} width={150} align="center" fontFamily="Alagard" x={50} y={20} />
                                         <Image image={shopManAngry} width={60} height={60} x={15} y={85} imageSmoothingEnabled={false} listening={false} />
                                     </Label>
 
@@ -221,7 +221,7 @@ const Tutorial = () => {
                                 {hoveredIndex === tutorial1Cards[3]?.id && (
                                     <Label x={0} y={0}>
                                         <Rect width={150} height={90} fill="#FFF" x={50} y={20} cornerRadius={5} stroke={"black"} />
-                                        <Text text={"Se tratan de enemigos monstruosos. Su poder va del 2 al 14."} fill="var(--main-black)" padding={5} fontSize={16} width={150} align="center" fontFamily="Romulus" x={50} y={20} />
+                                        <Text text={"Se tratan de enemigos monstruosos. Su poder va del 2 al 14."} fill="var(--main-black)" padding={5} fontSize={16} width={150} align="center" fontFamily="Alagard" x={50} y={20} />
                                         <Image image={shopManThinking} width={60} height={60} x={15} y={85} imageSmoothingEnabled={false} listening={false} />
                                     </Label>
                                 )}
@@ -316,19 +316,19 @@ const Tutorial = () => {
                         {/* ZONA DEL MAZO */}
                         <Group x={DUNGEON_ZONE.x} y={DUNGEON_ZONE.y}>
                             <Rect width={DUNGEON_ZONE.width} height={DUNGEON_ZONE.height} fill="#0000006c" stroke="white" strokeWidth={2} cornerRadius={8} />
-                            <Text text="DUNGEON" rotation={55} fontFamily="Romulus" fontSize={20} fill="white" y={25} x={35} />
+                            <Text text="DUNGEON" rotation={55} fontFamily="Alagard" fontSize={20} fill="white" y={25} x={35} />
                         </Group>
                         <Group x={DISCARD_ZONE.x} y={DISCARD_ZONE.y}>
                             <Rect width={DISCARD_ZONE.width} height={DISCARD_ZONE.height} fill="#9c4747c9" stroke="white" strokeWidth={2} cornerRadius={8} />
-                            <Text text="DESCARTES" rotation={55} fontFamily="Romulus" fontSize={20} fill="white" y={WEAPON_ZONE.height * 0.05} x={WEAPON_ZONE.width * 0.08} />
+                            <Text text="DESCARTES" rotation={55} fontFamily="Alagard" fontSize={20} fill="white" y={WEAPON_ZONE.height * 0.05} x={WEAPON_ZONE.width * 0.08} />
                         </Group>
                         <Group x={WEAPON_ZONE.x} y={WEAPON_ZONE.y}>
                             <Rect width={WEAPON_ZONE.width} height={WEAPON_ZONE.height} fill="#6a9c476e" stroke="white" strokeWidth={2} cornerRadius={8} />
-                            <Text text="ZONA DE EQUIPO" fontFamily="Romulus" fontSize={40} fill="white" y={WEAPON_ZONE.height * 0.4} x={WEAPON_ZONE.width * 0.12} />
+                            <Text text="ZONA DE EQUIPO" fontFamily="Alagard" fontSize={40} fill="white" y={WEAPON_ZONE.height * 0.4} x={WEAPON_ZONE.width * 0.12} />
                         </Group>
                         <Group x={HAND_ZONE.x} y={HAND_ZONE.y}>
                             <Rect width={HAND_ZONE.width} height={HAND_ZONE.height} fill="#90c0ff50" stroke="white" strokeWidth={2} cornerRadius={8} />
-                            <Text text="MANO" fontFamily="Romulus" fontSize={40} fill="white" y={HAND_ZONE.height * 0.4} x={HAND_ZONE.width * 0.35} />
+                            <Text text="MANO" fontFamily="Alagard" fontSize={40} fill="white" y={HAND_ZONE.height * 0.4} x={HAND_ZONE.width * 0.35} />
                         </Group>
                     </Layer>
                 </Stage>
@@ -493,13 +493,13 @@ const Tutorial = () => {
                             {/* ZONA DEL MAZO */}
                             <Group x={DUNGEON_ZONE.x} y={DUNGEON_ZONE.y}>
                                 <Rect width={DUNGEON_ZONE.width} height={DUNGEON_ZONE.height} fill="#0000006c" stroke="white" strokeWidth={2} cornerRadius={8} />
-                                <Text text="DUNGEON" rotation={55} fontFamily="Romulus" fontSize={20} fill="white" y={25} x={35} />
+                                <Text text="DUNGEON" rotation={55} fontFamily="Alagard" fontSize={20} fill="white" y={25} x={35} />
                             </Group>
 
                             {/* DESCARTES */}
                             <Group x={DISCARD_ZONE.x} y={DISCARD_ZONE.y}>
                                 <Rect width={DISCARD_ZONE.width} height={DISCARD_ZONE.height} fill="#9c4747c9" stroke="white" strokeWidth={2} cornerRadius={8} />
-                                <Text text="DESCARTES" rotation={55} fontFamily="Romulus" fontSize={20} fill="white" y={WEAPON_ZONE.height * 0.05} x={WEAPON_ZONE.width * 0.08} />
+                                <Text text="DESCARTES" rotation={55} fontFamily="Alagard" fontSize={20} fill="white" y={WEAPON_ZONE.height * 0.05} x={WEAPON_ZONE.width * 0.08} />
                                 {discardPile.slice(-1).map((card, i) => (
                                     <Card
                                         key={card.key}
@@ -519,7 +519,7 @@ const Tutorial = () => {
                             {/* ZONA DE EQUIPO */}
                             <Group x={WEAPON_ZONE.x} y={WEAPON_ZONE.y}>
                                 <Rect width={WEAPON_ZONE.width} height={WEAPON_ZONE.height} fill="#6a9c476e" stroke="white" strokeWidth={2} cornerRadius={8} />
-                                <Text text="ZONA DE EQUIPO" fontFamily="Romulus" fontSize={40} fill="white" y={WEAPON_ZONE.height * 0.4} x={WEAPON_ZONE.width * 0.12} />
+                                <Text text="ZONA DE EQUIPO" fontFamily="Alagard" fontSize={40} fill="white" y={WEAPON_ZONE.height * 0.4} x={WEAPON_ZONE.width * 0.12} />
                                 {weapon && <Card
                                     key={weapon.key}
                                     cardInfo={weapon}
@@ -551,7 +551,7 @@ const Tutorial = () => {
                             {/* MANO */}
                             <Group x={HAND_ZONE.x} y={HAND_ZONE.y}>
                                 <Rect width={HAND_ZONE.width} height={HAND_ZONE.height} fill="#90c0ff50" stroke="white" strokeWidth={2} cornerRadius={8} />
-                                <Text text="MANO" fontFamily="Romulus" fontSize={40} fill="white" y={HAND_ZONE.height * 0.4} x={HAND_ZONE.width * 0.35} />
+                                <Text text="MANO" fontFamily="Alagard" fontSize={40} fill="white" y={HAND_ZONE.height * 0.4} x={HAND_ZONE.width * 0.35} />
                                 {room.length != 0 ? room.map((card, index) => {
                                     if (card !== undefined) {
                                         return <Card
@@ -575,7 +575,7 @@ const Tutorial = () => {
                         <Layer>
                             <Label x={0} y={0}>
                                 <Rect width={150} height={120} fill="#FFF" x={40} y={170} cornerRadius={5} stroke={"black"} />
-                                <Text text={"Si no cargan las cartas, dale a reiniciar."} fill="var(--main-black)" padding={5} fontSize={24} width={150} align="center" fontFamily="Romulus" x={40} y={175} />
+                                <Text text={"Si no cargan las cartas, dale a reiniciar."} fill="var(--main-black)" padding={5} fontSize={24} width={150} align="center" fontFamily="Alagard" x={40} y={175} />
                                 <Image image={shopManNormal} width={60} height={60} x={5} y={265} imageSmoothingEnabled={false} listening={false} />
                             </Label>
                         </Layer>
@@ -600,7 +600,7 @@ const Tutorial = () => {
                         <Layer>
                             <Label x={0} y={0}>
                                 <Rect width={220} height={150} fill="#FFF" x={70} y={5} cornerRadius={5} stroke={"black"} />
-                                <Text text={"Tengo los mejores precios de la zona y la única tienda en la zona."} fill="var(--main-black)" padding={5} fontSize={26} width={220} align="center" fontFamily="Romulus" x={70} y={5} />
+                                <Text text={"Tengo los mejores precios de la zona y la única tienda en la zona."} fill="var(--main-black)" padding={5} fontSize={26} width={220} align="center" fontFamily="Alagard" x={70} y={5} />
                                 <Image image={shopManHappy} width={90} height={90} x={5} y={120} imageSmoothingEnabled={false} listening={false} />
                             </Label>
                         </Layer>

@@ -1574,7 +1574,7 @@ const GamePage = () => {
                             {/* ZONA DEL MAZO */}
                             <Group x={DUNGEON_ZONE.x} y={DUNGEON_ZONE.y}>
                                 <Rect width={DUNGEON_ZONE.width} height={DUNGEON_ZONE.height} fill="#0000006c" stroke="white" strokeWidth={2} cornerRadius={8} onMouseEnter={(e) => { setOverDungeonZone(true) }} onMouseLeave={(e) => { setOverDungeonZone(false) }} />
-                                <Text text="DUNGEON" rotation={55} fontFamily="Romulus" fontSize={30} fill="white" y={20} x={35} />
+                                <Text text="DUNGEON" rotation={55} fontFamily="Alagard" fontSize={30} fill="white" y={20} x={35} />
 
                                 {dungeon.toReversed().slice(0, 4).toReversed().map((card, i) => (
                                     <Card
@@ -1598,7 +1598,7 @@ const GamePage = () => {
                             {/* PILA DE DESCARTES */}
                             <Group x={DISCARD_ZONE.x} y={DISCARD_ZONE.y}>
                                 <Rect width={DISCARD_ZONE.width} height={DISCARD_ZONE.height} fill="#9c4747c9" stroke="white" strokeWidth={2} cornerRadius={8} />
-                                <Text text="DESCARTES" rotation={55} fontFamily="Romulus" fontSize={30} fill="white" y={WEAPON_ZONE.height * 0.05} x={WEAPON_ZONE.width * 0.08} />
+                                <Text text="DESCARTES" rotation={55} fontFamily="Alagard" fontSize={30} fill="white" y={WEAPON_ZONE.height * 0.05} x={WEAPON_ZONE.width * 0.08} />
                                 {discardPile.toReversed().slice(0, 1).map((card, i) => (
                                     <Card
                                         key={card.key}
@@ -1617,7 +1617,7 @@ const GamePage = () => {
                             {/* ZONA DE EQUIPO */}
                             <Group x={WEAPON_ZONE.x} y={WEAPON_ZONE.y}>
                                 <Rect width={WEAPON_ZONE.width} height={WEAPON_ZONE.height} fill="#6a9c476e" stroke="white" strokeWidth={2} cornerRadius={8} />
-                                <Text text="ZONA DE EQUIPO" fontFamily="Romulus" fontSize={40} fill="white" y={WEAPON_ZONE.height * 0.4} x={WEAPON_ZONE.width * 0.12} />
+                                <Text text="ZONA DE EQUIPO" fontFamily="Alagard" fontSize={40} fill="white" y={WEAPON_ZONE.height * 0.4} x={WEAPON_ZONE.width * 0.12} />
                                 {weapon && <Card
                                     ref={el => cardRefs.current[weapon.key] = el}
                                     key={weapon.key}

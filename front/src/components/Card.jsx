@@ -166,7 +166,7 @@ const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = tru
                         text={`${cardInfo.valor}`}
                         fill={colorRef.current}
                         fontSize={34}
-                        fontFamily="Romulus"
+                        fontFamily="Alagard"
                         x={15}
                         y={4}
                         listening={false}
@@ -214,7 +214,7 @@ const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = tru
                         text={`${cardInfo.valor}`}
                         fill={colorRef.current}
                         fontSize={34}
-                        fontFamily="Romulus"
+                        fontFamily="Alagard"
                         x={100}
                         y={146}
                         rotation={180}
@@ -250,7 +250,7 @@ const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = tru
                             text={`${cardInfo.valor}`}
                             fill={colorRef.current}
                             fontSize={34}
-                            fontFamily="Romulus"
+                            fontFamily="Alagard"
                             x={15}
                             y={4}
                             listening={false}
@@ -287,7 +287,7 @@ const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = tru
                             text={`${cardInfo.valor}`}
                             fill={colorRef.current}
                             fontSize={34}
-                            fontFamily="Romulus"
+                            fontFamily="Alagard"
                             x={100}
                             y={146}
                             rotation={180}
