@@ -10,8 +10,8 @@
     background-color: var(--second-color-light);
     border-radius: 5%;
     width: 30cqw;
-    height: 40cqw;
-    max-height: 40cqh;
+    height: 50cqw;
+    max-height: 50cqh;
     z-index: 10;
 
     h3 {
