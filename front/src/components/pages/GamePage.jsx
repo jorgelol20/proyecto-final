@@ -784,6 +784,7 @@ const GamePage = () => {
                 if (tacticalChange.current < effect.value) {
                     tacticalChange.current = effect.value;
                 }
+                break
             case 'expert':
                 expert.current = true;
                 extraHealthExpert.current = Math.min(10, Math.floor(enemysDefeated / 20));
