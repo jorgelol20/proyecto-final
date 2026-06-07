@@ -217,7 +217,7 @@ useEffect(() => {
                                                                     fontSize={16}
                                                                     width={150}
                                                                     align="center"
-                                                                    fontFamily="Romulus"
+                                                                    fontFamily="Alagard"
                                                                     x={40}
                                                                     y={0}
                                                                 />

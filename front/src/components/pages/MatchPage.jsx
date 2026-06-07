@@ -140,7 +140,7 @@ const MatchPage = () => {
                         </div>
                         <div className="player-info">
                             <img className='user-avatar' onClick={() => { navigate(`/perfil/${player.nick}`) }} style={{ borderColor: player.color }} src={player.avatar !== "" && player.avatar ? player.avatar : Placeholder} alt={`Avatar de ${match.jugador.nick}`} />
-                            <p className={player.es_admin ? "admin" : "user"} x="50%" y="10" textAnchor="middle" fontFamily="Romulus" fontWeight="bold" fill="#333">
+                            <p className={player.es_admin ? "admin" : "user"} x="50%" y="10" textAnchor="middle" fontFamily="Alagard" fontWeight="bold" fill="#333">
                                 {player.nick}
                             </p>
                         </div>
