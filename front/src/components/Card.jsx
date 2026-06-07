@@ -16,6 +16,7 @@ import HealthStealIcon from '/images/cardEffects/HealthSteal.webp';
 import ThornyIcon from '/images/cardEffects/Thorny.webp';
 import PlunderIcon from '/images/cardEffects/Plunder.webp';
 import ExtraGoldIcon from '/images/cardEffects/ExtraGold.webp';
+// Por implementar.
 import MitosisIcon from '/images/cardEffects/Mitosis.webp';
 
 const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = true, onDeck = false, isWizard = false, setOverDungeonZone, canBeClicked, cardSuit, defaultImage, scale = 1 }, ref) => {
@@ -41,7 +42,7 @@ const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = tru
     // Carga de imágenes
     const [image] = useImage(cardInfo?.imagen);
     const [suit] = useImage(cardSuit);
-    
+
     const selectEffectImage = () => {
         if (cardInfo?.efectos) {
             const effectsList = Array.isArray(cardInfo.efectos) ? cardInfo.efectos : [cardInfo.efectos];
@@ -69,10 +70,10 @@ const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = tru
     // Color de la carta
     const colorRef = useRef('');
 
-    // --- SISTEMA DE CACHÉ INTELIGENTE PARA PIXEL ART ---
+    // --- SISTEMA DE CACHÉ PARA LA CARTA ---
     useEffect(() => {
         const imagesLoaded = image && suit && (!hasEffect || effectIcon);
-        
+
         if (imagesLoaded && groupRef.current) {
             // Un pequeño timeout asegura que Konva ya tenga los textos listos antes de congelar la imagen
             const timeoutId = setTimeout(() => {
@@ -92,7 +93,7 @@ const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = tru
                         const ctx = nativeCanvas.getContext('2d');
                         if (ctx) ctx.imageSmoothingEnabled = false;
                     }
-                    
+
                     groupRef.current.getLayer()?.batchDraw();
                 }
             }, 60);
@@ -136,18 +137,24 @@ const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = tru
             draggable={isDraggable}
             onClick={() => !onDeck ? (canBeClicked ? onClick(cardInfo) : null) : (canBeClicked && setOverDungeonZone ? setOverDungeonZone(prev => !prev) : null)}
             onTap={() => !onDeck ? (canBeClicked ? onClick(cardInfo) : null) : (canBeClicked && setOverDungeonZone ? setOverDungeonZone(prev => !prev) : null)}
-            onDragStart={() => { 
-                setStrokeWidth(6); 
-                document.body.style.cursor = "url('/images/cursor/Cursor_4.webp') 3 7, auto"; 
-            }}
             onDragEnd={handleDragEndInternal}
-            onMouseEnter={() => { 
-                if (isWizard && setOverDungeonZone) setOverDungeonZone(true); 
-                document.body.style.cursor = isDraggable ? "url('/images/cursor/Cursor_3.webp') 3 7, auto" : "url('/images/cursor/Cursor_5.webp') 3 7, auto"; 
+            onDragStart={() => {
+                setStrokeWidth(6);
+                groupRef.current.getStage().container().style.cursor =
+                    "url('/images/cursor/Cursor_4.webp') 3 7, auto";
             }}
-            onMouseLeave={() => { 
-                if (isWizard && setOverDungeonZone) setOverDungeonZone(false); 
-                document.body.style.cursor = "url('/images/cursor/Cursor_1.webp') 3 7, auto"; 
+
+            onMouseEnter={() => {
+                groupRef.current.getStage().container().style.cursor = isDraggable
+                    ? "url('/images/cursor/Cursor_3.webp') 3 7, auto"
+                    : "url('/images/cursor/Cursor_5.webp') 3 7, auto";
+                if (isWizard && setOverDungeonZone) setOverDungeonZone(true);
+            }}
+
+            onMouseLeave={() => {
+                groupRef.current.getStage().container().style.cursor =
+                    "url('/images/cursor/Cursor_1.webp') 3 7, auto";
+                if (isWizard && setOverDungeonZone) setOverDungeonZone(false);
             }}
         >
             <Rect
@@ -161,7 +168,7 @@ const Card = forwardRef(({ cardInfo, x, y, onDragEnd, onClick, isDraggable = tru
             />
 
             {!onDeck && (
-                <>  
+                <>
                     <Text
                         text={`${cardInfo.valor}`}
                         fill={colorRef.current}

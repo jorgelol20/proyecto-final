@@ -136,9 +136,12 @@
 }
 
 .slide-4 {
-    text-align: center;
+    text-align: justify;
     padding-bottom: 1cqw;
     padding-top: 1cqw;
+    p{
+        width: 80%;
+    }
 
     .tutorial-modifiers {
         width: 80%;
@@ -159,7 +162,7 @@
 }
 
 .slide-5 {
-    text-align: center;
+    text-align: justify;
     padding-bottom: 1cqw;
     padding-top: 1cqw;
 
