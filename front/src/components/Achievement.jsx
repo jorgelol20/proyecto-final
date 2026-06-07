@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import './Achievement.css';
-import Placeholder from 'images/achievement.webp'
+import achievementPlaceholder from '/images/achievement.webp'
 
 const Achievement = ({ achievementInfo, obtained = false }) => {
     return (
@@ -9,7 +9,7 @@ const Achievement = ({ achievementInfo, obtained = false }) => {
                 <div className="achievement-info">
                     <img src={achievementInfo.icono} alt=""
                         onError={(e) => {
-                            e.currentTarget.src = Placeholder;
+                            e.currentTarget.src = achievementPlaceholder;
                         }} />
                     <div>
                         <h1>{achievementInfo.nombre}</h1>
